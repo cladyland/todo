@@ -12,6 +12,7 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     public User getUserByUsername(String name){
+        getCurrentSession().getTransaction().begin();
         String queryStr = "select u from User u where u.username = :username";
         Query<User> query = getCurrentSession().createQuery(queryStr, User.class);
         query.setParameter("username", name);

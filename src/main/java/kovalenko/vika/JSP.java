@@ -2,7 +2,8 @@ package kovalenko.vika;
 
 public enum JSP {
     INDEX("/WEB-INF/index.jsp"),
-    REGISTER("/WEB-INF/register.jsp");
+    REGISTER("/WEB-INF/register.jsp"),
+    TODO("/WEB-INF/todo.jsp");
 
     private final String value;
 

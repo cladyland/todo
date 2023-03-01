@@ -3,6 +3,7 @@ package kovalenko.vika.service;
 import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.model.User;
+import org.hibernate.Session;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -40,6 +41,8 @@ public class UserService {
     }
 
     public void register(UserDTO userDTO, String password) throws NoSuchAlgorithmException {
+        Session session = userDAO.getCurrentSession();
+        session.getTransaction().begin();
         User newUser = User.builder()
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
@@ -48,5 +51,6 @@ public class UserService {
                 .build();
 
         userDAO.save(newUser);
+        session.getTransaction().commit();
     }
 }

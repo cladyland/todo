@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 import static kovalenko.vika.JSP.REGISTER;
+import static kovalenko.vika.JSP.TODO;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
@@ -45,5 +46,8 @@ public class RegisterServlet extends HttpServlet {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+
+        req.getSession().setAttribute("user", userDTO);
+        resp.sendRedirect("/todo");
     }
 }

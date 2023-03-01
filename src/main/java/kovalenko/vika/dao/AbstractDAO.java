@@ -19,13 +19,11 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
 
     @Override
     public T save(T entity) {
-        getCurrentSession().getTransaction().begin();
         getCurrentSession().saveOrUpdate(entity);
-        getCurrentSession().getTransaction().commit();
         return entity;
     }
 
-    protected Session getCurrentSession() {
+    public Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
 }
