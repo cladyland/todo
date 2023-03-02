@@ -29,15 +29,26 @@ public class UserService {
         return hash;
     }
 
-    public boolean validate(String username, String password) throws NoSuchAlgorithmException {
-        User user = userDAO.getUserByUsername(username);
+    public UserDTO validate(String username, String password) throws NoSuchAlgorithmException {
+        Session session = userDAO.getCurrentSession();
+        session.getTransaction().begin();
+        User user = userDAO.getUserByUsername(username, session);
+        UserDTO userDTO = null;
         if (isNull(user)){
-            return false;
+            return null;
         }
         String passwordHash = passwordEncrypt(password);
         String userPasswordHash = user.getPasswordHash();
 
-        return passwordHash.equals(userPasswordHash);
+        if (passwordHash.equals(userPasswordHash)){
+            userDTO = UserDTO.builder()
+                    .username(user.getUsername())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .build();
+        }
+
+        return userDTO;
     }
 
     public void register(UserDTO userDTO, String password) throws NoSuchAlgorithmException {

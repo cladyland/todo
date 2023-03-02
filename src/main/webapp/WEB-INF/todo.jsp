@@ -11,8 +11,29 @@
     <button type="submit">Add task</button>
 </form>
 
-<c:forEach items="${tasks}" var="task">
-        ${task.getTitle()}
-</c:forEach>
+<table>
+    <tr>
+        <td>Title</td>
+        <td>Description</td>
+        <td>Actions</td>
+    </tr>
+
+    <c:forEach items="${tasks}" var="task">
+        <tr>
+            <td> ${task.getTitle()} </td>
+            <td> ${task.getDescription()} </td>
+            <td>
+                <form action="${pageContext.request.contextPath}/todo" method="get">
+                <button type="submit" name="update" value="${task.getId()}">Edit</button>
+                </form>
+                <form action="${pageContext.request.contextPath}/todo" method="post">
+                <button type="submit" name="delete" value="${task.getId()}">Delete</button>
+                </form>
+            </td>
+        </tr>
+    </c:forEach>
+
+</table>
+
 </body>
 </html>
