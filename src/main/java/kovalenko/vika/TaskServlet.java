@@ -30,26 +30,26 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("delete") != null) {
-            deleteTask(req);
-        }
-        if (req.getParameter("saveUpdate") != null) {
-            updateTask(req);
-        }
         todoForward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        var task = buildTaskDTO(req);
-        var user = (UserDTO) session.getAttribute("user");
+        if (req.getParameter("delete") != null) {
+            deleteTask(req);
+        } else if (req.getParameter("saveUpdate") != null) {
+            updateTask(req);
+        } else {
+            HttpSession session = req.getSession();
+            var task = buildTaskDTO(req);
+            var user = (UserDTO) session.getAttribute("user");
 
-        TaskDTO addedTask = taskService.createTask(task, user);
+            TaskDTO addedTask = taskService.createTask(task, user);
 
-        List<TaskDTO> tasks = getUserTasks(session);
-        tasks.add(addedTask);
-        session.setAttribute("tasks", tasks);
+            List<TaskDTO> tasks = getUserTasks(session);
+            tasks.add(addedTask);
+            session.setAttribute("tasks", tasks);
+        }
         todoForward(req, resp);
     }
 

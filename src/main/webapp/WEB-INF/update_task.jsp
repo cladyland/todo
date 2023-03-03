@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<form action="${pageContext.request.contextPath}/todo" method="get">
+<form action="${pageContext.request.contextPath}/todo" method="post">
     <input name="title" value="<c:out value="${task.getTitle()}"></c:out>">
     <input name="description" value="<c:out value="${task.getDescription()}"></c:out>">
 

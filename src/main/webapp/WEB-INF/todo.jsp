@@ -23,10 +23,10 @@
             <td> ${task.getTitle()} </td>
             <td> ${task.getDescription()} </td>
             <td>
-                <form action="${pageContext.request.contextPath}/todo" method="get">
+                <form action="${pageContext.request.contextPath}/todo" method="post">
                 <button type="submit" name="update" value="${task.getId()}">Edit</button>
                 </form>
-                <form action="${pageContext.request.contextPath}/todo" method="get">
+                <form action="${pageContext.request.contextPath}/todo" method="post">
                 <button type="submit" name="delete" value="${task.getId()}">Delete</button>
                 </form>
             </td>
