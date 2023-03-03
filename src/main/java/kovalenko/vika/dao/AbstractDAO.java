@@ -29,9 +29,10 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
     }
 
     @Override
-    public void delete(Long id, Session session) {
-        T t = getById(id, session);
-        session.remove(t);
+    public T delete(Long id, Session session) {
+        T element = getById(id, session);
+        session.remove(element);
+        return element;
     }
 
     public Session getCurrentSession() {

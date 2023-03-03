@@ -6,5 +6,5 @@ public interface IDAO<T> {
     T getById(Long id, Session session);
     T save(final T entity);
     T update(final T entity);
-    void delete(Long id, Session session);
+    T delete(Long id, Session session);
 }

@@ -18,7 +18,7 @@
         <td>Actions</td>
     </tr>
 
-    <c:forEach items="${tasks}" var="task">
+    <c:forEach items="${sessionScope.tasks}" var="task">
         <tr>
             <td> ${task.getTitle()} </td>
             <td> ${task.getDescription()} </td>
@@ -26,7 +26,7 @@
                 <form action="${pageContext.request.contextPath}/todo" method="get">
                 <button type="submit" name="update" value="${task.getId()}">Edit</button>
                 </form>
-                <form action="${pageContext.request.contextPath}/todo" method="post">
+                <form action="${pageContext.request.contextPath}/todo" method="get">
                 <button type="submit" name="delete" value="${task.getId()}">Delete</button>
                 </form>
             </td>

@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import static java.util.Objects.isNull;
 
 public class UserService {
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -30,38 +30,39 @@ public class UserService {
     }
 
     public UserDTO validate(String username, String password) throws NoSuchAlgorithmException {
-        Session session = userDAO.getCurrentSession();
-        session.getTransaction().begin();
-        User user = userDAO.getUserByUsername(username, session);
-        UserDTO userDTO = null;
-        if (isNull(user)){
-            return null;
-        }
-        String passwordHash = passwordEncrypt(password);
-        String userPasswordHash = user.getPasswordHash();
+        try(Session session = userDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            User user = userDAO.getUserByUsername(username, session);
+            UserDTO userDTO = null;
+            if (isNull(user)) {
+                return null;
+            }
+            String passwordHash = passwordEncrypt(password);
+            String userPasswordHash = user.getPasswordHash();
 
-        if (passwordHash.equals(userPasswordHash)){
-            userDTO = UserDTO.builder()
-                    .username(user.getUsername())
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName())
-                    .build();
+            if (passwordHash.equals(userPasswordHash)) {
+                userDTO = UserDTO.builder()
+                        .username(user.getUsername())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .build();
+            }
+            return userDTO;
         }
-
-        return userDTO;
     }
 
     public void register(UserDTO userDTO, String password) throws NoSuchAlgorithmException {
-        Session session = userDAO.getCurrentSession();
-        session.getTransaction().begin();
-        User newUser = User.builder()
-                .firstName(userDTO.getFirstName())
-                .lastName(userDTO.getLastName())
-                .username(userDTO.getUsername())
-                .passwordHash(passwordEncrypt(password))
-                .build();
+        try(Session session = userDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            User newUser = User.builder()
+                    .firstName(userDTO.getFirstName())
+                    .lastName(userDTO.getLastName())
+                    .username(userDTO.getUsername())
+                    .passwordHash(passwordEncrypt(password))
+                    .build();
 
-        userDAO.save(newUser);
-        session.getTransaction().commit();
+            userDAO.save(newUser);
+            session.getTransaction().commit();
+        }
     }
 }

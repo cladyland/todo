@@ -20,11 +20,69 @@ public class TaskService {
         this.userDAO = userDAO;
     }
 
-    public TaskDTO getTaskById(Long id){
-        Session session = userDAO.getCurrentSession();
-        session.getTransaction().begin();
-        Task task = taskDAO.getById(id, session);
-        session.getTransaction().commit();
+    public TaskDTO getTaskById(Long id) {
+        try (Session session = taskDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            Task task = taskDAO.getById(id, session);
+            session.getTransaction().commit();
+            return transformToDTO(task);
+        }
+    }
+
+    public List<TaskDTO> getAllUserTasks(UserDTO userDTO) {
+        try (Session session = taskDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            User user = userDAO.getUserByUsername(userDTO.getUsername(), session);
+            List<Task> tasks = taskDAO.getAllUserTasks(user, session);
+            List<TaskDTO> taskDTOS = new ArrayList<>();
+            for (Task task : tasks) {
+                taskDTOS.add(transformToDTO(task));
+            }
+            session.getTransaction().commit();
+            return taskDTOS;
+        }
+    }
+
+    public TaskDTO createTask(TaskDTO taskDTO, UserDTO userDTO) {
+        try(Session session = taskDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            User user = findUserByUsername(userDTO.getUsername(), session);
+
+            Task task = Task.builder()
+                    .userId(user)
+                    .title(taskDTO.getTitle())
+                    .description(taskDTO.getDescription())
+                    .build();
+
+            taskDAO.save(task);
+            session.getTransaction().commit();
+            return transformToDTO(task);
+        }
+    }
+
+    public void updateTask(TaskDTO taskDTO) {
+        try(Session session = taskDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+
+            Task task = taskDAO.getById(taskDTO.getId(), session);
+            task.setTitle(taskDTO.getTitle());
+            task.setDescription(taskDTO.getDescription());
+            taskDAO.update(task);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    public TaskDTO deleteTask(Long id) {
+        try(Session session = taskDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            Task task = taskDAO.delete(id, session);
+            session.getTransaction().commit();
+            return transformToDTO(task);
+        }
+    }
+
+    private TaskDTO transformToDTO(Task task){
         return TaskDTO.builder()
                 .id(task.getId())
                 .title(task.getTitle())
@@ -32,58 +90,7 @@ public class TaskService {
                 .build();
     }
 
-    public List<TaskDTO> getAllUserTasks(UserDTO userDTO){
-        Session session = userDAO.getCurrentSession();
-        session.getTransaction().begin();
-        User user = userDAO.getUserByUsername(userDTO.getUsername(), session);
-        List<Task> tasks = taskDAO.getAllUserTasks(user, session);
-        List<TaskDTO> taskDTOS = new ArrayList<>();
-        for (Task task : tasks){
-            taskDTOS.add(TaskDTO.builder()
-                    .id(task.getId())
-                    .title(task.getTitle())
-                    .description(task.getDescription())
-                    .build());
-        }
-
-        return taskDTOS;
-    }
-
-    public void createTask(TaskDTO taskDTO, UserDTO userDTO) {
-        Session session = taskDAO.getCurrentSession();
-        session.getTransaction().begin();
-        User user = findUserByUsername(userDTO.getUsername(), session);
-
-        Task task = Task.builder()
-                .userId(user)
-                .title(taskDTO.getTitle())
-                .description(taskDTO.getDescription())
-                .build();
-
-        taskDAO.save(task);
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    public void updateTask(TaskDTO taskDTO) {
-        Session session = taskDAO.getCurrentSession();
-        session.getTransaction().begin();
-        Task task = taskDAO.getById(taskDTO.getId(), session);
-        task.setTitle(taskDTO.getTitle());
-        task.setDescription(taskDTO.getDescription());
-        taskDAO.update(task);
-        session.getTransaction().commit();
-    }
-
-    public void deleteTask(Long id) {
-        Session session = taskDAO.getCurrentSession();
-        session.getTransaction().begin();
-        taskDAO.delete(id, session);
-        session.getTransaction().commit();
-        session.close();
-    }
-
-    private User findUserByUsername(String username, Session session){
+    private User findUserByUsername(String username, Session session) {
         return userDAO.getUserByUsername(username, session);
     }
 }

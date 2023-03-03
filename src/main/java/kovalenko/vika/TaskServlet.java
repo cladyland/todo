@@ -10,11 +10,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static kovalenko.vika.JSP.TASK_UPDATE;
 import static kovalenko.vika.JSP.TODO;
 
 @WebServlet(name = "TaskServlet", value = "/todo")
@@ -30,80 +30,70 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if(req.getSession().getAttribute("tasks") == null){
-            UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-            List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO);
-            req.getSession().setAttribute("tasks", tasks);
-            req.setAttribute("tasks", tasks);
+        if (req.getParameter("delete") != null) {
+            deleteTask(req);
         }
-
-        if (req.getParameter("update") != null){
-            String taskId = req.getParameter("update");
-            TaskDTO taskDTO = taskService.getTaskById(Long.valueOf(taskId));
-            List<TaskDTO> taskDTOS = new ArrayList<>();
-            taskDTOS.add(taskDTO);
-
-            req.setAttribute("task", taskDTOS);
-            req
-                    .getServletContext()
-                    .getRequestDispatcher(TASK_UPDATE.getValue())
-                    .forward(req, resp);
+        if (req.getParameter("saveUpdate") != null) {
+            updateTask(req);
         }
-
-        req
-                .getServletContext()
-                .getRequestDispatcher(TODO.getValue())
-                .forward(req, resp);
+        todoForward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("delete") != null) {
-            doDelete(req, resp);
-        }
-        if (req.getParameter("saveUpdate") != null){
-            doPut(req, resp);
-        }
+        HttpSession session = req.getSession();
+        var task = buildTaskDTO(req);
+        var user = (UserDTO) session.getAttribute("user");
 
-        TaskDTO taskDTO = TaskDTO.builder()
-                .title(req.getParameter("title"))
-                .description(req.getParameter("description"))
-                .build();
-        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
+        TaskDTO addedTask = taskService.createTask(task, user);
 
-        taskService.createTask(taskDTO, userDTO);
-
-        List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO);
-        req.setAttribute("tasks", tasks);
-        req.getSession().setAttribute("tasks", tasks);
-        req.getServletContext().getRequestDispatcher(TODO.getValue()).forward(req, resp);
+        List<TaskDTO> tasks = getUserTasks(session);
+        tasks.add(addedTask);
+        session.setAttribute("tasks", tasks);
+        todoForward(req, resp);
     }
 
-    @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        TaskDTO taskDTO = TaskDTO.builder()
-                .id(Long.valueOf(req.getParameter("saveUpdate")))
-                .title(req.getParameter("title"))
-                .description(req.getParameter("description"))
-                .build();
+    private void updateTask(HttpServletRequest req) {
+        Long id = Long.valueOf(req.getParameter("saveUpdate"));
+        var taskDTO = buildTaskDTO(req);
+        taskDTO.setId(id);
 
         taskService.updateTask(taskDTO);
-        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-        List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO);
+
+        var user = (UserDTO) req.getSession().getAttribute("user");
+        List<TaskDTO> tasks = taskService.getAllUserTasks(user);
+
         req.getSession().setAttribute("tasks", tasks);
-        req.setAttribute("tasks", tasks);
-        req.getServletContext().getRequestDispatcher(TODO.getValue()).forward(req, resp);
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void deleteTask(HttpServletRequest req) {
         String strId = req.getParameter("delete");
         Long id = Long.valueOf(strId);
-        taskService.deleteTask(id);
-        UserDTO userDTO = (UserDTO) req.getSession().getAttribute("user");
-        List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO);
-        req.getSession().setAttribute("tasks", tasks);
-        req.setAttribute("tasks", tasks);
-        req.getServletContext().getRequestDispatcher(TODO.getValue()).forward(req, resp);
+        TaskDTO removedTask = taskService.deleteTask(id);
+        HttpSession session = req.getSession();
+
+        List<TaskDTO> tasks = getUserTasks(session);
+        tasks
+                .removeIf(task -> Objects.equals(task.getId(), removedTask.getId()));
+
+        session.setAttribute("tasks", tasks);
+    }
+
+    private TaskDTO buildTaskDTO(HttpServletRequest req) {
+        return TaskDTO.builder()
+                .title(req.getParameter("title"))
+                .description(req.getParameter("description"))
+                .build();
+    }
+
+    private List<TaskDTO> getUserTasks(HttpSession session) {
+        return (List<TaskDTO>) session.getAttribute("tasks");
+    }
+
+    private void todoForward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req
+                .getServletContext()
+                .getRequestDispatcher(TODO.getValue())
+                .forward(req, resp);
     }
 }
