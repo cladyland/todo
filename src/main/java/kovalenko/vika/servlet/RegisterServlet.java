@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 import static kovalenko.vika.enums.JSP.REGISTER;
 
@@ -40,12 +39,7 @@ public class RegisterServlet extends HttpServlet {
         userDTO.setLastName(req.getParameter("lastName"));
         userDTO.setUsername(req.getParameter("username"));
         String password = req.getParameter("password");
-        try {
-            userService.register(userDTO, password);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
+        userService.register(userDTO, password);
         req.getSession().setAttribute("user", userDTO);
         resp.sendRedirect("/todo");
     }

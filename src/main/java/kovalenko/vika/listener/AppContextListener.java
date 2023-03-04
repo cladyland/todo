@@ -7,8 +7,11 @@ import kovalenko.vika.model.Tag;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.TagService;
+import kovalenko.vika.service.impl.TagServiceImp;
 import kovalenko.vika.service.TaskService;
+import kovalenko.vika.service.impl.TaskServiceImp;
 import kovalenko.vika.service.UserService;
+import kovalenko.vika.service.impl.UserServiceIml;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -30,12 +33,13 @@ public class AppContextListener implements ServletContextListener {
         var taskDAO = new TaskDAO(sessionFactory);
         var tagDAO = new TagDAO(sessionFactory);
 
-        var userService = new UserService(userDAO);
-        var taskService = new TaskService(taskDAO, userDAO);
-        var tagService = new TagService(tagDAO);
+        UserService userService = new UserServiceIml(userDAO);
+        TaskService taskService = new TaskServiceImp(taskDAO, userDAO);
+        TagService tagService = new TagServiceImp(tagDAO);
 
         var servletContext = sce.getServletContext();
         servletContext.setAttribute("userService", userService);
         servletContext.setAttribute("taskService", taskService);
+        servletContext.setAttribute("tagService", tagService);
     }
 }

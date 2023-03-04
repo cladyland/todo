@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 import static kovalenko.vika.enums.JSP.INDEX;
 
@@ -37,12 +36,7 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         UserDTO userDTO;
-
-        try {
             userDTO = userService.validate(username, password);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
         req.getSession().setAttribute("user", userDTO);
         resp.sendRedirect("/todo");
     }
