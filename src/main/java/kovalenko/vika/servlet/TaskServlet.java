@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
-import static kovalenko.vika.JSP.TODO;
+import static kovalenko.vika.enums.JSP.TODO;
 
 @WebServlet(name = "TaskServlet", value = "/todo")
 public class TaskServlet extends HttpServlet {

@@ -1,5 +1,6 @@
 package kovalenko.vika.dao;
 
+import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
 import org.hibernate.Session;
@@ -13,9 +14,11 @@ public class TaskDAO extends AbstractDAO<Task> {
         super(Task.class, sessionFactory);
     }
 
-    public List<Task> getAllUserTasks(User user, Session session){
-        String queryStr = "select t from Task t where t.userId = :user";
-        Query<Task> query = session.createQuery(queryStr, Task.class);
+    public List<TaskDTO> getAllUserTasks(User user, Session session){
+        String queryStr = "select new kovalenko.vika.dto.TaskDTO(t.id, t.title, t.description) " +
+                "from Task t where t.userId = :user";
+
+        Query<TaskDTO> query = session.createQuery(queryStr, TaskDTO.class);
         query.setParameter("user", user);
         return query.getResultList();
     }

@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.filter;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
@@ -18,7 +18,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.JSP.TASK_UPDATE;
+import static kovalenko.vika.enums.JSP.TASK_UPDATE;
 
 @WebFilter(filterName = "TaskFilter", value = "/todo")
 public class TaskFilter implements Filter {

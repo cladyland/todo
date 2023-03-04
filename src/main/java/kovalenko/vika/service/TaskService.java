@@ -1,5 +1,6 @@
 package kovalenko.vika.service;
 
+import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.dto.TaskDTO;
@@ -8,16 +9,17 @@ import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
 import org.hibernate.Session;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TaskService {
     private final TaskDAO taskDAO;
     private final UserDAO userDAO;
+    private final TaskMapper taskMapper;
 
     public TaskService(TaskDAO taskDAO, UserDAO userDAO) {
         this.taskDAO = taskDAO;
         this.userDAO = userDAO;
+        this.taskMapper = TaskMapper.INSTANCE;
     }
 
     public TaskDTO getTaskById(Long id) {
@@ -25,7 +27,7 @@ public class TaskService {
             session.getTransaction().begin();
             Task task = taskDAO.getById(id, session);
             session.getTransaction().commit();
-            return transformToDTO(task);
+            return taskMapper.mapToDTO(task);
         }
     }
 
@@ -33,13 +35,9 @@ public class TaskService {
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
             User user = userDAO.getUserByUsername(userDTO.getUsername(), session);
-            List<Task> tasks = taskDAO.getAllUserTasks(user, session);
-            List<TaskDTO> taskDTOS = new ArrayList<>();
-            for (Task task : tasks) {
-                taskDTOS.add(transformToDTO(task));
-            }
+            List<TaskDTO> tasks = taskDAO.getAllUserTasks(user, session);
             session.getTransaction().commit();
-            return taskDTOS;
+            return tasks;
         }
     }
 
@@ -48,15 +46,12 @@ public class TaskService {
             session.getTransaction().begin();
             User user = findUserByUsername(userDTO.getUsername(), session);
 
-            Task task = Task.builder()
-                    .userId(user)
-                    .title(taskDTO.getTitle())
-                    .description(taskDTO.getDescription())
-                    .build();
+            Task task = taskMapper.mapToEntity(taskDTO);
+            task.setUserId(user);
 
             taskDAO.save(task);
             session.getTransaction().commit();
-            return transformToDTO(task);
+            return taskMapper.mapToDTO(task);
         }
     }
 
@@ -78,16 +73,8 @@ public class TaskService {
             session.getTransaction().begin();
             Task task = taskDAO.delete(id, session);
             session.getTransaction().commit();
-            return transformToDTO(task);
+            return taskMapper.mapToDTO(task);
         }
-    }
-
-    private TaskDTO transformToDTO(Task task){
-        return TaskDTO.builder()
-                .id(task.getId())
-                .title(task.getTitle())
-                .description(task.getDescription())
-                .build();
     }
 
     private User findUserByUsername(String username, Session session) {

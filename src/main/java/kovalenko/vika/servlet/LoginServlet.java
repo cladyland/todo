@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.servlet;
 
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.UserService;
@@ -12,11 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
-import static kovalenko.vika.JSP.REGISTER;
-import static kovalenko.vika.JSP.TODO;
+import static kovalenko.vika.enums.JSP.INDEX;
 
-@WebServlet(name = "RegisterServlet", value = "/register")
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "LoginServlet", value = "/")
+public class LoginServlet extends HttpServlet {
     private UserService userService;
 
     @Override
@@ -25,28 +24,25 @@ public class RegisterServlet extends HttpServlet {
         var servletContext = config.getServletContext();
         userService = (UserService) servletContext.getAttribute("userService");
     }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
                 .getServletContext()
-                .getRequestDispatcher(REGISTER.getValue())
+                .getRequestDispatcher(INDEX.getValue())
                 .forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setFirstName(req.getParameter("firstName"));
-        userDTO.setLastName(req.getParameter("lastName"));
-        userDTO.setUsername(req.getParameter("username"));
+        String username = req.getParameter("username");
         String password = req.getParameter("password");
+        UserDTO userDTO;
+
         try {
-            userService.register(userDTO, password);
+            userDTO = userService.validate(username, password);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-
         req.getSession().setAttribute("user", userDTO);
         resp.sendRedirect("/todo");
     }

@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.enums;
 
 public enum JSP {
     INDEX("/WEB-INF/index.jsp"),
