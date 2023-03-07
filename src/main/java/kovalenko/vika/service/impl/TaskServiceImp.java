@@ -1,5 +1,6 @@
 package kovalenko.vika.service.impl;
 
+import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dto.TaskDTO;
@@ -39,13 +40,10 @@ public class TaskServiceImp implements TaskService {
     }
 
     @Override
-    public TaskDTO createTask(TaskDTO taskDTO, Long userId) {
+    public TaskDTO createTask(TaskCommand taskCommand) {
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
-
-            Task task = taskMapper.mapToEntity(taskDTO);
-            task.setUserId(userId);
-
+            Task task = taskMapper.mapToEntity(taskCommand);
             taskDAO.save(task);
             session.getTransaction().commit();
             return taskMapper.mapToDTO(task);

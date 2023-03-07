@@ -1,5 +1,6 @@
 package kovalenko.vika.listener;
 
+import kovalenko.vika.Hashing;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dao.UserDAO;
@@ -32,8 +33,9 @@ public class AppContextListener implements ServletContextListener {
         var userDAO = new UserDAO(sessionFactory);
         var taskDAO = new TaskDAO(sessionFactory);
         var tagDAO = new TagDAO(sessionFactory);
+        var hashing = new Hashing();
 
-        UserService userService = new UserServiceIml(userDAO);
+        UserService userService = new UserServiceIml(userDAO, hashing);
         TaskService taskService = new TaskServiceImp(taskDAO);
         TagService tagService = new TagServiceImp(tagDAO, taskDAO);
 

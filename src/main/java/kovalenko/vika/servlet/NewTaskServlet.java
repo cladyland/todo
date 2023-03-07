@@ -1,5 +1,6 @@
 package kovalenko.vika.servlet;
 
+import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.TagService;
@@ -49,10 +50,8 @@ public class NewTaskServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        var task = buildTaskDTO(req);
-        var user = (UserDTO) session.getAttribute("user");
-
-        TaskDTO addedTask = taskService.createTask(task, userService.getUserId(user.getUsername()));
+        TaskCommand command = buildTaskCommand(req);
+        TaskDTO addedTask = taskService.createTask(command);
 
         List<TaskDTO> tasks = getUserTasks(session);
         tasks.add(addedTask);
@@ -60,8 +59,10 @@ public class NewTaskServlet extends HttpServlet {
         resp.sendRedirect("/todo");
     }
 
-    private TaskDTO buildTaskDTO(HttpServletRequest req) {
-        return TaskDTO.builder()
+    private TaskCommand buildTaskCommand(HttpServletRequest req){
+        var user = (UserDTO) req.getSession().getAttribute("user");
+        return TaskCommand.builder()
+                .userId(userService.getUserId(user.getUsername()))
                 .title(req.getParameter("title"))
                 .description(req.getParameter("description"))
                 .build();

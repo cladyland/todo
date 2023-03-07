@@ -1,5 +1,6 @@
 package kovalenko.vika.servlet;
 
+import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.UserService;
 
@@ -34,13 +35,18 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setFirstName(req.getParameter("firstName"));
-        userDTO.setLastName(req.getParameter("lastName"));
-        userDTO.setUsername(req.getParameter("username"));
-        String password = req.getParameter("password");
-        userService.register(userDTO, password);
+        UserCommand command = buildUserCommand(req);
+        UserDTO userDTO = userService.register(command);
         req.getSession().setAttribute("user", userDTO);
         resp.sendRedirect("/todo");
+    }
+
+    private UserCommand buildUserCommand(HttpServletRequest req){
+        return UserCommand.builder()
+                .firstName(req.getParameter("firstName"))
+                .lastName(req.getParameter("lastName"))
+                .username(req.getParameter("username"))
+                .password(req.getParameter("password"))
+                .build();
     }
 }

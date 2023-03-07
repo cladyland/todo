@@ -1,5 +1,6 @@
 package kovalenko.vika.mapper;
 
+import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import org.mapstruct.Mapper;
@@ -14,4 +15,6 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
 
     @Override
     TaskDTO mapToDTO(Task task);
+
+    Task mapToEntity(TaskCommand taskCommand);
 }
