@@ -39,7 +39,7 @@ public class TaskFilter implements Filter {
 
         if(isNull(currentSession.getAttribute("tasks"))){
             var userDTO = (UserDTO) currentSession.getAttribute("user");
-            List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO);
+            List<TaskDTO> tasks = taskService.getAllUserTasks(userDTO.getUsername());
             currentSession.setAttribute("tasks", tasks);
         }
 

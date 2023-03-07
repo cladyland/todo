@@ -3,6 +3,7 @@ package kovalenko.vika.servlet;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.TaskService;
+import kovalenko.vika.service.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -20,12 +21,14 @@ import static kovalenko.vika.enums.JSP.TODO;
 @WebServlet(name = "TaskServlet", value = "/todo")
 public class TaskServlet extends HttpServlet {
     private TaskService taskService;
+    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute("taskService");
+        userService = (UserService) context.getAttribute("userService");
     }
 
     @Override
@@ -39,16 +42,6 @@ public class TaskServlet extends HttpServlet {
             deleteTask(req);
         } else if (req.getParameter("saveUpdate") != null) {
             updateTask(req);
-        } else {
-            HttpSession session = req.getSession();
-            var task = buildTaskDTO(req);
-            var user = (UserDTO) session.getAttribute("user");
-
-            TaskDTO addedTask = taskService.createTask(task, user);
-
-            List<TaskDTO> tasks = getUserTasks(session);
-            tasks.add(addedTask);
-            session.setAttribute("tasks", tasks);
         }
         todoForward(req, resp);
     }
@@ -61,7 +54,7 @@ public class TaskServlet extends HttpServlet {
         taskService.updateTask(taskDTO);
 
         var user = (UserDTO) req.getSession().getAttribute("user");
-        List<TaskDTO> tasks = taskService.getAllUserTasks(user);
+        List<TaskDTO> tasks = taskService.getAllUserTasks(user.getUsername());
 
         req.getSession().setAttribute("tasks", tasks);
     }

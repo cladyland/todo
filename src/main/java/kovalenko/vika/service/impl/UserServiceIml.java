@@ -72,4 +72,14 @@ public class UserServiceIml implements UserService {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Long getUserId(String username) {
+        try(Session session = userDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            Long id = userDAO.getUserId(username);
+            session.getTransaction().commit();
+            return id;
+        }
+    }
 }

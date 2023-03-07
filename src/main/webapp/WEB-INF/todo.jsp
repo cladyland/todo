@@ -5,9 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/todo" method="post">
-    <input name="title">
-    <input name="description">
+<form action="${pageContext.request.contextPath}/todo/new-task" method="get">
     <button type="submit">Add task</button>
 </form>
 

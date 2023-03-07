@@ -27,4 +27,6 @@ public class Tag {
     private String title;
     @Column(nullable = false)
     private String color;
+    @Column(name = "is_default")
+    private boolean isDefault;
 }

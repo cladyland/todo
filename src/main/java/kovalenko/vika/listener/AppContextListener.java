@@ -34,8 +34,8 @@ public class AppContextListener implements ServletContextListener {
         var tagDAO = new TagDAO(sessionFactory);
 
         UserService userService = new UserServiceIml(userDAO);
-        TaskService taskService = new TaskServiceImp(taskDAO, userDAO);
-        TagService tagService = new TagServiceImp(tagDAO);
+        TaskService taskService = new TaskServiceImp(taskDAO);
+        TagService tagService = new TagServiceImp(tagDAO, taskDAO);
 
         var servletContext = sce.getServletContext();
         servletContext.setAttribute("userService", userService);

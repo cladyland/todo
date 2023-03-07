@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         UserDTO userDTO;
-            userDTO = userService.validate(username, password);
+        userDTO = userService.validate(username, password);
         req.getSession().setAttribute("user", userDTO);
         resp.sendRedirect("/todo");
     }

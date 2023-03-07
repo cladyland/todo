@@ -4,6 +4,7 @@ public enum JSP {
     INDEX("/WEB-INF/index.jsp"),
     REGISTER("/WEB-INF/register.jsp"),
     TODO("/WEB-INF/todo.jsp"),
+    NEW_TASK("/WEB-INF/new_task.jsp"),
     TASK_UPDATE("/WEB-INF/update_task.jsp");
 
     private final String value;
