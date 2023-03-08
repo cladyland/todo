@@ -14,6 +14,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.REGISTER;
+import static kovalenko.vika.utils.AttributeConstant.FIRST_NAME;
+import static kovalenko.vika.utils.AttributeConstant.LAST_NAME;
+import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
+import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
+import static kovalenko.vika.utils.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
+import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 
 @WebServlet(name = "RegisterServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
@@ -23,7 +30,7 @@ public class RegisterServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
-        userService = (UserService) context.getAttribute("userService");
+        userService = (UserService) context.getAttribute(USER_SERVICE);
     }
 
     @Override
@@ -40,17 +47,17 @@ public class RegisterServlet extends HttpServlet {
         UserDTO userDTO = userService.register(command);
 
         HttpSession session = req.getSession();
-        session.setAttribute("user", userDTO);
-        session.setAttribute("username", userDTO.getUsername());
-        resp.sendRedirect("/todo");
+        session.setAttribute(USER_ATTR, userDTO);
+        session.setAttribute(USERNAME, userDTO.getUsername());
+        resp.sendRedirect(TODO_LINK);
     }
 
     private UserCommand buildUserCommand(HttpServletRequest req){
         return UserCommand.builder()
-                .firstName(req.getParameter("firstName"))
-                .lastName(req.getParameter("lastName"))
-                .username(req.getParameter("username"))
-                .password(req.getParameter("password"))
+                .firstName(req.getParameter(FIRST_NAME))
+                .lastName(req.getParameter(LAST_NAME))
+                .username(req.getParameter(USERNAME))
+                .password(req.getParameter(PASSWORD))
                 .build();
     }
 }

@@ -15,6 +15,13 @@ import java.io.IOException;
 import java.util.List;
 
 import static kovalenko.vika.enums.JSP.NEW_TAG;
+import static kovalenko.vika.utils.AttributeConstant.COLOR;
+import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
+import static kovalenko.vika.utils.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
 
 @WebServlet(name = "NewTagServlet", value = "/todo/new-tag")
 public class NewTagServlet extends HttpServlet {
@@ -25,8 +32,8 @@ public class NewTagServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
-        tagService = (TagService) context.getAttribute("tagService");
-        userService = (UserService) context.getAttribute("userService");
+        tagService = (TagService) context.getAttribute(TAG_SERVICE);
+        userService = (UserService) context.getAttribute(USER_SERVICE);
     }
 
     @Override
@@ -39,20 +46,20 @@ public class NewTagServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var username = (String) req.getSession().getAttribute("username");
+        var username = (String) req.getSession().getAttribute(USERNAME);
         Long id = userService.getUserId(username);
 
         tagService.createTag(buildTagCommand(req, id));
         List<TagDTO> userTags = tagService.getUserTags(id);
-        req.getSession().setAttribute("userTags", userTags);
-        resp.sendRedirect("/todo");
+        req.getSession().setAttribute(USER_TAGS, userTags);
+        resp.sendRedirect(TODO_LINK);
     }
 
     private TagCommand buildTagCommand(HttpServletRequest req, Long userId){
         return TagCommand.builder()
                 .userId(userId)
-                .title(req.getParameter("title"))
-                .color(req.getParameter("color"))
+                .title(req.getParameter(TITLE))
+                .color(req.getParameter(COLOR))
                 .build();
     }
 }

@@ -3,7 +3,6 @@ package kovalenko.vika.servlet;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.TaskService;
-import kovalenko.vika.service.UserService;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -17,18 +16,23 @@ import java.util.List;
 import java.util.Objects;
 
 import static kovalenko.vika.enums.JSP.TODO;
+import static kovalenko.vika.utils.AttributeConstant.DELETE;
+import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
+import static kovalenko.vika.utils.AttributeConstant.SAVE_UPDATE;
+import static kovalenko.vika.utils.AttributeConstant.TASKS;
+import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 
 @WebServlet(name = "TaskServlet", value = "/todo")
 public class TaskServlet extends HttpServlet {
     private TaskService taskService;
-    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
-        taskService = (TaskService) context.getAttribute("taskService");
-        userService = (UserService) context.getAttribute("userService");
+        taskService = (TaskService) context.getAttribute(TASK_SERVICE);
     }
 
     @Override
@@ -38,29 +42,29 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter("delete") != null) {
+        if (req.getParameter(DELETE) != null) {
             deleteTask(req);
-        } else if (req.getParameter("saveUpdate") != null) {
+        } else if (req.getParameter(SAVE_UPDATE) != null) {
             updateTask(req);
         }
         todoForward(req, resp);
     }
 
     private void updateTask(HttpServletRequest req) {
-        Long id = Long.valueOf(req.getParameter("saveUpdate"));
+        Long id = Long.valueOf(req.getParameter(SAVE_UPDATE));
         var taskDTO = buildTaskDTO(req);
         taskDTO.setId(id);
 
         taskService.updateTask(taskDTO);
 
-        var user = (UserDTO) req.getSession().getAttribute("user");
+        var user = (UserDTO) req.getSession().getAttribute(USER_ATTR);
         List<TaskDTO> tasks = taskService.getAllUserTasks(user.getUsername());
 
-        req.getSession().setAttribute("tasks", tasks);
+        req.getSession().setAttribute(TASKS, tasks);
     }
 
     private void deleteTask(HttpServletRequest req) {
-        String strId = req.getParameter("delete");
+        String strId = req.getParameter(DELETE);
         Long id = Long.valueOf(strId);
         TaskDTO removedTask = taskService.deleteTask(id);
         HttpSession session = req.getSession();
@@ -69,13 +73,13 @@ public class TaskServlet extends HttpServlet {
         tasks
                 .removeIf(task -> Objects.equals(task.getId(), removedTask.getId()));
 
-        session.setAttribute("tasks", tasks);
+        session.setAttribute(TASKS, tasks);
     }
 
     private TaskDTO buildTaskDTO(HttpServletRequest req) {
         return TaskDTO.builder()
-                .title(req.getParameter("title"))
-                .description(req.getParameter("description"))
+                .title(req.getParameter(TITLE))
+                .description(req.getParameter(DESCRIPTION))
                 .build();
     }
 

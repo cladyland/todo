@@ -1,4 +1,4 @@
-package kovalenko.vika;
+package kovalenko.vika.utils;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

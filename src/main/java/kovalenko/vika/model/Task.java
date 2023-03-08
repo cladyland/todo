@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
@@ -46,8 +47,10 @@ public class Task {
     private String title;
     @Column(columnDefinition = "text")
     private String description;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
     @ManyToMany(fetch = FetchType.EAGER)
@@ -55,6 +58,8 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
+    @OneToMany(mappedBy = "task")
+    private Set<Comment> comments;
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;

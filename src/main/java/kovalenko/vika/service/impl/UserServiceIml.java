@@ -1,6 +1,6 @@
 package kovalenko.vika.service.impl;
 
-import kovalenko.vika.Hashing;
+import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.dto.UserDTO;

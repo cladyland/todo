@@ -24,6 +24,21 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.NEW_TASK;
+import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
+import static kovalenko.vika.utils.AttributeConstant.PRIORITIES;
+import static kovalenko.vika.utils.AttributeConstant.PRIORITY;
+import static kovalenko.vika.utils.AttributeConstant.STATUS;
+import static kovalenko.vika.utils.AttributeConstant.STATUSES;
+import static kovalenko.vika.utils.AttributeConstant.TAGS;
+import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TASKS;
+import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
+import static kovalenko.vika.utils.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
+import static kovalenko.vika.utils.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
 
 @WebServlet(name = "NewTaskServlet", value = "/todo/new-task")
 public class NewTaskServlet extends HttpServlet {
@@ -35,23 +50,23 @@ public class NewTaskServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
-        taskService = (TaskService) context.getAttribute("taskService");
-        tagService = (TagService) context.getAttribute("tagService");
-        userService = (UserService) context.getAttribute("userService");
+        taskService = (TaskService) context.getAttribute(TASK_SERVICE);
+        tagService = (TagService) context.getAttribute(TAG_SERVICE);
+        userService = (UserService) context.getAttribute(USER_SERVICE);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (isNull(req.getSession().getAttribute("tags"))){
-            req.getSession().setAttribute("tags", tagService.getDefaultTags());
+        if (isNull(req.getSession().getAttribute(TAGS))){
+            req.getSession().setAttribute(TAGS, tagService.getDefaultTags());
         }
-        if (isNull(req.getSession().getAttribute("userTags"))){
-            var username = (String) req.getSession().getAttribute("username");
+        if (isNull(req.getSession().getAttribute(USER_TAGS))){
+            var username = (String) req.getSession().getAttribute(USERNAME);
             Long id = userService.getUserId(username);
-            req.getSession().setAttribute("userTags", tagService.getUserTags(id));
+            req.getSession().setAttribute(USER_TAGS, tagService.getUserTags(id));
         }
-        req.setAttribute("priorities", taskService.getPriorities());
-        req.setAttribute("statuses", taskService.getStatuses());
+        req.setAttribute(PRIORITIES, taskService.getPriorities());
+        req.setAttribute(STATUSES, taskService.getStatuses());
 
         req
                 .getServletContext()
@@ -62,7 +77,7 @@ public class NewTaskServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String[] taskTagsIds = req.getParameterValues("taskTags");
+        String[] taskTagsIds = req.getParameterValues(TASK_TAGS);
         Set<TagDTO> tags = tagService.getTagsByIds(convertIds(taskTagsIds));
 
         TaskCommand command = buildTaskCommand(req, tags);
@@ -70,20 +85,20 @@ public class NewTaskServlet extends HttpServlet {
 
         List<TaskDTO> tasks = getUserTasks(session);
         tasks.add(addedTask);
-        session.setAttribute("tasks", tasks);
-        resp.sendRedirect("/todo");
+        session.setAttribute(TASKS, tasks);
+        resp.sendRedirect(TODO_LINK);
     }
 
     private TaskCommand buildTaskCommand(HttpServletRequest req, Set<TagDTO> tags){
-        var username = (String) req.getSession().getAttribute("username");
+        var username = (String) req.getSession().getAttribute(USERNAME);
         Long id = userService.getUserId(username);
-        var taskPriority = TaskPriority.getPriorityByName(req.getParameter("priority"));
-        var taskStatus = TaskStatus.getStatusByName(req.getParameter("status"));
+        var taskPriority = TaskPriority.getPriorityByName(req.getParameter(PRIORITY));
+        var taskStatus = TaskStatus.getStatusByName(req.getParameter(STATUS));
 
         return TaskCommand.builder()
                 .userId(id)
-                .title(req.getParameter("title"))
-                .description(req.getParameter("description"))
+                .title(req.getParameter(TITLE))
+                .description(req.getParameter(DESCRIPTION))
                 .priority(taskPriority)
                 .status(taskStatus)
                 .tags(tags)
@@ -97,6 +112,6 @@ public class NewTaskServlet extends HttpServlet {
     }
 
     private List<TaskDTO> getUserTasks(HttpSession session) {
-        return (List<TaskDTO>) session.getAttribute("tasks");
+        return (List<TaskDTO>) session.getAttribute(TASKS);
     }
 }
