@@ -1,5 +1,6 @@
 package kovalenko.vika.listener;
 
+import kovalenko.vika.model.Comment;
 import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.dao.CommentDAO;
 import kovalenko.vika.dao.TagDAO;
@@ -37,6 +38,7 @@ public class AppContextListener implements ServletContextListener {
                 .addAnnotatedClass(User.class)
                 .addAnnotatedClass(Task.class)
                 .addAnnotatedClass(Tag.class)
+                .addAnnotatedClass(Comment.class)
                 .buildSessionFactory();
 
         var hashing = new Hashing();
