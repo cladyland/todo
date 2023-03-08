@@ -3,6 +3,8 @@ package kovalenko.vika.service.impl;
 import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dto.TagDTO;
+import kovalenko.vika.enums.TaskPriority;
+import kovalenko.vika.enums.TaskStatus;
 import kovalenko.vika.mapper.TagMapper;
 import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dao.TaskDAO;
@@ -51,10 +53,22 @@ public class TaskServiceImp implements TaskService {
             for (int i = 0; i < tasks.size(); i++) {
                 List<TagDTO> tags = tasks.get(i).getTags().stream().map(tagMapper::mapToDTO).collect(Collectors.toList());
                 t.get(i).setTags(tags);
+                t.get(i).setPriority(tasks.get(i).getPriority());
+                t.get(i).setStatus(tasks.get(i).getStatus());
             }
             session.getTransaction().commit();
             return t;
         }
+    }
+
+    @Override
+    public List<TaskPriority> getPriorities() {
+        return TaskPriority.getAllPriorities();
+    }
+
+    @Override
+    public List<TaskStatus> getStatuses() {
+        return TaskStatus.getAllStatuses();
     }
 
     @Override
@@ -63,6 +77,8 @@ public class TaskServiceImp implements TaskService {
             session.getTransaction().begin();
             Task task = taskMapper.mapToEntity(taskCommand);
             task.setTags(tagDAO.getTagsByIds(tagIds));
+            task.setPriority(taskCommand.getPriority());
+            task.setStatus(taskCommand.getStatus());
             taskDAO.save(task);
             TaskDTO taskDTO = taskMapper.mapToDTO(task);
             List<TagDTO> tags = task

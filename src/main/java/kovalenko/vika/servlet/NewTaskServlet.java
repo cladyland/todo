@@ -3,6 +3,8 @@ package kovalenko.vika.servlet;
 import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
+import kovalenko.vika.enums.TaskPriority;
+import kovalenko.vika.enums.TaskStatus;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.TaskService;
 import kovalenko.vika.service.UserService;
@@ -48,6 +50,8 @@ public class NewTaskServlet extends HttpServlet {
             Long id = userService.getUserId(username);
             req.getSession().setAttribute("userTags", tagService.getUserTags(id));
         }
+        req.setAttribute("priorities", taskService.getPriorities());
+        req.setAttribute("statuses", taskService.getStatuses());
 
         req
                 .getServletContext()
@@ -73,11 +77,15 @@ public class NewTaskServlet extends HttpServlet {
     private TaskCommand buildTaskCommand(HttpServletRequest req, Set<TagDTO> tags){
         var username = (String) req.getSession().getAttribute("username");
         Long id = userService.getUserId(username);
+        var taskPriority = TaskPriority.getPriorityByName(req.getParameter("priority"));
+        var taskStatus = TaskStatus.getStatusByName(req.getParameter("status"));
 
         return TaskCommand.builder()
                 .userId(id)
                 .title(req.getParameter("title"))
                 .description(req.getParameter("description"))
+                .priority(taskPriority)
+                .status(taskStatus)
                 .tags(tags)
                 .build();
     }

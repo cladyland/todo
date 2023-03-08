@@ -17,7 +17,16 @@
         <c:forEach items="${sessionScope.userTags}" var="tag">
             <option value="${tag.getId()}">${tag.getTitle()}</option>
         </c:forEach>
-
+    </select>
+    <select name="priority">
+        <c:forEach items="${priorities}" var="priority">
+            <option value="${priority.getValue()}">${priority.getValue()}</option>
+        </c:forEach>
+    </select>
+    <select name="status">
+        <c:forEach items="${statuses}" var="status">
+            <option value="${status.getValue()}">${status.getValue()}</option>
+        </c:forEach>
     </select>
     <button type="submit">Add task</button>
 </form>

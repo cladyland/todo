@@ -1,5 +1,10 @@
 package kovalenko.vika.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public enum JSP {
     INDEX("/WEB-INF/index.jsp"),
     REGISTER("/WEB-INF/register.jsp"),
@@ -10,11 +15,4 @@ public enum JSP {
 
     private final String value;
 
-    JSP(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
 }

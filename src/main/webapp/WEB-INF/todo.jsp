@@ -16,6 +16,8 @@
     <tr>
         <td>Title</td>
         <td>Description</td>
+        <td>Priority</td>
+        <td>Status</td>
         <td>Tags</td>
         <td>Actions</td>
     </tr>
@@ -24,6 +26,8 @@
         <tr>
             <td> ${task.getTitle()} </td>
             <td> ${task.getDescription()} </td>
+            <td> ${task.getPriority().getValue()} </td>
+            <td> ${task.getStatus().getValue()} </td>
             <td>
                 <c:forEach items="${task.getTags()}" var="tag">
                     ${tag.getTitle()}
@@ -31,10 +35,10 @@
             </td>
             <td>
                 <form action="${pageContext.request.contextPath}/todo" method="post">
-                <button type="submit" name="update" value="${task.getId()}">Edit</button>
+                    <button type="submit" name="update" value="${task.getId()}">Edit</button>
                 </form>
                 <form action="${pageContext.request.contextPath}/todo" method="post">
-                <button type="submit" name="delete" value="${task.getId()}">Delete</button>
+                    <button type="submit" name="delete" value="${task.getId()}">Delete</button>
                 </form>
             </td>
         </tr>
