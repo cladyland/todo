@@ -10,11 +10,15 @@
     <br>
     <input name="description">
     <br>
-    <select multiple name="type[]" size="4">
+    <select multiple name="taskTags" size="4">
     <c:forEach items="${sessionScope.tags}" var="tag">
-        <option value="${tag.getTitle()}">${tag.getTitle()}</option>
+        <option value="${tag.getId()}">${tag.getTitle()}</option>
     </c:forEach>
-        </select>
+        <c:forEach items="${sessionScope.userTags}" var="tag">
+            <option value="${tag.getId()}">${tag.getTitle()}</option>
+        </c:forEach>
+
+    </select>
     <button type="submit">Add task</button>
 </form>
 </body>

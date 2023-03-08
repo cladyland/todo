@@ -1,5 +1,6 @@
 package kovalenko.vika.mapper;
 
+import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.model.Tag;
 import org.mapstruct.Mapper;
@@ -14,4 +15,5 @@ public interface TagMapper extends BasicMapper<Tag, TagDTO> {
 
     @Override
     TagDTO mapToDTO(Tag tag);
+    Tag mapToEntity(TagCommand tagCommand);
 }

@@ -1,7 +1,8 @@
 package kovalenko.vika.servlet;
 
-import kovalenko.vika.command.UserCommand;
-import kovalenko.vika.dto.UserDTO;
+import kovalenko.vika.command.TagCommand;
+import kovalenko.vika.dto.TagDTO;
+import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
 
 import javax.servlet.ServletConfig;
@@ -10,19 +11,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
-import static kovalenko.vika.enums.JSP.REGISTER;
+import static kovalenko.vika.enums.JSP.NEW_TAG;
 
-@WebServlet(name = "RegisterServlet", value = "/register")
-public class RegisterServlet extends HttpServlet {
+@WebServlet(name = "NewTagServlet", value = "/todo/new-tag")
+public class NewTagServlet extends HttpServlet {
+    private TagService tagService;
     private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
+        tagService = (TagService) context.getAttribute("tagService");
         userService = (UserService) context.getAttribute("userService");
     }
 
@@ -30,27 +33,26 @@ public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
                 .getServletContext()
-                .getRequestDispatcher(REGISTER.getValue())
+                .getRequestDispatcher(NEW_TAG.getValue())
                 .forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserCommand command = buildUserCommand(req);
-        UserDTO userDTO = userService.register(command);
+        var username = (String) req.getSession().getAttribute("username");
+        Long id = userService.getUserId(username);
 
-        HttpSession session = req.getSession();
-        session.setAttribute("user", userDTO);
-        session.setAttribute("username", userDTO.getUsername());
+        tagService.createTag(buildTagCommand(req, id));
+        List<TagDTO> userTags = tagService.getUserTags(id);
+        req.getSession().setAttribute("userTags", userTags);
         resp.sendRedirect("/todo");
     }
 
-    private UserCommand buildUserCommand(HttpServletRequest req){
-        return UserCommand.builder()
-                .firstName(req.getParameter("firstName"))
-                .lastName(req.getParameter("lastName"))
-                .username(req.getParameter("username"))
-                .password(req.getParameter("password"))
+    private TagCommand buildTagCommand(HttpServletRequest req, Long userId){
+        return TagCommand.builder()
+                .userId(userId)
+                .title(req.getParameter("title"))
+                .color(req.getParameter("color"))
                 .build();
     }
 }

@@ -1,25 +1,22 @@
 package kovalenko.vika.service.impl;
 
+import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dao.TagDAO;
-import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.mapper.TagMapper;
-import kovalenko.vika.model.Task;
+import kovalenko.vika.model.Tag;
 import kovalenko.vika.service.TagService;
 import org.hibernate.Session;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 
 public class TagServiceImp implements TagService {
     private final TagDAO tagDAO;
-    private final TaskDAO taskDAO;
     private final TagMapper tagMapper;
-    public TagServiceImp(TagDAO tagDAO, TaskDAO taskDAO) {
+    public TagServiceImp(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
-        this.taskDAO = taskDAO;
         tagMapper = TagMapper.INSTANCE;
     }
 
@@ -27,7 +24,7 @@ public class TagServiceImp implements TagService {
     public List<TagDTO> getDefaultTags() {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
-            List<TagDTO> defaultTags = tagDAO.getDefaultTags();
+            List<TagDTO> defaultTags = tagDAO.getDefaultTags(session);
             session.getTransaction().commit();
             return defaultTags;
         }
@@ -37,24 +34,29 @@ public class TagServiceImp implements TagService {
     public List<TagDTO> getUserTags(Long userId) {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
-            Task defaultTask = taskDAO.getDefaultTask(userId);
-            if (isNull(defaultTask)) {
-                defaultTask = createDefaultTask(userId);
-                taskDAO.save(defaultTask);
-            }
+            List<TagDTO> userTags = tagDAO.getUserTags(userId);
             session.getTransaction().commit();
-            return defaultTask
-                    .getTags()
-                    .stream()
-                    .map(tagMapper::mapToDTO)
-                    .collect(Collectors.toList());
+            return userTags;
         }
     }
 
-    private Task createDefaultTask(Long userId) {
-        return Task.builder()
-                .userId(userId)
-                .title("default")
-                .build();
+    @Override
+    public TagDTO createTag(TagCommand tagCommand) {
+        try (Session session = tagDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            Tag tag = tagDAO.save(tagMapper.mapToEntity(tagCommand));
+            session.getTransaction().commit();
+            return tagMapper.mapToDTO(tag);
+        }
+    }
+
+    @Override
+    public Set<TagDTO> getTagsByIds(Set<Long> ids) {
+        try (Session session = tagDAO.getCurrentSession()) {
+            session.getTransaction().begin();
+            Set<Tag> tags = tagDAO.getTagsByIds(ids);
+            session.getTransaction().commit();
+            return tags.stream().map(tagMapper::mapToDTO).collect(Collectors.toSet());
+        }
     }
 }

@@ -8,11 +8,15 @@
 <form action="${pageContext.request.contextPath}/todo/new-task" method="get">
     <button type="submit">Add task</button>
 </form>
+<form action="${pageContext.request.contextPath}/todo/new-tag" method="get">
+    <button type="submit">Add tag</button>
+</form>
 
 <table>
     <tr>
         <td>Title</td>
         <td>Description</td>
+        <td>Tags</td>
         <td>Actions</td>
     </tr>
 
@@ -20,6 +24,11 @@
         <tr>
             <td> ${task.getTitle()} </td>
             <td> ${task.getDescription()} </td>
+            <td>
+                <c:forEach items="${task.getTags()}" var="tag">
+                    ${tag.getTitle()}
+                </c:forEach>
+            </td>
             <td>
                 <form action="${pageContext.request.contextPath}/todo" method="post">
                 <button type="submit" name="update" value="${task.getId()}">Edit</button>

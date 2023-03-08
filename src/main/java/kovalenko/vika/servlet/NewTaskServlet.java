@@ -1,8 +1,8 @@
 package kovalenko.vika.servlet;
 
 import kovalenko.vika.command.TaskCommand;
+import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
-import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.TaskService;
 import kovalenko.vika.service.UserService;
@@ -15,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.NEW_TASK;
@@ -40,6 +43,11 @@ public class NewTaskServlet extends HttpServlet {
         if (isNull(req.getSession().getAttribute("tags"))){
             req.getSession().setAttribute("tags", tagService.getDefaultTags());
         }
+        if (isNull(req.getSession().getAttribute("userTags"))){
+            var username = (String) req.getSession().getAttribute("username");
+            Long id = userService.getUserId(username);
+            req.getSession().setAttribute("userTags", tagService.getUserTags(id));
+        }
 
         req
                 .getServletContext()
@@ -50,8 +58,11 @@ public class NewTaskServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        TaskCommand command = buildTaskCommand(req);
-        TaskDTO addedTask = taskService.createTask(command);
+        String[] taskTagsIds = req.getParameterValues("taskTags");
+        Set<TagDTO> tags = tagService.getTagsByIds(convertIds(taskTagsIds));
+
+        TaskCommand command = buildTaskCommand(req, tags);
+        TaskDTO addedTask = taskService.createTask(command, convertIds(taskTagsIds));
 
         List<TaskDTO> tasks = getUserTasks(session);
         tasks.add(addedTask);
@@ -59,13 +70,22 @@ public class NewTaskServlet extends HttpServlet {
         resp.sendRedirect("/todo");
     }
 
-    private TaskCommand buildTaskCommand(HttpServletRequest req){
-        var user = (UserDTO) req.getSession().getAttribute("user");
+    private TaskCommand buildTaskCommand(HttpServletRequest req, Set<TagDTO> tags){
+        var username = (String) req.getSession().getAttribute("username");
+        Long id = userService.getUserId(username);
+
         return TaskCommand.builder()
-                .userId(userService.getUserId(user.getUsername()))
+                .userId(id)
                 .title(req.getParameter("title"))
                 .description(req.getParameter("description"))
+                .tags(tags)
                 .build();
+    }
+
+    private Set<Long> convertIds(String[] ids){
+        return Arrays.stream(ids)
+                .map(Long::parseLong)
+                .collect(Collectors.toSet());
     }
 
     private List<TaskDTO> getUserTasks(HttpSession session) {
