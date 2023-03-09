@@ -26,8 +26,8 @@
         <tr>
             <td> ${task.getTitle()} </td>
             <td> ${task.getDescription()} </td>
-            <td> ${task.getPriority().getValue()} </td>
-            <td> ${task.getStatus().getValue()} </td>
+            <td> ${task.getPriority()} </td>
+            <td> ${task.getStatus()} </td>
             <td>
                 <c:forEach items="${task.getTags()}" var="tag">
                     ${tag.getTitle()}

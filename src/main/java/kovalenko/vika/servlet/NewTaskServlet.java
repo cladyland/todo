@@ -1,7 +1,6 @@
 package kovalenko.vika.servlet;
 
 import kovalenko.vika.command.TaskCommand;
-import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
@@ -78,9 +77,8 @@ public class NewTaskServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String[] taskTagsIds = req.getParameterValues(TASK_TAGS);
-        Set<TagDTO> tags = tagService.getTagsByIds(convertIds(taskTagsIds));
 
-        TaskCommand command = buildTaskCommand(req, tags);
+        TaskCommand command = buildTaskCommand(req);
         TaskDTO addedTask = taskService.createTask(command, convertIds(taskTagsIds));
 
         List<TaskDTO> tasks = getUserTasks(session);
@@ -89,7 +87,7 @@ public class NewTaskServlet extends HttpServlet {
         resp.sendRedirect(TODO_LINK);
     }
 
-    private TaskCommand buildTaskCommand(HttpServletRequest req, Set<TagDTO> tags){
+    private TaskCommand buildTaskCommand(HttpServletRequest req){
         var username = (String) req.getSession().getAttribute(USERNAME);
         Long id = userService.getUserId(username);
         var taskPriority = TaskPriority.getPriorityByName(req.getParameter(PRIORITY));
@@ -101,7 +99,6 @@ public class NewTaskServlet extends HttpServlet {
                 .description(req.getParameter(DESCRIPTION))
                 .priority(taskPriority)
                 .status(taskStatus)
-                .tags(tags)
                 .build();
     }
 

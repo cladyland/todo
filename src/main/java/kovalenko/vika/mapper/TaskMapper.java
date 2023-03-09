@@ -1,10 +1,14 @@
 package kovalenko.vika.mapper;
 
 import kovalenko.vika.command.TaskCommand;
+import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Mapper
 public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
@@ -14,7 +18,23 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
     Task mapToEntity(TaskDTO taskDTO);
 
     @Override
-    TaskDTO mapToDTO(Task task);
+    default TaskDTO mapToDTO(Task task) {
+        return TaskDTO.builder()
+                .id(task.getId())
+                .title(task.getTitle())
+                .description(task.getDescription())
+                .priority(task.getPriority().getValue())
+                .status(task.getStatus().getValue())
+                .tags(getTaskTagDTO(task))
+                .build();
+    }
 
     Task mapToEntity(TaskCommand taskCommand);
+
+    private List<TagDTO> getTaskTagDTO(Task task) {
+        return task.getTags()
+                .stream()
+                .map(TagMapper.INSTANCE::mapToDTO)
+                .collect(Collectors.toList());
+    }
 }

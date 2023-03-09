@@ -1,6 +1,5 @@
 package kovalenko.vika.command;
 
-import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
 import lombok.AllArgsConstructor;
@@ -8,8 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Builder
 @NoArgsConstructor
@@ -22,5 +19,4 @@ public class TaskCommand {
     private String description;
     private TaskPriority priority;
     private TaskStatus status;
-    private Set<TagDTO> tags;
 }
