@@ -1,11 +1,15 @@
 package kovalenko.vika.listener;
 
-import kovalenko.vika.model.Comment;
-import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.dao.CommentDAO;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dao.UserDAO;
+import kovalenko.vika.model.Comment;
+import kovalenko.vika.utils.Hashing;
+import kovalenko.vika.dao.impl.CommentDAOImp;
+import kovalenko.vika.dao.impl.TagDAOImp;
+import kovalenko.vika.dao.impl.TaskDAOImp;
+import kovalenko.vika.dao.impl.UserDAOImp;
 import kovalenko.vika.model.Tag;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
@@ -16,7 +20,7 @@ import kovalenko.vika.service.impl.TagServiceImp;
 import kovalenko.vika.service.TaskService;
 import kovalenko.vika.service.impl.TaskServiceImp;
 import kovalenko.vika.service.UserService;
-import kovalenko.vika.service.impl.UserServiceIml;
+import kovalenko.vika.service.impl.UserServiceImp;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -42,12 +46,12 @@ public class AppContextListener implements ServletContextListener {
                 .buildSessionFactory();
 
         var hashing = new Hashing();
-        var userDAO = new UserDAO(sessionFactory);
-        var taskDAO = new TaskDAO(sessionFactory);
-        var tagDAO = new TagDAO(sessionFactory);
-        var commentDAO = new CommentDAO(sessionFactory);
+        UserDAO userDAO = new UserDAOImp(sessionFactory);
+        TaskDAO taskDAO = new TaskDAOImp(sessionFactory);
+        TagDAO tagDAO = new TagDAOImp(sessionFactory);
+        CommentDAO commentDAO = new CommentDAOImp(sessionFactory);
 
-        UserService userService = new UserServiceIml(userDAO, hashing);
+        UserService userService = new UserServiceImp(userDAO, hashing);
         TaskService taskService = new TaskServiceImp(taskDAO, tagDAO);
         TagService tagService = new TagServiceImp(tagDAO);
         CommentService commentService = new CommentServiceImp(commentDAO, taskDAO, userDAO);

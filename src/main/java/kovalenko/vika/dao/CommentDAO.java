@@ -1,11 +1,12 @@
 package kovalenko.vika.dao;
 
 import kovalenko.vika.model.Comment;
-import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 
-public class CommentDAO extends AbstractDAO<Comment> {
-
-    public CommentDAO(SessionFactory sessionFactory) {
-        super(Comment.class, sessionFactory);
-    }
+public interface CommentDAO {
+    Comment getById(Long id, Session session);
+    Comment save(final Comment entity);
+    Comment update(final Comment entity);
+    Comment delete(Long id, Session session);
+    Session getCurrentSession();
 }

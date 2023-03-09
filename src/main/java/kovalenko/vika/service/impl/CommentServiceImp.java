@@ -30,7 +30,7 @@ public class CommentServiceImp implements CommentService {
         Long taskId = commentCommand.getTaskId();
         Long userId = commentCommand.getUserId();
 
-        try (Session session = commentDAO.getCurrentSession()){
+        try (Session session = commentDAO.getCurrentSession()) {
             session.getTransaction().begin();
             Task task = taskDAO.getById(taskId, session);
             User user = userDAO.getById(userId, session);

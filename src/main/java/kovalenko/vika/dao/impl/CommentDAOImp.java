@@ -1,40 +1,41 @@
-package kovalenko.vika.dao;
+package kovalenko.vika.dao.impl;
 
+import kovalenko.vika.dao.CommentDAO;
+import kovalenko.vika.model.Comment;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
-public abstract class AbstractDAO<T> implements IDAO<T> {
-    private final Class<T> clazz;
+public class CommentDAOImp implements CommentDAO {
     private final SessionFactory sessionFactory;
 
-    public AbstractDAO(Class<T> clazz, SessionFactory sessionFactory) {
-        this.clazz = clazz;
+    public CommentDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
     @Override
-    public T getById(Long id, Session session) {
-        return session.get(clazz, id);
+    public Comment getById(Long id, Session session) {
+        return session.get(Comment.class, id);
     }
 
     @Override
-    public T save(T entity) {
+    public Comment save(Comment entity) {
         getCurrentSession().saveOrUpdate(entity);
         return entity;
     }
 
     @Override
-    public T update(final T entity) {
+    public Comment update(final Comment entity) {
         return getCurrentSession().merge(entity);
     }
 
     @Override
-    public T delete(Long id, Session session) {
-        T element = getById(id, session);
+    public Comment delete(Long id, Session session) {
+        Comment element = getById(id, session);
         session.remove(element);
         return element;
     }
 
+    @Override
     public Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class TagServiceImp implements TagService {
     private final TagDAO tagDAO;
     private final TagMapper tagMapper;
+
     public TagServiceImp(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
         tagMapper = TagMapper.INSTANCE;

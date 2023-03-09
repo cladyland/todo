@@ -2,10 +2,10 @@ package kovalenko.vika.service.impl;
 
 import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dao.TagDAO;
+import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
 import kovalenko.vika.mapper.TaskMapper;
-import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.service.TaskService;

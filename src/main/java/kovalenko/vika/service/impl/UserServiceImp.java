@@ -1,8 +1,8 @@
 package kovalenko.vika.service.impl;
 
+import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.command.UserCommand;
-import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.mapper.UserMapper;
 import kovalenko.vika.model.User;
@@ -11,12 +11,12 @@ import org.hibernate.Session;
 
 import static java.util.Objects.isNull;
 
-public class UserServiceIml implements UserService {
+public class UserServiceImp implements UserService {
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final Hashing hashing;
 
-    public UserServiceIml(UserDAO userDAO, Hashing hashing) {
+    public UserServiceImp(UserDAO userDAO, Hashing hashing) {
         this.userDAO = userDAO;
         this.userMapper = UserMapper.INSTANCE;
         this.hashing = hashing;
