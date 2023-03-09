@@ -28,8 +28,8 @@ public class AttributeConstant {
     public final static String STATUS = "status";
     public final static String STATUSES = "statuses";
     public final static String COLOR = "color";
-
-    public final static String TODO_LINK = "/todo";
+    public final static String MORE_INFO = "more";
+    public final static String COMMENT_ADD_TO_TASK = "commentAddToTask";
 
     private AttributeConstant() {
     }

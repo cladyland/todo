@@ -34,12 +34,13 @@ import static kovalenko.vika.utils.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
+import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
+import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
-@WebServlet(name = "NewTaskServlet", value = "/todo/new-task")
+@WebServlet(name = "NewTaskServlet", value = NEW_TASK_LINK)
 public class NewTaskServlet extends HttpServlet {
     private TaskService taskService;
     private TagService tagService;

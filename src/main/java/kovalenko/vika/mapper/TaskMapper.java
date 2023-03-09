@@ -1,6 +1,7 @@
 package kovalenko.vika.mapper;
 
 import kovalenko.vika.command.TaskCommand;
+import kovalenko.vika.dto.CommentDTO;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
@@ -9,6 +10,8 @@ import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Mapper
 public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
@@ -26,6 +29,7 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
                 .priority(task.getPriority().getValue())
                 .status(task.getStatus().getValue())
                 .tags(getTaskTagDTO(task))
+                .comments(getTaskCommentsDTO(task))
                 .build();
     }
 
@@ -35,6 +39,19 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
         return task.getTags()
                 .stream()
                 .map(TagMapper.INSTANCE::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private List<CommentDTO> getTaskCommentsDTO(Task task) {
+        if (isNull(task.getComments())) {
+            return null;
+        }
+        return task.getComments()
+                .stream()
+                .map(CommentMapper.INSTANCE::mapToDTO)
+                .sorted((comment1, comment2) ->
+                        comment2.getCreateDate()
+                                .compareTo(comment1.getCreateDate()))
                 .collect(Collectors.toList());
     }
 }

@@ -17,12 +17,13 @@ import static kovalenko.vika.enums.JSP.REGISTER;
 import static kovalenko.vika.utils.AttributeConstant.FIRST_NAME;
 import static kovalenko.vika.utils.AttributeConstant.LAST_NAME;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
-import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
+import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
-@WebServlet(name = "RegisterServlet", value = "/register")
+@WebServlet(name = "RegisterServlet", value = REGISTER_LINK)
 public class RegisterServlet extends HttpServlet {
     private UserService userService;
 

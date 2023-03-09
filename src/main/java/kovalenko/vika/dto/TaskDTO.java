@@ -20,4 +20,5 @@ public class TaskDTO {
     private String priority;
     private String status;
     private List<TagDTO> tags;
+    private List<CommentDTO> comments;
 }

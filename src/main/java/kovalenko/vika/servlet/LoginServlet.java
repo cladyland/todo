@@ -14,10 +14,10 @@ import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.INDEX;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
-import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebServlet(name = "LoginServlet", value = "/")
 public class LoginServlet extends HttpServlet {

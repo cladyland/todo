@@ -18,12 +18,13 @@ import static kovalenko.vika.enums.JSP.NEW_TAG;
 import static kovalenko.vika.utils.AttributeConstant.COLOR;
 import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.TODO_LINK;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
+import static kovalenko.vika.utils.LinkConstant.NEW_TAG_LINK;
+import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
-@WebServlet(name = "NewTagServlet", value = "/todo/new-tag")
+@WebServlet(name = "NewTagServlet", value = NEW_TAG_LINK)
 public class NewTagServlet extends HttpServlet {
     private TagService tagService;
     private UserService userService;

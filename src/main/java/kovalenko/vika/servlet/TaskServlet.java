@@ -23,8 +23,9 @@ import static kovalenko.vika.utils.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
+import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
-@WebServlet(name = "TaskServlet", value = "/todo")
+@WebServlet(name = "TaskServlet", value = TODO_LINK)
 public class TaskServlet extends HttpServlet {
     private TaskService taskService;
 
@@ -84,7 +85,7 @@ public class TaskServlet extends HttpServlet {
     }
 
     private List<TaskDTO> getUserTasks(HttpSession session) {
-        return (List<TaskDTO>) session.getAttribute("tasks");
+        return (List<TaskDTO>) session.getAttribute(TASKS);
     }
 
     private void todoForward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
