@@ -6,12 +6,15 @@ import kovalenko.vika.model.Tag;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class TagDAOImp implements TagDAO {
+    private static final Logger LOG = LoggerFactory.getLogger(TagDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public TagDAOImp(SessionFactory sessionFactory) {

@@ -1,7 +1,10 @@
 package kovalenko.vika.filter;
 
 import kovalenko.vika.dto.TaskDTO;
+import kovalenko.vika.exception.TaskException;
 import kovalenko.vika.service.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,10 +22,11 @@ import static kovalenko.vika.utils.AttributeConstant.COMMENT_ADD_TO_TASK;
 import static kovalenko.vika.utils.AttributeConstant.MORE_INFO;
 import static kovalenko.vika.utils.AttributeConstant.TASK;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
-import static kovalenko.vika.utils.LinkConstant.TODO_INFO_LINK;
+import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 
-@WebFilter(filterName = "TaskInfoFilter", value = TODO_INFO_LINK)
+@WebFilter(filterName = "TaskInfoFilter", value = TASK_INFO_LINK)
 public class TaskInfoFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(TaskInfoFilter.class);
     private TaskService taskService;
 
     @Override
@@ -39,13 +43,15 @@ public class TaskInfoFilter implements Filter {
 
         Long commentAdd = (Long) currentSession.getAttribute(COMMENT_ADD_TO_TASK);
         String moreInfo = request.getParameter(MORE_INFO);
-        Long taskId = null;
+        Long taskId;
 
         if (nonNull(commentAdd)) {
             taskId = commentAdd;
             currentSession.removeAttribute(COMMENT_ADD_TO_TASK);
         } else if (nonNull(moreInfo)) {
             taskId = Long.parseLong(moreInfo);
+        } else {
+            throw new TaskException("TaskId cannot be null!");
         }
 
         TaskDTO task = taskService.getTaskById(taskId);

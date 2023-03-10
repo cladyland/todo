@@ -5,8 +5,11 @@ import kovalenko.vika.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserDAOImp implements UserDAO {
+    private static final Logger LOG = LoggerFactory.getLogger(UserDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public UserDAOImp(SessionFactory sessionFactory) {

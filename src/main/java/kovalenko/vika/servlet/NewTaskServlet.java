@@ -7,6 +7,8 @@ import kovalenko.vika.enums.TaskStatus;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.TaskService;
 import kovalenko.vika.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -42,6 +44,7 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebServlet(name = "NewTaskServlet", value = NEW_TASK_LINK)
 public class NewTaskServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(NewTaskServlet.class);
     private TaskService taskService;
     private TagService tagService;
     private UserService userService;
@@ -61,7 +64,7 @@ public class NewTaskServlet extends HttpServlet {
             req.getSession().setAttribute(TAGS, tagService.getDefaultTags());
         }
         if (isNull(req.getSession().getAttribute(USER_TAGS))){
-            var username = (String) req.getSession().getAttribute(USERNAME);
+            var username = (String) req.getAttribute(USERNAME);
             Long id = userService.getUserId(username);
             req.getSession().setAttribute(USER_TAGS, tagService.getUserTags(id));
         }
@@ -89,7 +92,7 @@ public class NewTaskServlet extends HttpServlet {
     }
 
     private TaskCommand buildTaskCommand(HttpServletRequest req){
-        var username = (String) req.getSession().getAttribute(USERNAME);
+        var username = (String) req.getAttribute(USERNAME);
         Long id = userService.getUserId(username);
         var taskPriority = TaskPriority.getPriorityByName(req.getParameter(PRIORITY));
         var taskStatus = TaskStatus.getStatusByName(req.getParameter(STATUS));

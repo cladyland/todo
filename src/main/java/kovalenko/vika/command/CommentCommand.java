@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommentCommand {
-    private Long userId;
+    private String username;
     private Long taskId;
     private String contents;
 }

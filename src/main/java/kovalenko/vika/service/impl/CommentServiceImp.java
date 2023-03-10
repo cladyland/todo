@@ -11,8 +11,11 @@ import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.CommentService;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommentServiceImp implements CommentService {
+    private static final Logger LOG = LoggerFactory.getLogger(CommentServiceImp.class);
     private final CommentDAO commentDAO;
     private final TaskDAO taskDAO;
     private final UserDAO userDAO;
@@ -28,16 +31,18 @@ public class CommentServiceImp implements CommentService {
     @Override
     public CommentDTO createComment(CommentCommand commentCommand) {
         Long taskId = commentCommand.getTaskId();
-        Long userId = commentCommand.getUserId();
+        String username = commentCommand.getUsername();
 
         try (Session session = commentDAO.getCurrentSession()) {
             session.getTransaction().begin();
             Task task = taskDAO.getById(taskId, session);
-            User user = userDAO.getById(userId, session);
+            User user = userDAO.getUserByUsername(username, session);
+
             Comment comment = commentMapper.mapToEntity(commentCommand);
             comment.setTask(task);
             comment.setUser(user);
             Comment savedComment = commentDAO.save(comment);
+
             session.getTransaction().commit();
             return commentMapper.mapToDTO(savedComment);
         }

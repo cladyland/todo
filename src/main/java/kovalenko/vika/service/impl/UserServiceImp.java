@@ -8,10 +8,13 @@ import kovalenko.vika.mapper.UserMapper;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.UserService;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.isNull;
 
 public class UserServiceImp implements UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImp.class);
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final Hashing hashing;
@@ -30,12 +33,13 @@ public class UserServiceImp implements UserService {
             User user = userDAO.getUserByUsername(username, session);
             UserDTO userDTO = null;
             if (isNull(user)) {
+                LOG.warn("User with username {} not found", username);
                 return null;
             }
             String userPasswordHash = user.getPasswordHash();
-            boolean correctPassword = hashing.validatePassword(password, userPasswordHash);
+            boolean passwordIsCorrect = hashing.validatePassword(password, userPasswordHash);
 
-            if (correctPassword) {
+            if (passwordIsCorrect) {
                 userDTO = userMapper.mapToDTO(user);
             }
             session.getTransaction().commit();
@@ -54,6 +58,7 @@ public class UserServiceImp implements UserService {
             userDAO.save(newUser);
 
             session.getTransaction().commit();
+            LOG.info("User {} registered", newUser.getUsername());
             return userMapper.mapToDTO(newUser);
         }
     }

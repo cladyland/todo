@@ -10,12 +10,15 @@ import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.service.TaskService;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TaskServiceImp implements TaskService {
+    private static final Logger LOG = LoggerFactory.getLogger(TaskServiceImp.class);
     private final TaskDAO taskDAO;
     private final TagDAO tagDAO;
     private final TaskMapper taskMapper;

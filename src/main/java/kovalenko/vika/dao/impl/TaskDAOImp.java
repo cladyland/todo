@@ -5,10 +5,13 @@ import kovalenko.vika.model.Task;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class TaskDAOImp implements TaskDAO {
+    private static final Logger LOG = LoggerFactory.getLogger(TaskDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public TaskDAOImp(SessionFactory sessionFactory) {

@@ -1,7 +1,10 @@
 package kovalenko.vika.servlet;
 
 import kovalenko.vika.dto.UserDTO;
+import kovalenko.vika.exception.ValidationException;
 import kovalenko.vika.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -12,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static kovalenko.vika.enums.JSP.INDEX;
+import static java.util.Objects.isNull;
+import static kovalenko.vika.enums.JSP.INDEX_JSP;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
@@ -21,6 +25,7 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebServlet(name = "LoginServlet", value = "/")
 public class LoginServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
     private UserService userService;
 
     @Override
@@ -29,11 +34,12 @@ public class LoginServlet extends HttpServlet {
         var servletContext = config.getServletContext();
         userService = (UserService) servletContext.getAttribute(USER_SERVICE);
     }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
                 .getServletContext()
-                .getRequestDispatcher(INDEX.getValue())
+                .getRequestDispatcher(INDEX_JSP.getValue())
                 .forward(req, resp);
     }
 
@@ -41,11 +47,22 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter(USERNAME);
         String password = req.getParameter(PASSWORD);
+
+        if (username.isBlank()) {
+            throw new ValidationException("Username cannot be blank!");
+        }
+        if (password.isBlank()) {
+            throw new ValidationException("Password cannot be blank!");
+        }
+
         UserDTO userDTO = userService.validate(username, password);
+        if (isNull(userDTO)){
+            req.getServletContext().getRequestDispatcher(INDEX_JSP.getValue()).forward(req, resp);
+        }
 
         HttpSession session = req.getSession();
         session.setAttribute(USER_ATTR, userDTO);
-        session.setAttribute(USERNAME, userDTO.getUsername());
+        session.setAttribute(USERNAME, username);
         resp.sendRedirect(TODO_LINK);
     }
 }

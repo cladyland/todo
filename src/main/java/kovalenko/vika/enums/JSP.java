@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum JSP {
-    INDEX("/WEB-INF/index.jsp"),
+    INDEX_JSP("/WEB-INF/index.jsp"),
     REGISTER("/WEB-INF/register.jsp"),
     TODO("/WEB-INF/todo.jsp"),
     NEW_TASK("/WEB-INF/new_task.jsp"),

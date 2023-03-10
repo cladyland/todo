@@ -2,6 +2,8 @@ package kovalenko.vika.filter;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.service.TaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,6 +29,7 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebFilter(filterName = "TaskFilter", value = TODO_LINK)
 public class TaskFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(TaskFilter.class);
     private TaskService taskService;
 
     @Override

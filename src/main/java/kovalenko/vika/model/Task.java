@@ -1,5 +1,6 @@
 package kovalenko.vika.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -58,7 +59,7 @@ public class Task {
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
-    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comment> comments;
     @CreationTimestamp
     @Column(name = "create_date")

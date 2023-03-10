@@ -3,6 +3,8 @@ package kovalenko.vika.servlet;
 import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,6 +27,7 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebServlet(name = "RegisterServlet", value = REGISTER_LINK)
 public class RegisterServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterServlet.class);
     private UserService userService;
 
     @Override

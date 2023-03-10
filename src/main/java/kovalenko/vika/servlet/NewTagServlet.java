@@ -4,6 +4,8 @@ import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -26,6 +28,7 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
 @WebServlet(name = "NewTagServlet", value = NEW_TAG_LINK)
 public class NewTagServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(NewTagServlet.class);
     private TagService tagService;
     private UserService userService;
 
@@ -47,7 +50,7 @@ public class NewTagServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var username = (String) req.getSession().getAttribute(USERNAME);
+        var username = (String) req.getAttribute(USERNAME);
         Long id = userService.getUserId(username);
 
         tagService.createTag(buildTagCommand(req, id));
