@@ -8,4 +8,13 @@
         <exception-type>kovalenko.vika.exception.ValidationException</exception-type>
         <location>/WEB-INF/index.jsp</location>
     </error-page>
+    <error-page>
+        <exception-type>kovalenko.vika.exception.RegisterException</exception-type>
+        <location>/WEB-INF/register.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/error.jsp</location>
+    </error-page>
+
 </web-app>

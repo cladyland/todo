@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.INDEX_JSP;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
@@ -33,19 +32,23 @@ public class LoginFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
+
+        if (isGetRequest(httpRequest)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         var httpResponse = (HttpServletResponse) response;
 
         String username = httpRequest.getParameter(USERNAME);
         String password = httpRequest.getParameter(PASSWORD);
 
-        if (isNull(username)) {
-            forwardToIndex(httpRequest, httpResponse);
-            return;
-        }
-
         if (username.isBlank() || password.isBlank()) {
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            forwardToIndex(httpRequest, httpResponse);
+            httpRequest
+                    .getServletContext()
+                    .getRequestDispatcher(INDEX_JSP.getValue())
+                    .forward(httpRequest, httpResponse);
             return;
         }
 
@@ -59,10 +62,7 @@ public class LoginFilter implements Filter {
         LOG.info("'LoginFilter' is destroyed");
     }
 
-    private void forwardToIndex(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request
-                .getServletContext()
-                .getRequestDispatcher(INDEX_JSP.getValue())
-                .forward(request, response);
+    private boolean isGetRequest(HttpServletRequest request) {
+        return request.getMethod().equalsIgnoreCase("GET");
     }
 }

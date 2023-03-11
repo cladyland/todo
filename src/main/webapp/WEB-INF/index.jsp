@@ -4,13 +4,13 @@
     <title>TODO</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body onload="checkStatus(${pageContext.response.status})">
+<body onload="checkResponseStatus(${pageContext.response.status})">
 <form action="${pageContext.request.contextPath}/" method="post">
     <label for="username">Login:</label><br>
     <input id="username" name="username"><br><br>
     <label for="password">Password:</label><br>
-    <input id="password" name="password"><br><br>
-    <span id="error"></span><br>
+    <input id="password" name="password"><br>
+    <span id="error"></span><br><br>
     <button type="submit">login</button>
 </form>
 <form action="${pageContext.request.contextPath}/register" method="get">
@@ -18,7 +18,7 @@
 </form>
 </body>
 <script>
-    function checkStatus(status) {
+    function checkResponseStatus(status) {
         let error_message = document.getElementById("error")
         if (status === 400) {
             error_message.textContent = "Please, enter your login and password"
