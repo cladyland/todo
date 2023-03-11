@@ -35,6 +35,22 @@
     function checkResponseStatus(status) {
         if (status === 400) {
             setErrorMessageToBlankFields()
+        } else
+        if (status === 422) {
+            let error_message = '${pageContext.request.getAttribute("error")}';
+            if (error_message.startsWith("Username")){
+                let wrong = document.getElementById("wrong_username")
+                wrong.textContent = error_message
+                wrong.style.color = "red"
+            } else if (error_message.startsWith("First")){
+                let wrong = document.getElementById("wrong_first_name")
+                wrong.textContent = error_message
+                wrong.style.color = "red"
+            } else if (error_message.startsWith("Last")){
+                let wrong = document.getElementById("wrong_last_name")
+                wrong.textContent = error_message
+                wrong.style.color = "red"
+            }
         }
     }
 

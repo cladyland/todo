@@ -2,6 +2,7 @@ package kovalenko.vika.servlet;
 
 import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dto.UserDTO;
+import kovalenko.vika.exception.RegisterException;
 import kovalenko.vika.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,22 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserCommand command = buildUserCommand(req);
-        UserDTO userDTO = userService.register(command);
+        UserDTO userDTO;
+        try {
+            userDTO = userService.register(command);
+        } catch (RegisterException ex){
+            req.setAttribute("error", ex.getMessage());
+            req.setAttribute(USERNAME, command.getUsername());
+            req.setAttribute(FIRST_NAME, command.getFirstName());
+            req.setAttribute(LAST_NAME, command.getLastName());
+
+            resp.setStatus(422);
+            req
+                    .getServletContext()
+                    .getRequestDispatcher(REGISTER.getValue())
+                    .forward(req, resp);
+            return;
+        }
 
         HttpSession session = req.getSession();
         session.setAttribute(USER_ATTR, userDTO);

@@ -2,6 +2,7 @@ package kovalenko.vika.service.impl;
 
 import jakarta.persistence.NoResultException;
 import kovalenko.vika.dao.UserDAO;
+import kovalenko.vika.exception.RegisterException;
 import kovalenko.vika.exception.ValidationException;
 import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.command.UserCommand;
@@ -10,11 +11,15 @@ import kovalenko.vika.mapper.UserMapper;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.UserService;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.regex.Pattern;
+
 public class UserServiceImp implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImp.class);
+    private static final String WRONG_CHARACTERS = "The {} '{}' does not match the pattern, registration is not possible";
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final Hashing hashing;
@@ -54,13 +59,20 @@ public class UserServiceImp implements UserService {
         try (Session session = userDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
+            checkData(userCommand);
+
             String passwordHash = hashing.getPasswordHash(userCommand.getPassword());
             User newUser = userMapper.mapToEntity(userCommand);
             newUser.setPasswordHash(passwordHash);
-            userDAO.save(newUser);
+
+            try {
+                userDAO.save(newUser);
+            } catch (ConstraintViolationException ex) {
+                throw new RegisterException("Username already busy");
+            }
 
             session.getTransaction().commit();
-            LOG.info("User {} registered", newUser.getUsername());
+            LOG.info("User '{}' registered", newUser.getUsername());
             return userMapper.mapToDTO(newUser);
         }
     }
@@ -78,8 +90,8 @@ public class UserServiceImp implements UserService {
     private User findUser(String username, Session session) {
         try {
             User user = userDAO.getUserByUsername(username, session);
-            if (!user.getUsername().equals(username)){
-                LOG.warn("The case of characters in the username {} does not match", username);
+            if (!user.getUsername().equals(username)) {
+                LOG.warn("The case of characters in the username '{}' does not match", username);
                 throw new ValidationException("Wrong username!");
             }
             return user;
@@ -87,5 +99,38 @@ public class UserServiceImp implements UserService {
             LOG.warn("User with username '{}' not found", username);
             throw new ValidationException("Wrong username!");
         }
+    }
+
+    private void checkData(UserCommand command) {
+        String username = command.getUsername();
+        if (!isWordCharacter(username)) {
+            LOG.warn(WRONG_CHARACTERS, "username", username);
+            throw new RegisterException("Username can contains numbers and latin letters");
+        }
+
+        String firstName = command.getFirstName();
+        if (!isWordOnlyOfLetters(firstName)) {
+            LOG.warn(WRONG_CHARACTERS, "first name", firstName);
+            throw new RegisterException("First name can only contains latin letters");
+        }
+
+        String lastName = command.getLastName();
+        if (!isWordOnlyOfLetters(lastName)) {
+            LOG.warn(WRONG_CHARACTERS, "last name", lastName);
+            throw new RegisterException("Last name can only contains latin letters");
+        }
+
+        //TODO add password checking
+        // command.getPassword();
+    }
+
+    private boolean isWordOnlyOfLetters(String word) {
+        String regex = "[a-zA-Z]+";
+        return Pattern.matches(regex, word);
+    }
+
+    private boolean isWordCharacter(String word) {
+        String regex = "\\w*";
+        return Pattern.matches(regex, word);
     }
 }
