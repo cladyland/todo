@@ -1,6 +1,8 @@
 package kovalenko.vika.service.impl;
 
+import jakarta.persistence.NoResultException;
 import kovalenko.vika.dao.UserDAO;
+import kovalenko.vika.exception.ValidationException;
 import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dto.UserDTO;
@@ -10,8 +12,6 @@ import kovalenko.vika.service.UserService;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static java.util.Objects.isNull;
 
 public class UserServiceImp implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImp.class);
@@ -23,25 +23,27 @@ public class UserServiceImp implements UserService {
         this.userDAO = userDAO;
         this.userMapper = UserMapper.INSTANCE;
         this.hashing = hashing;
+
+        LOG.info("'UserServiceImp' initialized");
     }
 
     @Override
-    public UserDTO validate(String username, String password)  {
-        try(Session session = userDAO.getCurrentSession()) {
+    public UserDTO validate(String username, String password) {
+        try (Session session = userDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
-            User user = userDAO.getUserByUsername(username, session);
-            UserDTO userDTO = null;
-            if (isNull(user)) {
-                LOG.warn("User with username {} not found", username);
-                return null;
-            }
+            User user = findUser(username, session);
             String userPasswordHash = user.getPasswordHash();
             boolean passwordIsCorrect = hashing.validatePassword(password, userPasswordHash);
 
+            UserDTO userDTO;
             if (passwordIsCorrect) {
                 userDTO = userMapper.mapToDTO(user);
+            } else {
+                LOG.warn("Incorrect password entered for user '{}'", username);
+                throw new ValidationException("Wrong password!");
             }
+
             session.getTransaction().commit();
             return userDTO;
         }
@@ -49,7 +51,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDTO register(UserCommand userCommand) {
-        try(Session session = userDAO.getCurrentSession()) {
+        try (Session session = userDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
             String passwordHash = hashing.getPasswordHash(userCommand.getPassword());
@@ -65,11 +67,25 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Long getUserId(String username) {
-        try(Session session = userDAO.getCurrentSession()) {
+        try (Session session = userDAO.getCurrentSession()) {
             session.getTransaction().begin();
             Long id = userDAO.getUserId(username);
             session.getTransaction().commit();
             return id;
+        }
+    }
+
+    private User findUser(String username, Session session) {
+        try {
+            User user = userDAO.getUserByUsername(username, session);
+            if (!user.getUsername().equals(username)){
+                LOG.warn("The case of characters in the username {} does not match", username);
+                throw new ValidationException("Wrong username!");
+            }
+            return user;
+        } catch (NoResultException ex) {
+            LOG.warn("User with username '{}' not found", username);
+            throw new ValidationException("Wrong username!");
         }
     }
 }

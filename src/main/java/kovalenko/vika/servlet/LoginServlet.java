@@ -15,15 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.INDEX_JSP;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
-@WebServlet(name = "LoginServlet", value = "/")
+@WebServlet(name = "LoginServlet", value = LOGIN_LINK)
 public class LoginServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
     private UserService userService;
@@ -33,6 +33,8 @@ public class LoginServlet extends HttpServlet {
         super.init(config);
         var servletContext = config.getServletContext();
         userService = (UserService) servletContext.getAttribute(USER_SERVICE);
+
+        LOG.info("'LoginServlet' initialized");
     }
 
     @Override
@@ -48,21 +50,23 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter(USERNAME);
         String password = req.getParameter(PASSWORD);
 
-        if (username.isBlank()) {
-            throw new ValidationException("Username cannot be blank!");
-        }
-        if (password.isBlank()) {
-            throw new ValidationException("Password cannot be blank!");
-        }
-
-        UserDTO userDTO = userService.validate(username, password);
-        if (isNull(userDTO)){
-            req.getServletContext().getRequestDispatcher(INDEX_JSP.getValue()).forward(req, resp);
+        UserDTO userDTO;
+        try {
+            userDTO = userService.validate(username, password);
+        } catch (ValidationException ex) {
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            req
+                    .getServletContext()
+                    .getRequestDispatcher(INDEX_JSP.getValue())
+                    .forward(req, resp);
+            return;
         }
 
         HttpSession session = req.getSession();
         session.setAttribute(USER_ATTR, userDTO);
         session.setAttribute(USERNAME, username);
         resp.sendRedirect(TODO_LINK);
+
+        LOG.info("User '{}' is authorized", username);
     }
 }
