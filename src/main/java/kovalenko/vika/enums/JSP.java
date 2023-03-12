@@ -12,7 +12,8 @@ public enum JSP {
     NEW_TASK("/WEB-INF/task/new_task.jsp"),
     TASK_INFO("/WEB-INF/task/task_info.jsp"),
     TASK_UPDATE("/WEB-INF/task/update_task.jsp"),
-    NEW_TAG("/WEB-INF/task/new_tag.jsp");
+    NEW_TAG("/WEB-INF/task/new_tag.jsp"),
+    NOT_FOUND_JSP("/WEB-INF/error/not_found.jsp");
 
     private final String value;
 

@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 public class TaskServiceImp implements TaskService {
     private static final Logger LOG = LoggerFactory.getLogger(TaskServiceImp.class);
     private final TaskDAO taskDAO;
@@ -27,6 +29,8 @@ public class TaskServiceImp implements TaskService {
         this.taskDAO = taskDAO;
         this.tagDAO = tagDAO;
         this.taskMapper = TaskMapper.INSTANCE;
+
+        LOG.debug("'TaskServiceImp' initialized");
     }
 
     @Override
@@ -35,6 +39,10 @@ public class TaskServiceImp implements TaskService {
             session.getTransaction().begin();
 
             Task task = taskDAO.getById(id, session);
+            if (isNull(task)){
+                LOG.warn("Task with id '{}' is not found", id);
+                return null;
+            }
 
             session.getTransaction().commit();
             return taskMapper.mapToDTO(task);

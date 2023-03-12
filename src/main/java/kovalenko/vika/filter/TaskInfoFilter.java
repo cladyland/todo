@@ -1,8 +1,5 @@
 package kovalenko.vika.filter;
 
-import kovalenko.vika.dto.TaskDTO;
-import kovalenko.vika.exception.TaskException;
-import kovalenko.vika.service.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,26 +11,25 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.utils.AttributeConstant.COMMENT_ADD_TO_TASK;
 import static kovalenko.vika.utils.AttributeConstant.MORE_INFO;
-import static kovalenko.vika.utils.AttributeConstant.TASK;
-import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
+import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
 import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 
 @WebFilter(filterName = "TaskInfoFilter", value = TASK_INFO_LINK)
 public class TaskInfoFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(TaskInfoFilter.class);
-    private TaskService taskService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        var context = filterConfig.getServletContext();
-        taskService = (TaskService) context.getAttribute(TASK_SERVICE);
+        LOG.debug("'TaskInfoFilter' initialized");
     }
 
     @Override
@@ -51,11 +47,11 @@ public class TaskInfoFilter implements Filter {
         } else if (nonNull(moreInfo)) {
             taskId = Long.parseLong(moreInfo);
         } else {
-            throw new TaskException("TaskId cannot be null!");
+            ((HttpServletResponse) response).sendRedirect(NOT_FOUND_LINK);
+            return;
         }
 
-        TaskDTO task = taskService.getTaskById(taskId);
-        request.setAttribute(TASK, task);
+        request.setAttribute(TASK_ID, taskId);
 
         chain.doFilter(request, response);
     }
@@ -63,5 +59,6 @@ public class TaskInfoFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
+        LOG.debug("'TaskInfoFilter' is destroyed");
     }
 }

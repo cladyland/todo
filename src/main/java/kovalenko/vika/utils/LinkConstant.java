@@ -9,6 +9,7 @@ public class LinkConstant {
     public final static String NEW_TASK_LINK = "/todo/new-task";
     public final static String NEW_TAG_LINK = "/todo/new-tag";
     public final static String COMMENT_LINK = "/todo/comment";
+    public final static String NOT_FOUND_LINK = "/todo/404";
 
     private LinkConstant() {
     }

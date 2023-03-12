@@ -14,7 +14,7 @@ public class UserDAOImp implements UserDAO {
 
     public UserDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        LOG.info("'UserDAOImp' initialized");
+        LOG.debug("'UserDAOImp' initialized");
     }
 
     @Override

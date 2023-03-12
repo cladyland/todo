@@ -29,7 +29,7 @@ public class UserServiceImp implements UserService {
         this.userMapper = UserMapper.INSTANCE;
         this.hashing = hashing;
 
-        LOG.info("'UserServiceImp' initialized");
+        LOG.debug("'UserServiceImp' initialized");
     }
 
     @Override

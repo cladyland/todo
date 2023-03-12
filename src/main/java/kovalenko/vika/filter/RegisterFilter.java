@@ -32,7 +32,7 @@ public class RegisterFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.info("'RegisterFilter' initialized");
+        LOG.debug("'RegisterFilter' initialized");
     }
 
     @Override
@@ -69,7 +69,7 @@ public class RegisterFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'RegisterFilter' is destroyed");
+        LOG.debug("'RegisterFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {

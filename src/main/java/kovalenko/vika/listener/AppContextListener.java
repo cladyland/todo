@@ -41,7 +41,7 @@ public class AppContextListener implements ServletContextListener {
     private static final Logger LOG = LoggerFactory.getLogger(AppContextListener.class);
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        LOG.info("'Servlet context' initialization begins...");
+        LOG.debug("'Servlet context' initialization begins...");
 
         SessionFactory sessionFactory = new Configuration()
                 .addAnnotatedClass(User.class)
@@ -67,6 +67,6 @@ public class AppContextListener implements ServletContextListener {
         servletContext.setAttribute(TAG_SERVICE, tagService);
         servletContext.setAttribute(COMMENT_SERVICE, commentService);
 
-        LOG.info("'Servlet context' initialized successfully");
+        LOG.debug("'Servlet context' initialized successfully");
     }
 }

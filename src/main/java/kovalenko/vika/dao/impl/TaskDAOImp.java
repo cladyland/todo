@@ -12,10 +12,12 @@ import java.util.List;
 
 public class TaskDAOImp implements TaskDAO {
     private static final Logger LOG = LoggerFactory.getLogger(TaskDAOImp.class);
+    private static final String TASK_WITH_ID = "Task with id '{}' has been '{}'";
     private final SessionFactory sessionFactory;
 
     public TaskDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+        LOG.debug("'TaskDAOImp' initialized");
     }
 
     @Override
@@ -25,25 +27,24 @@ public class TaskDAOImp implements TaskDAO {
 
     @Override
     public Task save(Task entity) {
-        getCurrentSession().saveOrUpdate(entity);
+        getCurrentSession().persist(entity);
+        LOG.info(TASK_WITH_ID, entity.getId(), "saved");
         return entity;
     }
 
     @Override
     public Task update(final Task entity) {
-        return getCurrentSession().merge(entity);
+        getCurrentSession().merge(entity);
+        LOG.info(TASK_WITH_ID, entity.getId(), "updated");
+        return entity;
     }
 
     @Override
     public Task delete(Long id, Session session) {
         Task element = getById(id, session);
         session.remove(element);
+        LOG.info(TASK_WITH_ID, id, "removed");
         return element;
-    }
-
-    @Override
-    public Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
     }
 
     @Override
@@ -54,4 +55,8 @@ public class TaskDAOImp implements TaskDAO {
         return query.getResultList();
     }
 
+    @Override
+    public Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 }

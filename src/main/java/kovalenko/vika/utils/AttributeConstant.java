@@ -10,6 +10,7 @@ public class AttributeConstant {
     public final static String ERROR_MESSAGE = "error";
 
     public final static String USER_ATTR = "user";
+    public final static String USER_ID = "userId";
     public final static String USERNAME = "username";
     public final static String FIRST_NAME = "firstName";
     public final static String LAST_NAME = "lastName";
@@ -20,6 +21,7 @@ public class AttributeConstant {
     public final static String DELETE = "delete";
 
     public final static String TASK = "task";
+    public final static String TASK_ID = "taskId";
     public final static String TASKS = "tasks";
     public final static String TITLE = "title";
     public final static String DESCRIPTION = "description";
@@ -31,7 +33,7 @@ public class AttributeConstant {
     public final static String STATUS = "status";
     public final static String STATUSES = "statuses";
     public final static String COLOR = "color";
-    public final static String MORE_INFO = "more";
+    public final static String MORE_INFO = "moreInfo";
     public final static String COMMENT_ADD_TO_TASK = "commentAddToTask";
 
     private AttributeConstant() {

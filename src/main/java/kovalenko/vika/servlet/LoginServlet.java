@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
         var servletContext = config.getServletContext();
         userService = (UserService) servletContext.getAttribute(USER_SERVICE);
 
-        LOG.info("'LoginServlet' initialized");
+        LOG.debug("'LoginServlet' initialized");
     }
 
     @Override

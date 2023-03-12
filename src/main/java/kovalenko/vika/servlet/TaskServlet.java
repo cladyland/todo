@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.TODO;
 import static kovalenko.vika.utils.AttributeConstant.DELETE;
 import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
@@ -24,6 +25,7 @@ import static kovalenko.vika.utils.AttributeConstant.SAVE_UPDATE;
 import static kovalenko.vika.utils.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
@@ -37,10 +39,20 @@ public class TaskServlet extends HttpServlet {
         super.init(config);
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
+
+        LOG.debug("'TaskServlet' initialized");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        if (isNull(session.getAttribute(TASKS))) {
+            var username = (String) session.getAttribute(USERNAME);
+            List<TaskDTO> tasks = taskService.getAllUserTasks(username);
+            session.setAttribute(TASKS, tasks);
+        }
+
         todoForward(req, resp);
     }
 

@@ -26,8 +26,6 @@
         } else if (status === 401) {
             error_message.textContent = "Wrong login or password"
             error_message.style.color = "red"
-        } else {
-            error_message.textContent = ""
         }
     }
 </script>

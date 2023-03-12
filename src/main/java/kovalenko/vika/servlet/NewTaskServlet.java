@@ -4,9 +4,7 @@ import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
-import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.TaskService;
-import kovalenko.vika.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,15 +28,11 @@ import static kovalenko.vika.utils.AttributeConstant.PRIORITIES;
 import static kovalenko.vika.utils.AttributeConstant.PRIORITY;
 import static kovalenko.vika.utils.AttributeConstant.STATUS;
 import static kovalenko.vika.utils.AttributeConstant.STATUSES;
-import static kovalenko.vika.utils.AttributeConstant.TAGS;
-import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
+import static kovalenko.vika.utils.AttributeConstant.USER_ID;
 import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
@@ -46,28 +40,18 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 public class NewTaskServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(NewTaskServlet.class);
     private TaskService taskService;
-    private TagService tagService;
-    private UserService userService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
-        tagService = (TagService) context.getAttribute(TAG_SERVICE);
-        userService = (UserService) context.getAttribute(USER_SERVICE);
+
+        LOG.debug("'NewTaskServlet' initialized");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (isNull(req.getSession().getAttribute(TAGS))){
-            req.getSession().setAttribute(TAGS, tagService.getDefaultTags());
-        }
-        if (isNull(req.getSession().getAttribute(USER_TAGS))){
-            var username = (String) req.getAttribute(USERNAME);
-            Long id = userService.getUserId(username);
-            req.getSession().setAttribute(USER_TAGS, tagService.getUserTags(id));
-        }
         req.setAttribute(PRIORITIES, taskService.getPriorities());
         req.setAttribute(STATUSES, taskService.getStatuses());
 
@@ -92,8 +76,7 @@ public class NewTaskServlet extends HttpServlet {
     }
 
     private TaskCommand buildTaskCommand(HttpServletRequest req){
-        var username = (String) req.getAttribute(USERNAME);
-        Long id = userService.getUserId(username);
+        Long id = (Long) req.getAttribute(USER_ID);
         var taskPriority = TaskPriority.getPriorityByName(req.getParameter(PRIORITY));
         var taskStatus = TaskStatus.getStatusByName(req.getParameter(STATUS));
 
@@ -107,6 +90,9 @@ public class NewTaskServlet extends HttpServlet {
     }
 
     private Set<Long> convertIds(String[] ids){
+        if (isNull(ids)){
+            return null;
+        }
         return Arrays.stream(ids)
                 .map(Long::parseLong)
                 .collect(Collectors.toSet());

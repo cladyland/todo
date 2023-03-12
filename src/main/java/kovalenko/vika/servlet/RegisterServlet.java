@@ -40,7 +40,7 @@ public class RegisterServlet extends HttpServlet {
         var context = config.getServletContext();
         userService = (UserService) context.getAttribute(USER_SERVICE);
 
-        LOG.info("'RegisterServlet' initialized");
+        LOG.debug("'RegisterServlet' initialized");
     }
 
     @Override

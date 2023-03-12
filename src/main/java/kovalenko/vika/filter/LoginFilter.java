@@ -26,7 +26,7 @@ public class LoginFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.info("'LoginFilter' initialized");
+        LOG.debug("'LoginFilter' initialized");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class LoginFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'LoginFilter' is destroyed");
+        LOG.debug("'LoginFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {

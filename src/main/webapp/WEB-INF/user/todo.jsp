@@ -35,7 +35,7 @@
             </td>
             <td>
                 <form action="${pageContext.request.contextPath}/todo/info" method="get">
-                    <button type="submit" name="more" value="${task.getId()}">More</button>
+                    <button type="submit" name="moreInfo" value="${task.getId()}">More</button>
                 </form>
                 <form action="${pageContext.request.contextPath}/todo" method="post">
                     <button type="submit" name="update" value="${task.getId()}">Edit</button>
