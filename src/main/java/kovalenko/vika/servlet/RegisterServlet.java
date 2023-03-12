@@ -15,10 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.HashMap;
 
 import static kovalenko.vika.enums.JSP.REGISTER;
+import static kovalenko.vika.utils.AttributeConstant.ERROR_MESSAGE;
 import static kovalenko.vika.utils.AttributeConstant.FIRST_NAME;
 import static kovalenko.vika.utils.AttributeConstant.LAST_NAME;
+import static kovalenko.vika.utils.AttributeConstant.PARAMETERS;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
@@ -36,6 +39,8 @@ public class RegisterServlet extends HttpServlet {
         super.init(config);
         var context = config.getServletContext();
         userService = (UserService) context.getAttribute(USER_SERVICE);
+
+        LOG.info("'RegisterServlet' initialized");
     }
 
     @Override
@@ -48,15 +53,19 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserCommand command = buildUserCommand(req);
+        var params = (HashMap<String, String>) req.getAttribute(PARAMETERS);
+        UserCommand command = buildUserCommand(params);
+
         UserDTO userDTO;
         try {
             userDTO = userService.register(command);
-        } catch (RegisterException ex){
-            req.setAttribute("error", ex.getMessage());
+        } catch (RegisterException ex) {
+            req.setAttribute(ERROR_MESSAGE, ex.getMessage());
             req.setAttribute(USERNAME, command.getUsername());
             req.setAttribute(FIRST_NAME, command.getFirstName());
             req.setAttribute(LAST_NAME, command.getLastName());
+
+            LOG.warn("Failed to register user. Reason: '{}'", ex.getMessage());
 
             resp.setStatus(422);
             req
@@ -70,14 +79,16 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute(USER_ATTR, userDTO);
         session.setAttribute(USERNAME, userDTO.getUsername());
         resp.sendRedirect(TODO_LINK);
+
+        LOG.info("User '{}' successfully registered", command.getUsername());
     }
 
-    private UserCommand buildUserCommand(HttpServletRequest req){
+    private UserCommand buildUserCommand(HashMap<String, String> params) {
         return UserCommand.builder()
-                .firstName(req.getParameter(FIRST_NAME))
-                .lastName(req.getParameter(LAST_NAME))
-                .username(req.getParameter(USERNAME))
-                .password(req.getParameter(PASSWORD))
+                .firstName(params.get(FIRST_NAME))
+                .lastName(params.get(LAST_NAME))
+                .username(params.get(USERNAME))
+                .password(params.get(PASSWORD))
                 .build();
     }
 }

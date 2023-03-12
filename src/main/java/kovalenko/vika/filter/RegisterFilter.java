@@ -19,6 +19,7 @@ import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.REGISTER;
 import static kovalenko.vika.utils.AttributeConstant.FIRST_NAME;
 import static kovalenko.vika.utils.AttributeConstant.LAST_NAME;
+import static kovalenko.vika.utils.AttributeConstant.PARAMETERS;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
@@ -26,6 +27,7 @@ import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
 @WebFilter(filterName = "RegisterFilter", value = REGISTER_LINK)
 public class RegisterFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(RegisterFilter.class);
+    private static final String PRE_CHECK = "Pre-check of parameters for registration new user: status {}";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -48,12 +50,14 @@ public class RegisterFilter implements Filter {
         nullChecking(parameters);
 
         if (paramsAreNotBlank(parameters)) {
+            httpRequest.setAttribute(PARAMETERS, parameters);
+            LOG.info(PRE_CHECK, "OK");
             chain.doFilter(request, response);
         } else {
-            httpRequest.setAttribute(FIRST_NAME, parameters.get(FIRST_NAME));
-            httpRequest.setAttribute(LAST_NAME, parameters.get(LAST_NAME));
-            httpRequest.setAttribute(USERNAME, parameters.get(USERNAME));
+            setParamsToRequest(parameters, httpRequest);
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+            LOG.info(PRE_CHECK, "BAD (one or more parameters are blank)");
 
             httpRequest
                     .getServletContext()
@@ -72,13 +76,10 @@ public class RegisterFilter implements Filter {
         return request.getMethod().equalsIgnoreCase("GET");
     }
 
-    private HashMap<String, String> createParametersMap(HttpServletRequest request) {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(FIRST_NAME, request.getParameter(FIRST_NAME));
-        parameters.put(LAST_NAME, request.getParameter(LAST_NAME));
-        parameters.put(USERNAME, request.getParameter(USERNAME));
-        parameters.put(PASSWORD, request.getParameter(PASSWORD));
-        return parameters;
+    private void setParamsToRequest(HashMap<String, String> parameters, HttpServletRequest request) {
+        request.setAttribute(FIRST_NAME, parameters.get(FIRST_NAME));
+        request.setAttribute(LAST_NAME, parameters.get(LAST_NAME));
+        request.setAttribute(USERNAME, parameters.get(USERNAME));
     }
 
     private void nullChecking(HashMap<String, String> parameters) {
@@ -104,5 +105,14 @@ public class RegisterFilter implements Filter {
             }
         }
         return countOfBlankParams == 0;
+    }
+
+    private HashMap<String, String> createParametersMap(HttpServletRequest request) {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put(FIRST_NAME, request.getParameter(FIRST_NAME));
+        parameters.put(LAST_NAME, request.getParameter(LAST_NAME));
+        parameters.put(USERNAME, request.getParameter(USERNAME));
+        parameters.put(PASSWORD, request.getParameter(PASSWORD));
+        return parameters;
     }
 }

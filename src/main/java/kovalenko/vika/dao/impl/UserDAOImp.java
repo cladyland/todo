@@ -14,34 +14,21 @@ public class UserDAOImp implements UserDAO {
 
     public UserDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-    }
-
-    @Override
-    public User getById(Long id, Session session) {
-        return session.get(User.class, id);
+        LOG.info("'UserDAOImp' initialized");
     }
 
     @Override
     public User save(User entity) {
-        getCurrentSession().saveOrUpdate(entity);
+        getCurrentSession().persist(entity);
+        LOG.info("User '{}' added to DB", entity.getUsername());
         return entity;
     }
 
     @Override
     public User update(final User entity) {
-        return getCurrentSession().merge(entity);
-    }
-
-    @Override
-    public User delete(Long id, Session session) {
-        User element = getById(id, session);
-        session.remove(element);
-        return element;
-    }
-
-    @Override
-    public Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
+        getCurrentSession().merge(entity);
+        LOG.info("Data of user '{}' has been updated", entity.getUsername());
+        return entity;
     }
 
     @Override
@@ -58,5 +45,10 @@ public class UserDAOImp implements UserDAO {
         Query<Long> query = getCurrentSession().createQuery(queryStr, Long.class);
         query.setParameter("username", username);
         return query.getSingleResult();
+    }
+
+    @Override
+    public Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
     }
 }

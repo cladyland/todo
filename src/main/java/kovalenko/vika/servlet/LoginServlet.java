@@ -55,6 +55,8 @@ public class LoginServlet extends HttpServlet {
             userDTO = userService.validate(username, password);
         } catch (ValidationException ex) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            LOG.warn("The user has not been validated. Reason: {}", ex.getMessage());
+
             req
                     .getServletContext()
                     .getRequestDispatcher(INDEX_JSP.getValue())

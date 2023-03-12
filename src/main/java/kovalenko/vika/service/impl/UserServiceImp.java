@@ -11,7 +11,6 @@ import kovalenko.vika.mapper.UserMapper;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.UserService;
 import org.hibernate.Session;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +19,7 @@ import java.util.regex.Pattern;
 public class UserServiceImp implements UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserServiceImp.class);
     private static final String WRONG_CHARACTERS = "The {} '{}' does not match the pattern, registration is not possible";
+    private static final String ONLY_LETTERS = "can only contains latin letters";
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final Hashing hashing;
@@ -56,7 +56,8 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDTO register(UserCommand userCommand) {
-        try (Session session = userDAO.getCurrentSession()) {
+
+        try(Session session = userDAO.getCurrentSession();) {
             session.getTransaction().begin();
 
             checkData(userCommand);
@@ -65,13 +66,11 @@ public class UserServiceImp implements UserService {
             User newUser = userMapper.mapToEntity(userCommand);
             newUser.setPasswordHash(passwordHash);
 
-            try {
-                userDAO.save(newUser);
-            } catch (ConstraintViolationException ex) {
-                throw new RegisterException("Username already busy");
-            }
+            checkIfUsernameBusy(userCommand.getUsername());
+            userDAO.save(newUser);
 
             session.getTransaction().commit();
+
             LOG.info("User '{}' registered", newUser.getUsername());
             return userMapper.mapToDTO(newUser);
         }
@@ -111,17 +110,28 @@ public class UserServiceImp implements UserService {
         String firstName = command.getFirstName();
         if (!isWordOnlyOfLetters(firstName)) {
             LOG.warn(WRONG_CHARACTERS, "first name", firstName);
-            throw new RegisterException("First name can only contains latin letters");
+            throw new RegisterException("First name " + ONLY_LETTERS);
         }
 
         String lastName = command.getLastName();
         if (!isWordOnlyOfLetters(lastName)) {
             LOG.warn(WRONG_CHARACTERS, "last name", lastName);
-            throw new RegisterException("Last name can only contains latin letters");
+            throw new RegisterException("Last name " + ONLY_LETTERS);
         }
 
         //TODO add password checking
-        // command.getPassword();
+    }
+
+    private void checkIfUsernameBusy(String username){
+        try {
+            Long id = userDAO.getUserId(username);
+            if (id != null) {
+                LOG.warn("Username '{}' is already busy", username);
+                throw new RegisterException("Username is already busy");
+            }
+        } catch (NoResultException ex){
+            LOG.info("Username '{}' is free", username);
+        }
     }
 
     private boolean isWordOnlyOfLetters(String word) {

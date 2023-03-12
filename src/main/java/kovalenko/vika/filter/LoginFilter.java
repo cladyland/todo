@@ -45,6 +45,8 @@ public class LoginFilter implements Filter {
 
         if (username.isBlank() || password.isBlank()) {
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            LOG.warn("Unable to authorize. Username or password is blank");
+
             httpRequest
                     .getServletContext()
                     .getRequestDispatcher(INDEX_JSP.getValue())
@@ -53,7 +55,6 @@ public class LoginFilter implements Filter {
         }
 
         chain.doFilter(request, response);
-
     }
 
     @Override

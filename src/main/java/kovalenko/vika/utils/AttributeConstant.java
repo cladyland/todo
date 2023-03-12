@@ -6,6 +6,9 @@ public class AttributeConstant {
     public final static String TAG_SERVICE = "tagService";
     public final static String COMMENT_SERVICE = "commentService";
 
+    public final static String PARAMETERS = "parameters";
+    public final static String ERROR_MESSAGE = "error";
+
     public final static String USER_ATTR = "user";
     public final static String USERNAME = "username";
     public final static String FIRST_NAME = "firstName";
