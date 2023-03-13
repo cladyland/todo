@@ -1,4 +1,4 @@
-package kovalenko.vika.filter;
+package kovalenko.vika.filter.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +47,12 @@ public class TaskInfoFilter implements Filter {
         } else if (nonNull(moreInfo)) {
             taskId = Long.parseLong(moreInfo);
         } else {
+            LOG.warn("The request cannot be fulfilled: taskId is null");
             ((HttpServletResponse) response).sendRedirect(NOT_FOUND_LINK);
             return;
         }
 
         request.setAttribute(TASK_ID, taskId);
-
         chain.doFilter(request, response);
     }
 

@@ -1,4 +1,4 @@
-package kovalenko.vika.servlet;
+package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.service.TaskService;
@@ -25,6 +25,7 @@ import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 public class TaskInfoServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(TaskInfoServlet.class);
     private TaskService taskService;
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -47,7 +48,7 @@ public class TaskInfoServlet extends HttpServlet {
     private void setTaskAttribute(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Long taskId = (Long) req.getAttribute(TASK_ID);
         TaskDTO task = taskService.getTaskById(taskId);
-        if (isNull(task)){
+        if (isNull(task)) {
             resp.sendRedirect(NOT_FOUND_LINK);
             LOG.warn("Someone tried to access a task with a nonexistent ID");
             return;

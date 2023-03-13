@@ -10,10 +10,16 @@ import java.util.Set;
 
 public interface TaskService {
     TaskDTO getTaskById(Long id);
+
     List<TaskDTO> getAllUserTasks(String username);
+
     List<TaskPriority> getPriorities();
+
     List<TaskStatus> getStatuses();
+
     TaskDTO createTask(TaskCommand taskCommand, Set<Long> tagIds);
-    void updateTask(TaskDTO taskDTO);
+
+    void updateTask(TaskDTO taskDTO, Set<Long> tagIds);
+
     TaskDTO deleteTask(Long id);
 }

@@ -1,4 +1,4 @@
-package kovalenko.vika.servlet;
+package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TaskDTO;
@@ -16,12 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.NEW_TASK;
 import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
 import static kovalenko.vika.utils.AttributeConstant.PRIORITIES;
@@ -64,10 +61,10 @@ public class NewTaskServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        String[] taskTagsIds = req.getParameterValues(TASK_TAGS);
+        var taskTagsIds = (Set<Long>) req.getAttribute(TASK_TAGS);
 
         TaskCommand command = buildTaskCommand(req);
-        TaskDTO addedTask = taskService.createTask(command, convertIds(taskTagsIds));
+        TaskDTO addedTask = taskService.createTask(command, taskTagsIds);
 
         List<TaskDTO> tasks = getUserTasks(session);
         tasks.add(addedTask);
@@ -75,7 +72,7 @@ public class NewTaskServlet extends HttpServlet {
         resp.sendRedirect(TODO_LINK);
     }
 
-    private TaskCommand buildTaskCommand(HttpServletRequest req){
+    private TaskCommand buildTaskCommand(HttpServletRequest req) {
         Long id = (Long) req.getAttribute(USER_ID);
         var taskPriority = TaskPriority.getPriorityByName(req.getParameter(PRIORITY));
         var taskStatus = TaskStatus.getStatusByName(req.getParameter(STATUS));
@@ -87,15 +84,6 @@ public class NewTaskServlet extends HttpServlet {
                 .priority(taskPriority)
                 .status(taskStatus)
                 .build();
-    }
-
-    private Set<Long> convertIds(String[] ids){
-        if (isNull(ids)){
-            return null;
-        }
-        return Arrays.stream(ids)
-                .map(Long::parseLong)
-                .collect(Collectors.toSet());
     }
 
     private List<TaskDTO> getUserTasks(HttpSession session) {

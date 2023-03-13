@@ -43,17 +43,20 @@ public class SecurityFilter implements Filter {
         var username = (String) currentSession.getAttribute(USERNAME);
 
         if (isNull(username)) {
+            String uri = httpRequest.getRequestURI();
+            LOG.warn("Access to '{}' is denied: authorization is required", uri);
             httpResponse.sendRedirect("/");
         } else {
-            String moreInfo = request.getParameter(MORE_INFO);
-            if (nonNull(moreInfo)) {
-                boolean accessIsAllowed = checkAccessRights(currentSession, Long.parseLong(moreInfo));
+            String moreInfoId = request.getParameter(MORE_INFO);
+            if (nonNull(moreInfoId)) {
+                boolean accessIsAllowed = checkAccessRights(currentSession, Long.parseLong(moreInfoId));
                 if (!accessIsAllowed) {
+                    LOG.warn("User '{}' has no access to task '{}'", username, moreInfoId);
                     httpResponse.sendRedirect(NOT_FOUND_LINK);
                     return;
                 }
             }
-            httpRequest.setAttribute(USERNAME, username);
+
             chain.doFilter(request, response);
         }
     }

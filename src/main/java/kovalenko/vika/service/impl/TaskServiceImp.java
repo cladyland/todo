@@ -90,13 +90,17 @@ public class TaskServiceImp implements TaskService {
     }
 
     @Override
-    public void updateTask(TaskDTO taskDTO) {
+    public void updateTask(TaskDTO taskDTO, Set<Long> tagIds) {
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
             Task task = taskDAO.getById(taskDTO.getId(), session);
             task.setTitle(taskDTO.getTitle());
             task.setDescription(taskDTO.getDescription());
+            task.setStatus(TaskStatus.getStatusByName(taskDTO.getStatus()));
+            task.setPriority(TaskPriority.getPriorityByName(taskDTO.getPriority()));
+            task.setTags(tagDAO.getTagsByIds(tagIds));
+
             taskDAO.update(task);
 
             session.getTransaction().commit();

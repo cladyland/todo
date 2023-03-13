@@ -25,7 +25,7 @@ public class AttributeConstant {
     public final static String TASKS = "tasks";
     public final static String TITLE = "title";
     public final static String DESCRIPTION = "description";
-    public final static String TAGS = "tags";
+    public final static String DEFAULT_TAGS = "tags";
     public final static String USER_TAGS = "userTags";
     public final static String TASK_TAGS = "taskTags";
     public final static String PRIORITY = "priority";

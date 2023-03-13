@@ -1,4 +1,4 @@
-package kovalenko.vika.servlet;
+package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
@@ -16,16 +16,19 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static kovalenko.vika.enums.JSP.TODO;
 import static kovalenko.vika.utils.AttributeConstant.DELETE;
 import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
+import static kovalenko.vika.utils.AttributeConstant.PRIORITY;
 import static kovalenko.vika.utils.AttributeConstant.SAVE_UPDATE;
+import static kovalenko.vika.utils.AttributeConstant.STATUS;
 import static kovalenko.vika.utils.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
 import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
@@ -45,33 +48,25 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-
-        if (isNull(session.getAttribute(TASKS))) {
-            var username = (String) session.getAttribute(USERNAME);
-            List<TaskDTO> tasks = taskService.getAllUserTasks(username);
-            session.setAttribute(TASKS, tasks);
-        }
-
         todoForward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (req.getParameter(DELETE) != null) {
+        if (nonNull(req.getParameter(DELETE))) {
             deleteTask(req);
-        } else if (req.getParameter(SAVE_UPDATE) != null) {
+        } else if (nonNull(req.getParameter(SAVE_UPDATE))) {
             updateTask(req);
         }
+
         todoForward(req, resp);
     }
 
     private void updateTask(HttpServletRequest req) {
-        Long id = Long.valueOf(req.getParameter(SAVE_UPDATE));
         var taskDTO = buildTaskDTO(req);
-        taskDTO.setId(id);
+        var taskTagsIds = (Set<Long>) req.getAttribute(TASK_TAGS);
 
-        taskService.updateTask(taskDTO);
+        taskService.updateTask(taskDTO, taskTagsIds);
 
         var user = (UserDTO) req.getSession().getAttribute(USER_ATTR);
         List<TaskDTO> tasks = taskService.getAllUserTasks(user.getUsername());
@@ -80,22 +75,28 @@ public class TaskServlet extends HttpServlet {
     }
 
     private void deleteTask(HttpServletRequest req) {
-        String strId = req.getParameter(DELETE);
-        Long id = Long.valueOf(strId);
-        TaskDTO removedTask = taskService.deleteTask(id);
+        Long taskId = Long.valueOf(req.getParameter(DELETE));
+        TaskDTO removedTask = taskService.deleteTask(taskId);
         HttpSession session = req.getSession();
 
         List<TaskDTO> tasks = getUserTasks(session);
+        Long removedTaskId = removedTask.getId();
+
         tasks
-                .removeIf(task -> Objects.equals(task.getId(), removedTask.getId()));
+                .removeIf(task -> Objects.equals(task.getId(), removedTaskId));
 
         session.setAttribute(TASKS, tasks);
     }
 
     private TaskDTO buildTaskDTO(HttpServletRequest req) {
+        var taskId = Long.valueOf(req.getParameter(SAVE_UPDATE));
+
         return TaskDTO.builder()
+                .id(taskId)
                 .title(req.getParameter(TITLE))
                 .description(req.getParameter(DESCRIPTION))
+                .priority(req.getParameter(PRIORITY))
+                .status(req.getParameter(STATUS))
                 .build();
     }
 

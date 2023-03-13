@@ -2,6 +2,7 @@ package kovalenko.vika.servlet;
 
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.exception.ValidationException;
+import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,11 @@ import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.INDEX_JSP;
 import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
+import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
 import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
@@ -27,12 +30,14 @@ import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 public class LoginServlet extends HttpServlet {
     private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
     private UserService userService;
+    private TagService tagService;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
         var servletContext = config.getServletContext();
         userService = (UserService) servletContext.getAttribute(USER_SERVICE);
+        tagService = (TagService) servletContext.getAttribute(TAG_SERVICE);
 
         LOG.debug("'LoginServlet' initialized");
     }
@@ -67,6 +72,8 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = req.getSession();
         session.setAttribute(USER_ATTR, userDTO);
         session.setAttribute(USERNAME, username);
+        session.setAttribute(USER_TAGS, tagService.getUserTags(userService.getUserId(username)));
+
         resp.sendRedirect(TODO_LINK);
 
         LOG.info("User '{}' is authorized", username);

@@ -37,7 +37,7 @@ public class AuthFilter implements Filter {
 
         if (nonNull(httpRequest.getSession().getAttribute(USERNAME))) {
             httpResponse.sendRedirect(TODO_LINK);
-            LOG.warn("The user is already authorized");
+            LOG.warn("Unable to access the registration or authorization page: the user is already authorized");
             return;
         }
         chain.doFilter(request, response);
