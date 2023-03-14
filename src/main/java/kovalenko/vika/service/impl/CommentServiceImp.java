@@ -26,6 +26,8 @@ public class CommentServiceImp implements CommentService {
         this.taskDAO = taskDAO;
         this.userDAO = userDAO;
         this.commentMapper = CommentMapper.INSTANCE;
+
+        LOG.debug("'CommentServiceImp' initialized");
     }
 
     @Override

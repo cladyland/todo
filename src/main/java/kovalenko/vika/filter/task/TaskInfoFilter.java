@@ -35,20 +35,26 @@ public class TaskInfoFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
+        var httpResponse = (HttpServletResponse) response;
         var currentSession = httpRequest.getSession();
 
         Long commentAdd = (Long) currentSession.getAttribute(COMMENT_ADD_TO_TASK);
-        String moreInfo = request.getParameter(MORE_INFO);
+        Long commentNotAdded = (Long) currentSession.getAttribute(TASK_ID);
+        String moreInfoId = request.getParameter(MORE_INFO);
         Long taskId;
 
         if (nonNull(commentAdd)) {
             taskId = commentAdd;
             currentSession.removeAttribute(COMMENT_ADD_TO_TASK);
-        } else if (nonNull(moreInfo)) {
-            taskId = Long.parseLong(moreInfo);
+        } else if (nonNull(moreInfoId)) {
+            taskId = Long.parseLong(moreInfoId);
+        } else if (nonNull(commentNotAdded)) {
+            taskId = commentNotAdded;
+            currentSession.removeAttribute(TASK_ID);
+            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
             LOG.warn("The request cannot be fulfilled: taskId is null");
-            ((HttpServletResponse) response).sendRedirect(NOT_FOUND_LINK);
+            httpResponse.sendRedirect(NOT_FOUND_LINK);
             return;
         }
 

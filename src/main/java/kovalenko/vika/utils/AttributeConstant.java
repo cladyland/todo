@@ -34,6 +34,7 @@ public class AttributeConstant {
     public final static String STATUSES = "statuses";
     public final static String COLOR = "color";
     public final static String MORE_INFO = "moreInfo";
+    public final static String COMMENT = "comment";
     public final static String COMMENT_ADD_TO_TASK = "commentAddToTask";
 
     private AttributeConstant() {

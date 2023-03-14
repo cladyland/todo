@@ -14,9 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static kovalenko.vika.utils.AttributeConstant.COMMENT;
 import static kovalenko.vika.utils.AttributeConstant.COMMENT_ADD_TO_TASK;
 import static kovalenko.vika.utils.AttributeConstant.COMMENT_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TASK;
+import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.COMMENT_LINK;
 import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
@@ -31,11 +32,13 @@ public class CommentServlet extends HttpServlet {
         super.init(config);
         var context = config.getServletContext();
         commentService = (CommentService) context.getAttribute(COMMENT_SERVICE);
+
+        LOG.debug("'CommentServlet' initialized");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Long taskId = Long.parseLong(req.getParameter(TASK));
+        Long taskId = Long.parseLong(req.getParameter(TASK_ID));
 
         CommentCommand command = buildCommentCommand(req, taskId);
         commentService.createComment(command);
@@ -45,12 +48,12 @@ public class CommentServlet extends HttpServlet {
     }
 
     private CommentCommand buildCommentCommand(HttpServletRequest req, Long taskId) {
-        var username = (String) req.getAttribute(USERNAME);
+        var username = (String) req.getSession().getAttribute(USERNAME);
 
         return CommentCommand.builder()
                 .username(username)
                 .taskId(taskId)
-                .contents(req.getParameter("comment"))
+                .contents(req.getParameter(COMMENT))
                 .build();
     }
 }
