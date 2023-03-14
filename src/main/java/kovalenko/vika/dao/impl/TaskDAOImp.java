@@ -28,14 +28,14 @@ public class TaskDAOImp implements TaskDAO {
     @Override
     public Task save(Task entity) {
         getCurrentSession().persist(entity);
-        LOG.info(TASK_WITH_ID, entity.getId(), "saved");
+        LOG.debug(TASK_WITH_ID, entity.getId(), "saved");
         return entity;
     }
 
     @Override
     public Task update(final Task entity) {
         getCurrentSession().merge(entity);
-        LOG.info(TASK_WITH_ID, entity.getId(), "updated");
+        LOG.debug(TASK_WITH_ID, entity.getId(), "updated");
         return entity;
     }
 
@@ -43,7 +43,7 @@ public class TaskDAOImp implements TaskDAO {
     public Task delete(Long id, Session session) {
         Task element = getById(id, session);
         session.remove(element);
-        LOG.info(TASK_WITH_ID, id, "removed");
+        LOG.debug(TASK_WITH_ID, id, "removed");
         return element;
     }
 

@@ -22,13 +22,17 @@ public class TagServiceImp implements TagService {
     public TagServiceImp(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
         tagMapper = TagMapper.INSTANCE;
+
+        LOG.debug("'TagServiceImp' initialized");
     }
 
     @Override
     public List<TagDTO> getDefaultTags() {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
+
             List<TagDTO> defaultTags = tagDAO.getDefaultTags(session);
+
             session.getTransaction().commit();
             return defaultTags;
         }
@@ -38,7 +42,9 @@ public class TagServiceImp implements TagService {
     public List<TagDTO> getUserTags(Long userId) {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
+
             List<TagDTO> userTags = tagDAO.getUserTags(userId);
+
             session.getTransaction().commit();
             return userTags;
         }
@@ -48,7 +54,9 @@ public class TagServiceImp implements TagService {
     public TagDTO createTag(TagCommand tagCommand) {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
+
             Tag tag = tagDAO.save(tagMapper.mapToEntity(tagCommand));
+
             session.getTransaction().commit();
             return tagMapper.mapToDTO(tag);
         }
@@ -58,7 +66,9 @@ public class TagServiceImp implements TagService {
     public Set<TagDTO> getTagsByIds(Set<Long> ids) {
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
+
             Set<Tag> tags = tagDAO.getTagsByIds(ids);
+
             session.getTransaction().commit();
             return tags.stream().map(tagMapper::mapToDTO).collect(Collectors.toSet());
         }

@@ -85,7 +85,7 @@ public class TaskFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.info("'TaskFilter' is destroyed");
+        LOG.debug("'TaskFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {

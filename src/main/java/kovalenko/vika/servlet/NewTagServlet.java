@@ -38,6 +38,8 @@ public class NewTagServlet extends HttpServlet {
         var context = config.getServletContext();
         tagService = (TagService) context.getAttribute(TAG_SERVICE);
         userService = (UserService) context.getAttribute(USER_SERVICE);
+
+        LOG.debug("'NewTagServlet' initialized");
     }
 
     @Override
@@ -50,16 +52,17 @@ public class NewTagServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        var username = (String) req.getAttribute(USERNAME);
+        var username = (String) req.getSession().getAttribute(USERNAME);
         Long id = userService.getUserId(username);
 
         tagService.createTag(buildTagCommand(req, id));
+
         List<TagDTO> userTags = tagService.getUserTags(id);
         req.getSession().setAttribute(USER_TAGS, userTags);
         resp.sendRedirect(TODO_LINK);
     }
 
-    private TagCommand buildTagCommand(HttpServletRequest req, Long userId){
+    private TagCommand buildTagCommand(HttpServletRequest req, Long userId) {
         return TagCommand.builder()
                 .userId(userId)
                 .title(req.getParameter(TITLE))

@@ -8,7 +8,9 @@ import java.util.Set;
 
 public interface TagService {
     List<TagDTO> getDefaultTags();
+
     List<TagDTO> getUserTags(Long userId);
+
     TagDTO createTag(TagCommand tagCommand);
 
     Set<TagDTO> getTagsByIds(Set<Long> convertIds);

@@ -19,46 +19,35 @@ public class TagDAOImp implements TagDAO {
 
     public TagDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-    }
-
-    @Override
-    public Tag getById(Long id, Session session) {
-        return session.get(Tag.class, id);
+        LOG.debug("'TagDAOImp' initialized");
     }
 
     @Override
     public Tag save(Tag entity) {
-        getCurrentSession().saveOrUpdate(entity);
+        getCurrentSession().persist(entity);
+        LOG.debug("Tag '{}' saved", entity.getId());
         return entity;
     }
 
     @Override
     public Tag update(final Tag entity) {
-        return getCurrentSession().merge(entity);
-    }
-
-    @Override
-    public Tag delete(Long id, Session session) {
-        Tag element = getById(id, session);
-        session.remove(element);
-        return element;
-    }
-
-    @Override
-    public Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
+        getCurrentSession().merge(entity);
+        LOG.debug("Tag '{}' updated", entity.getId());
+        return entity;
     }
 
     @Override
     public List<TagDTO> getDefaultTags(Session session) {
-        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) from Tag t where t.isDefault = true";
+        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) " +
+                "from Tag t where t.isDefault = true";
         Query<TagDTO> query = session.createQuery(queryStr, TagDTO.class);
         return query.getResultList();
     }
 
     @Override
     public List<TagDTO> getUserTags(Long userId) {
-        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) from Tag t where t.userId = :user";
+        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) " +
+                "from Tag t where t.userId = :user";
         Query<TagDTO> query = getCurrentSession().createQuery(queryStr, TagDTO.class);
         query.setParameter("user", userId);
         return query.getResultList();
@@ -72,4 +61,8 @@ public class TagDAOImp implements TagDAO {
         return new HashSet<>(query.getResultList());
     }
 
+    @Override
+    public Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 }
