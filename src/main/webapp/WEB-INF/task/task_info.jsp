@@ -16,6 +16,7 @@
     </style>
 </head>
 <body onload="checkRespStatus(${pageContext.response.status})">
+<br>
 <div>
     <table class="table table-success table-striped" style="width: 40%">
         <tr>
@@ -52,9 +53,18 @@
     <b>COMMENTS:</b>
     <br>
     <c:forEach items="${task.getComments()}" var="comment">
-        ${comment.getUsername()}<br>
-        ${comment.getContents()}<br>
-        ${comment.getCreateDate()}<br><br>
+        <div class="card" style="width: 30%;">
+            <div class="card-header">
+                    ${comment.getUsername()}
+            </div>
+            <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                    <p>${comment.getContents()}</p>
+                    <footer class="blockquote-footer">${comment.getCreateDate()}</footer>
+                </blockquote>
+            </div>
+        </div>
+        <br>
     </c:forEach>
 </div>
 </body>

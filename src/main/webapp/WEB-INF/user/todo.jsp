@@ -10,16 +10,20 @@
         }
 
         div {
-            display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
             min-height: 100vh;
+            width: 90%;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 <center>
+    <br><br>
+    <h3>Hello, ${sessionScope.get("username")}!</h3>
+    <br><br>
     <form action="${pageContext.request.contextPath}/todo/new-task" method="get">
         <button type="submit" class="btn btn-success">Add task</button>
     </form>
@@ -28,7 +32,7 @@
     </form>
 </center>
 <div>
-    <table class="table table-success table-striped" style="width: 90%">
+    <table class="table table-success table-striped">
         <tr style="text-align: center; font-family: fantasy">
             <td>Title</td>
             <td>Description</td>

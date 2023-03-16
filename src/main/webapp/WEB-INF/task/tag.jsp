@@ -6,6 +6,7 @@
 </head>
 <body>
 <center>
+    <br><br>
     <h3>Here your tags:</h3>
     <c:forEach items="${sessionScope.tags}" var="tag">
     <span style="background-color: ${tag.getColor()}">

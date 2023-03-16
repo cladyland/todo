@@ -8,7 +8,7 @@
 <div class="position-absolute top-50 start-50 translate-middle">
     <form action="${pageContext.request.contextPath}/" method="post">
         <input name="username" placeholder="login"><br><br>
-        <input name="password" placeholder="password">
+        <input type="password" name="password" placeholder="password">
         <p>
         <center><span id="error" class="badge rounded-pill text-bg-warning"></span></center>
         </p>

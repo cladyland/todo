@@ -57,7 +57,7 @@ public class UserServiceImp implements UserService {
     @Override
     public UserDTO register(UserCommand userCommand) {
 
-        try(Session session = userDAO.getCurrentSession();) {
+        try (Session session = userDAO.getCurrentSession();) {
             session.getTransaction().begin();
 
             checkData(userCommand);
@@ -119,17 +119,30 @@ public class UserServiceImp implements UserService {
             throw new RegisterException("Last name " + ONLY_LETTERS);
         }
 
-        //TODO add password checking
+        checkPassword(command.getPassword());
     }
 
-    private void checkIfUsernameBusy(String username){
+    private void checkPassword(String password) {
+        int minPasswordLength = 8;
+
+        if (password.length() < minPasswordLength) {
+            throw new RegisterException("Password must consist of at least 8 characters");
+        }
+        if (!hashing.isPasswordStrong(password)) {
+            LOG.warn("Password is too weak");
+            throw new RegisterException("Password should contains at least 1 number, 1 lowercase letter, " +
+                    "1 uppercase letter and 1 symbol");
+        }
+    }
+
+    private void checkIfUsernameBusy(String username) {
         try {
             Long id = userDAO.getUserId(username);
             if (id != null) {
                 LOG.warn("Username '{}' is already busy", username);
                 throw new RegisterException("Username is already busy");
             }
-        } catch (NoResultException ex){
+        } catch (NoResultException ex) {
             LOG.info("Username '{}' is free", username);
         }
     }

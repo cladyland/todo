@@ -16,13 +16,15 @@
             <input id="username" name="username" placeholder="username" maxlength="20" required size="30"
                    value="${pageContext.request.getAttribute("username")}">
             <p><span id="wrong_username" class="badge text-bg-warning"></span></p>
-            <input id="first_name" name="firstName" placeholder="first name" maxlength="20" required size="30"
+            <input id="first_name" name="firstName" placeholder="first name" maxlength="50" required size="30"
                    value="${pageContext.request.getAttribute("firstName")}">
             <p><span id="wrong_first_name" class="badge text-bg-warning"></span></p>
-            <input id="last_name" name="lastName" placeholder="last name" maxlength="20" required size="30"
+            <input id="last_name" name="lastName" placeholder="last name" maxlength="50" required size="30"
                    value="${pageContext.request.getAttribute("lastName")}">
             <p><span id="wrong_last_name" class="badge text-bg-warning"></span></p>
-            <input id="password" name="password" placeholder="password" maxlength="20" required size="30"><br><br>
+            <input id="password" type="password" name="password" placeholder="password"
+                   minlength="8" maxlength="32" required size="30">
+            <p><span id="wrong_password" class="badge text-bg-warning"></span></p>
             <button class="btn btn-success" type="submit">register</button>
         </center>
     </form>
@@ -41,6 +43,8 @@
                 message_id = "wrong_first_name"
             } else if (error_message.startsWith("Last")) {
                 message_id = "wrong_last_name"
+            } else if (error_message.startsWith("Password")){
+                message_id = "wrong_password"
             }
             setMessageParamToWrongField(message_id, error_message)
         }
