@@ -44,7 +44,7 @@
     <br><br>
     <form action="${pageContext.request.contextPath}/todo/comment" method="post">
         <label for="comment">Left comment:</label><br>
-        <textarea id="comment" name="comment" style="width: 400px"></textarea><br>
+        <textarea id="comment" name="comment" style="width: 400px" placeholder="write your comment here"></textarea><br>
         <span id="wrong_comment"></span><br>
         <button type="submit" name="taskId" value="${task.getId()}" class="btn btn-light">add comment</button>
     </form>

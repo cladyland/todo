@@ -19,12 +19,14 @@
     </style>
 </head>
 <body>
-<form action="${pageContext.request.contextPath}/todo/new-task" method="get">
-    <button type="submit" class="btn btn-success">Add task</button>
-</form>
-<form action="${pageContext.request.contextPath}/todo/new-tag" method="get">
-    <button type="submit" class="btn btn-light">Add tag</button>
-</form>
+<center>
+    <form action="${pageContext.request.contextPath}/todo/new-task" method="get">
+        <button type="submit" class="btn btn-success">Add task</button>
+    </form>
+    <form action="${pageContext.request.contextPath}/todo/tags" method="get">
+        <button type="submit" class="btn btn-light">Add tag</button>
+    </form>
+</center>
 <div>
     <table class="table table-success table-striped" style="width: 90%">
         <tr style="text-align: center; font-family: fantasy">
@@ -55,7 +57,9 @@
                         </button>
                     </form>
                     <form action="${pageContext.request.contextPath}/todo" method="post">
-                        <button type="submit" class="btn btn-dark" name="delete" value="${task.getId()}">Delete</button>
+                        <button type="submit" class="btn btn-dark" name="delete" value="${task.getId()}"
+                                onclick="return confirm('Delete task ${task.getTitle()}?')">Delete
+                        </button>
                     </form>
                 </td>
             </tr>

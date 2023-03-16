@@ -23,12 +23,11 @@ import static kovalenko.vika.utils.AttributeConstant.TITLE;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
-import static kovalenko.vika.utils.LinkConstant.NEW_TAG_LINK;
-import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
+import static kovalenko.vika.utils.LinkConstant.TAG_LINK;
 
-@WebServlet(name = "NewTagServlet", value = NEW_TAG_LINK)
-public class NewTagServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(NewTagServlet.class);
+@WebServlet(name = "TagServlet", value = TAG_LINK)
+public class TagServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(TagServlet.class);
     private TagService tagService;
     private UserService userService;
 
@@ -59,7 +58,10 @@ public class NewTagServlet extends HttpServlet {
 
         List<TagDTO> userTags = tagService.getUserTags(id);
         req.getSession().setAttribute(USER_TAGS, userTags);
-        resp.sendRedirect(TODO_LINK);
+        req
+                .getServletContext()
+                .getRequestDispatcher(NEW_TAG.getValue())
+                .forward(req, resp);
     }
 
     private TagCommand buildTagCommand(HttpServletRequest req, Long userId) {
