@@ -31,7 +31,7 @@ public class Tag {
     private String color;
     @Column(name = "is_default")
     private boolean isDefault;
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private Long userId;
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
