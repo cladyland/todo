@@ -2,18 +2,17 @@ package kovalenko.vika.dao.impl;
 
 import kovalenko.vika.dao.CommentDAO;
 import kovalenko.vika.model.Comment;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class CommentDAOImp implements CommentDAO {
-    private static final Logger LOG = LoggerFactory.getLogger(CommentDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public CommentDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        LOG.debug("'CommentDAOImp' initialized");
+        log.debug("'CommentDAOImp' initialized");
     }
 
     @Override

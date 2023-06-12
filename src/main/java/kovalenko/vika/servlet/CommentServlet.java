@@ -2,8 +2,7 @@ package kovalenko.vika.servlet;
 
 import kovalenko.vika.command.CommentCommand;
 import kovalenko.vika.service.CommentService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -22,9 +21,9 @@ import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.COMMENT_LINK;
 import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 
+@Slf4j
 @WebServlet(name = "CommentServlet", value = COMMENT_LINK)
 public class CommentServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(CommentServlet.class);
     private CommentService commentService;
 
     @Override
@@ -33,7 +32,7 @@ public class CommentServlet extends HttpServlet {
         var context = config.getServletContext();
         commentService = (CommentService) context.getAttribute(COMMENT_SERVICE);
 
-        LOG.debug("'CommentServlet' initialized");
+        log.debug("'CommentServlet' initialized");
     }
 
     @Override

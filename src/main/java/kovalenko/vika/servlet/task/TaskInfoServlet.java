@@ -2,8 +2,7 @@ package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -21,9 +20,9 @@ import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
 import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 
+@Slf4j
 @WebServlet(name = "TaskInfoServlet", value = TASK_INFO_LINK)
 public class TaskInfoServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(TaskInfoServlet.class);
     private TaskService taskService;
 
     @Override
@@ -32,7 +31,7 @@ public class TaskInfoServlet extends HttpServlet {
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
 
-        LOG.debug("'TaskInfoServlet' initialized");
+        log.debug("'TaskInfoServlet' initialized");
     }
 
     @Override
@@ -50,7 +49,7 @@ public class TaskInfoServlet extends HttpServlet {
         TaskDTO task = taskService.getTaskById(taskId);
         if (isNull(task)) {
             resp.sendRedirect(NOT_FOUND_LINK);
-            LOG.warn("Someone tried to access a task with a nonexistent ID");
+            log.warn("Someone tried to access a task with a nonexistent ID");
             return;
         }
         req.setAttribute(TASK, task);

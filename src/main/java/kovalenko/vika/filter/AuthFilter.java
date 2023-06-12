@@ -1,7 +1,6 @@
 package kovalenko.vika.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,14 +19,14 @@ import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
 import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
 @WebFilter(filterName = "AuthorizationFilter", urlPatterns = {LOGIN_LINK, REGISTER_LINK})
 public class AuthFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(AuthFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'AuthorizationFilter' initialized");
+        log.debug("'AuthorizationFilter' initialized");
     }
 
     @Override
@@ -37,7 +36,7 @@ public class AuthFilter implements Filter {
 
         if (nonNull(httpRequest.getSession().getAttribute(USERNAME))) {
             httpResponse.sendRedirect(TODO_LINK);
-            LOG.warn("Unable to access the registration or authorization page: the user is already authorized");
+            log.warn("Unable to access the registration or authorization page: the user is already authorized");
             return;
         }
         chain.doFilter(request, response);
@@ -46,6 +45,6 @@ public class AuthFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'AuthorizationFilter' is destroyed");
+        log.debug("'AuthorizationFilter' is destroyed");
     }
 }

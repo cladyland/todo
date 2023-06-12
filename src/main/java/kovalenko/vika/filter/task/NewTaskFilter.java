@@ -1,8 +1,8 @@
 package kovalenko.vika.filter.task;
 
 import kovalenko.vika.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,9 +20,10 @@ import static kovalenko.vika.utils.AttributeConstant.USER_ID;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
 
+@Slf4j
+@Order(2)
 @WebFilter(filterName = "NewTaskFilter", value = NEW_TASK_LINK)
 public class NewTaskFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(NewTaskFilter.class);
     private UserService userService;
 
     @Override
@@ -31,7 +32,7 @@ public class NewTaskFilter implements Filter {
         var context = filterConfig.getServletContext();
         userService = (UserService) context.getAttribute(USER_SERVICE);
 
-        LOG.debug("'NewTaskFilter' initialized");
+        log.debug("'NewTaskFilter' initialized");
     }
 
     @Override
@@ -54,7 +55,7 @@ public class NewTaskFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'NewTaskFilter' is destroyed");
+        log.debug("'NewTaskFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {

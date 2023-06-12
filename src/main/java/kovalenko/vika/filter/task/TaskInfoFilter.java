@@ -1,7 +1,6 @@
 package kovalenko.vika.filter.task;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -22,14 +21,14 @@ import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
 import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
 import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
 
+@Slf4j
 @WebFilter(filterName = "TaskInfoFilter", value = TASK_INFO_LINK)
 public class TaskInfoFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(TaskInfoFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'TaskInfoFilter' initialized");
+        log.debug("'TaskInfoFilter' initialized");
     }
 
     @Override
@@ -53,7 +52,7 @@ public class TaskInfoFilter implements Filter {
             currentSession.removeAttribute(TASK_ID);
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         } else {
-            LOG.warn("The request cannot be fulfilled: taskId is null");
+            log.warn("The request cannot be fulfilled: taskId is null");
             httpResponse.sendRedirect(NOT_FOUND_LINK);
             return;
         }
@@ -65,6 +64,6 @@ public class TaskInfoFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'TaskInfoFilter' is destroyed");
+        log.debug("'TaskInfoFilter' is destroyed");
     }
 }

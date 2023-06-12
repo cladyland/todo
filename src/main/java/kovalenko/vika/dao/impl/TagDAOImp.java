@@ -3,36 +3,35 @@ package kovalenko.vika.dao.impl;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.model.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 public class TagDAOImp implements TagDAO {
-    private static final Logger LOG = LoggerFactory.getLogger(TagDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public TagDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        LOG.debug("'TagDAOImp' initialized");
+        log.debug("'TagDAOImp' initialized");
     }
 
     @Override
     public Tag save(Tag entity) {
         getCurrentSession().persist(entity);
-        LOG.debug("Tag '{}' saved", entity.getId());
+        log.debug("Tag '{}' saved", entity.getId());
         return entity;
     }
 
     @Override
     public Tag update(final Tag entity) {
         getCurrentSession().merge(entity);
-        LOG.debug("Tag '{}' updated", entity.getId());
+        log.debug("Tag '{}' updated", entity.getId());
         return entity;
     }
 

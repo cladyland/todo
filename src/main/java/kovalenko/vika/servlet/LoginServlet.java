@@ -4,8 +4,7 @@ import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.exception.ValidationException;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -26,9 +25,9 @@ import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
 import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
 @WebServlet(name = "LoginServlet", value = LOGIN_LINK)
 public class LoginServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
     private UserService userService;
     private TagService tagService;
 
@@ -39,7 +38,7 @@ public class LoginServlet extends HttpServlet {
         userService = (UserService) servletContext.getAttribute(USER_SERVICE);
         tagService = (TagService) servletContext.getAttribute(TAG_SERVICE);
 
-        LOG.debug("'LoginServlet' initialized");
+        log.debug("'LoginServlet' initialized");
     }
 
     @Override
@@ -60,7 +59,7 @@ public class LoginServlet extends HttpServlet {
             userDTO = userService.validate(username, password);
         } catch (ValidationException ex) {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            LOG.warn("The user has not been validated. Reason: {}", ex.getMessage());
+            log.warn("The user has not been validated. Reason: {}", ex.getMessage());
 
             req
                     .getServletContext()
@@ -76,6 +75,6 @@ public class LoginServlet extends HttpServlet {
 
         resp.sendRedirect(TODO_LINK);
 
-        LOG.info("User '{}' is authorized", username);
+        log.info("User '{}' is authorized", username);
     }
 }

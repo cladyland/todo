@@ -1,7 +1,6 @@
 package kovalenko.vika.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -24,15 +23,15 @@ import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
 
+@Slf4j
 @WebFilter(filterName = "RegisterFilter", value = REGISTER_LINK)
 public class RegisterFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterFilter.class);
     private static final String PRE_CHECK = "Pre-check of parameters for registration new user: status {}";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'RegisterFilter' initialized");
+        log.debug("'RegisterFilter' initialized");
     }
 
     @Override
@@ -51,13 +50,13 @@ public class RegisterFilter implements Filter {
 
         if (paramsAreNotBlank(parameters)) {
             httpRequest.setAttribute(PARAMETERS, parameters);
-            LOG.info(PRE_CHECK, "OK");
+            log.info(PRE_CHECK, "OK (all necessary params for registration are not blank)");
             chain.doFilter(request, response);
         } else {
             setParamsToRequest(parameters, httpRequest);
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
-            LOG.info(PRE_CHECK, "BAD (one or more parameters are blank)");
+            log.info(PRE_CHECK, "BAD (one or more parameters are blank)");
 
             httpRequest
                     .getServletContext()
@@ -69,7 +68,7 @@ public class RegisterFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'RegisterFilter' is destroyed");
+        log.debug("'RegisterFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {
@@ -87,7 +86,7 @@ public class RegisterFilter implements Filter {
         for (var parameter : parameters.entrySet()) {
             if (isNull(parameter.getValue())) {
                 countOfNullParams++;
-                LOG.warn("Parameter '{}' cannot be null", parameter.getKey());
+                log.warn("Parameter '{}' cannot be null", parameter.getKey());
             }
         }
         if (countOfNullParams > 0) {
@@ -101,7 +100,7 @@ public class RegisterFilter implements Filter {
             if (parameter.getValue().isBlank()) {
                 countOfBlankParams++;
                 parameters.replace(parameter.getKey(), "");
-                LOG.warn("Parameter '{}' cannot be blank", parameter.getKey());
+                log.warn("Parameter '{}' cannot be blank", parameter.getKey());
             }
         }
         return countOfBlankParams == 0;

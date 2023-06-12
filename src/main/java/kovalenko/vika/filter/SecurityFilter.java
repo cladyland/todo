@@ -1,8 +1,7 @@
 package kovalenko.vika.filter;
 
 import kovalenko.vika.dto.TaskDTO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,14 +24,14 @@ import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
 import static kovalenko.vika.utils.LinkConstant.SECURITY_LINK;
 
+@Slf4j
 @WebFilter(filterName = "SecurityFilter", value = SECURITY_LINK)
 public class SecurityFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'SecurityFilter' initialized");
+        log.debug("'SecurityFilter' initialized");
     }
 
     @Override
@@ -44,14 +43,14 @@ public class SecurityFilter implements Filter {
 
         if (isNull(username)) {
             String uri = httpRequest.getRequestURI();
-            LOG.warn("Access to '{}' is denied: authorization is required", uri);
+            log.warn("Access to '{}' is denied: authorization is required", uri);
             httpResponse.sendRedirect("/");
         } else {
             String moreInfoId = request.getParameter(MORE_INFO);
             if (nonNull(moreInfoId)) {
                 boolean accessIsAllowed = checkAccessRights(currentSession, Long.parseLong(moreInfoId));
                 if (!accessIsAllowed) {
-                    LOG.warn("User '{}' has no access to task '{}'", username, moreInfoId);
+                    log.warn("User '{}' has no access to task '{}'", username, moreInfoId);
                     httpResponse.sendRedirect(NOT_FOUND_LINK);
                     return;
                 }
@@ -64,7 +63,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'SecurityFilter' is destroyed");
+        log.debug("'SecurityFilter' is destroyed");
     }
 
     private boolean checkAccessRights(HttpSession session, Long taskId) {

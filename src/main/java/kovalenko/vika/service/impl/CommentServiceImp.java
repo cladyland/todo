@@ -10,12 +10,11 @@ import kovalenko.vika.model.Comment;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.CommentService;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class CommentServiceImp implements CommentService {
-    private static final Logger LOG = LoggerFactory.getLogger(CommentServiceImp.class);
     private final CommentDAO commentDAO;
     private final TaskDAO taskDAO;
     private final UserDAO userDAO;
@@ -27,7 +26,7 @@ public class CommentServiceImp implements CommentService {
         this.userDAO = userDAO;
         this.commentMapper = CommentMapper.INSTANCE;
 
-        LOG.debug("'CommentServiceImp' initialized");
+        log.debug("'CommentServiceImp' initialized");
     }
 
     @Override

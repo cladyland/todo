@@ -6,16 +6,15 @@ import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.mapper.TagMapper;
 import kovalenko.vika.model.Tag;
 import kovalenko.vika.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class TagServiceImp implements TagService {
-    private static final Logger LOG = LoggerFactory.getLogger(TagServiceImp.class);
     private final TagDAO tagDAO;
     private final TagMapper tagMapper;
 
@@ -23,7 +22,7 @@ public class TagServiceImp implements TagService {
         this.tagDAO = tagDAO;
         tagMapper = TagMapper.INSTANCE;
 
-        LOG.debug("'TagServiceImp' initialized");
+        log.debug("'TagServiceImp' initialized");
     }
 
     @Override

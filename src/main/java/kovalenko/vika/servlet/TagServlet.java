@@ -4,8 +4,7 @@ import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -25,9 +24,9 @@ import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
 import static kovalenko.vika.utils.LinkConstant.TAG_LINK;
 
+@Slf4j
 @WebServlet(name = "TagServlet", value = TAG_LINK)
 public class TagServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(TagServlet.class);
     private TagService tagService;
     private UserService userService;
 
@@ -38,7 +37,7 @@ public class TagServlet extends HttpServlet {
         tagService = (TagService) context.getAttribute(TAG_SERVICE);
         userService = (UserService) context.getAttribute(USER_SERVICE);
 
-        LOG.debug("'NewTagServlet' initialized");
+        log.debug("'NewTagServlet' initialized");
     }
 
     @Override

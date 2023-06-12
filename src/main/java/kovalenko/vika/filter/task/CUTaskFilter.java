@@ -1,7 +1,7 @@
 package kovalenko.vika.filter.task;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,14 +23,15 @@ import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
 import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
+@Order(1)
 @WebFilter(filterName = "CreateUpdateTaskFilter", urlPatterns = {NEW_TASK_LINK, TODO_LINK})
 public class CUTaskFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(CUTaskFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'CreateUpdateTaskFilter' initialized");
+        log.debug("'CreateUpdateTaskFilter' initialized");
     }
 
     @Override
@@ -48,7 +49,7 @@ public class CUTaskFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'CreateUpdateTaskFilter' is destroyed");
+        log.debug("'CreateUpdateTaskFilter' is destroyed");
     }
 
     private boolean isCreateTaskRequest(HttpServletRequest request) {

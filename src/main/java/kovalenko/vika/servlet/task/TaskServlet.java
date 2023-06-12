@@ -3,8 +3,7 @@ package kovalenko.vika.servlet.task;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -32,9 +31,9 @@ import static kovalenko.vika.utils.AttributeConstant.TITLE;
 import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
 @WebServlet(name = "TaskServlet", value = TODO_LINK)
 public class TaskServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(TaskServlet.class);
     private TaskService taskService;
 
     @Override
@@ -43,7 +42,7 @@ public class TaskServlet extends HttpServlet {
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
 
-        LOG.debug("'TaskServlet' initialized");
+        log.debug("'TaskServlet' initialized");
     }
 
     @Override

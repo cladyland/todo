@@ -10,14 +10,13 @@ import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.mapper.UserMapper;
 import kovalenko.vika.model.User;
 import kovalenko.vika.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
+@Slf4j
 public class UserServiceImp implements UserService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImp.class);
     private static final String WRONG_CHARACTERS = "The {} '{}' does not match the pattern, registration is not possible";
     private static final String ONLY_LETTERS = "can only contains latin letters";
     private final UserDAO userDAO;
@@ -29,7 +28,7 @@ public class UserServiceImp implements UserService {
         this.userMapper = UserMapper.INSTANCE;
         this.hashing = hashing;
 
-        LOG.debug("'UserServiceImp' initialized");
+        log.debug("'UserServiceImp' initialized");
     }
 
     @Override
@@ -45,7 +44,7 @@ public class UserServiceImp implements UserService {
             if (passwordIsCorrect) {
                 userDTO = userMapper.mapToDTO(user);
             } else {
-                LOG.warn("Incorrect password entered for user '{}'", username);
+                log.warn("Incorrect password entered for user '{}'", username);
                 throw new ValidationException("Wrong password!");
             }
 
@@ -71,7 +70,7 @@ public class UserServiceImp implements UserService {
 
             session.getTransaction().commit();
 
-            LOG.info("User '{}' registered", newUser.getUsername());
+            log.info("User '{}' registered", newUser.getUsername());
             return userMapper.mapToDTO(newUser);
         }
     }
@@ -90,12 +89,12 @@ public class UserServiceImp implements UserService {
         try {
             User user = userDAO.getUserByUsername(username, session);
             if (!user.getUsername().equals(username)) {
-                LOG.warn("The case of characters in the username '{}' does not match", username);
+                log.warn("The case of characters in the username '{}' does not match", username);
                 throw new ValidationException("Wrong username!");
             }
             return user;
         } catch (NoResultException ex) {
-            LOG.warn("User with username '{}' not found", username);
+            log.warn("User with username '{}' not found", username);
             throw new ValidationException("Wrong username!");
         }
     }
@@ -103,19 +102,19 @@ public class UserServiceImp implements UserService {
     private void checkData(UserCommand command) {
         String username = command.getUsername();
         if (!isWordCharacter(username)) {
-            LOG.warn(WRONG_CHARACTERS, "username", username);
+            log.warn(WRONG_CHARACTERS, "username", username);
             throw new RegisterException("Username can contains numbers and latin letters");
         }
 
         String firstName = command.getFirstName();
         if (!isWordOnlyOfLetters(firstName)) {
-            LOG.warn(WRONG_CHARACTERS, "first name", firstName);
+            log.warn(WRONG_CHARACTERS, "first name", firstName);
             throw new RegisterException("First name " + ONLY_LETTERS);
         }
 
         String lastName = command.getLastName();
         if (!isWordOnlyOfLetters(lastName)) {
-            LOG.warn(WRONG_CHARACTERS, "last name", lastName);
+            log.warn(WRONG_CHARACTERS, "last name", lastName);
             throw new RegisterException("Last name " + ONLY_LETTERS);
         }
 
@@ -129,7 +128,7 @@ public class UserServiceImp implements UserService {
             throw new RegisterException("Password must consist of at least 8 characters");
         }
         if (!hashing.isPasswordStrong(password)) {
-            LOG.warn("Password is too weak");
+            log.warn("Password is too weak");
             throw new RegisterException("Password should contains at least 1 number, 1 lowercase letter, " +
                     "1 uppercase letter and 1 symbol");
         }
@@ -139,11 +138,11 @@ public class UserServiceImp implements UserService {
         try {
             Long id = userDAO.getUserId(username);
             if (id != null) {
-                LOG.warn("Username '{}' is already busy", username);
+                log.warn("Username '{}' is already busy", username);
                 throw new RegisterException("Username is already busy");
             }
         } catch (NoResultException ex) {
-            LOG.info("Username '{}' is free", username);
+            log.info("Username '{}' is free", username);
         }
     }
 

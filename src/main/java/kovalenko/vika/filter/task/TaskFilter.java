@@ -6,8 +6,8 @@ import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -37,9 +37,10 @@ import static kovalenko.vika.utils.AttributeConstant.UPDATE;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
+@Order(3)
 @WebFilter(filterName = "TaskFilter", value = TODO_LINK)
 public class TaskFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(TaskFilter.class);
     private TaskService taskService;
     private TagService tagService;
 
@@ -50,7 +51,7 @@ public class TaskFilter implements Filter {
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
         tagService = (TagService) context.getAttribute(TAG_SERVICE);
 
-        LOG.debug("'TaskFilter' initialized");
+        log.debug("'TaskFilter' initialized");
     }
 
     @Override
@@ -85,7 +86,7 @@ public class TaskFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'TaskFilter' is destroyed");
+        log.debug("'TaskFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {

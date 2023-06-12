@@ -9,9 +9,8 @@ import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
@@ -19,8 +18,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
+@Slf4j
 public class TaskServiceImp implements TaskService {
-    private static final Logger LOG = LoggerFactory.getLogger(TaskServiceImp.class);
     private final TaskDAO taskDAO;
     private final TagDAO tagDAO;
     private final TaskMapper taskMapper;
@@ -30,7 +29,7 @@ public class TaskServiceImp implements TaskService {
         this.tagDAO = tagDAO;
         this.taskMapper = TaskMapper.INSTANCE;
 
-        LOG.debug("'TaskServiceImp' initialized");
+        log.debug("'TaskServiceImp' initialized");
     }
 
     @Override
@@ -40,7 +39,7 @@ public class TaskServiceImp implements TaskService {
 
             Task task = taskDAO.getById(id, session);
             if (isNull(task)){
-                LOG.warn("Task with id '{}' is not found", id);
+                log.warn("Task with id '{}' is not found", id);
                 return null;
             }
 

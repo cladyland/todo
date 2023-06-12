@@ -4,8 +4,7 @@ import kovalenko.vika.command.UserCommand;
 import kovalenko.vika.dto.UserDTO;
 import kovalenko.vika.exception.RegisterException;
 import kovalenko.vika.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,9 +28,9 @@ import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
 
+@Slf4j
 @WebServlet(name = "RegisterServlet", value = REGISTER_LINK)
 public class RegisterServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(RegisterServlet.class);
     private UserService userService;
 
     @Override
@@ -40,7 +39,7 @@ public class RegisterServlet extends HttpServlet {
         var context = config.getServletContext();
         userService = (UserService) context.getAttribute(USER_SERVICE);
 
-        LOG.debug("'RegisterServlet' initialized");
+        log.debug("'RegisterServlet' initialized");
     }
 
     @Override
@@ -65,7 +64,7 @@ public class RegisterServlet extends HttpServlet {
             req.setAttribute(FIRST_NAME, command.getFirstName());
             req.setAttribute(LAST_NAME, command.getLastName());
 
-            LOG.warn("Failed to register user. Reason: '{}'", ex.getMessage());
+            log.warn("Failed to register user. Reason: '{}'", ex.getMessage());
 
             resp.setStatus(422);
             req
@@ -80,7 +79,7 @@ public class RegisterServlet extends HttpServlet {
         session.setAttribute(USERNAME, userDTO.getUsername());
         resp.sendRedirect(TODO_LINK);
 
-        LOG.info("User '{}' successfully registered", command.getUsername());
+        log.info("User '{}' successfully registered", command.getUsername());
     }
 
     private UserCommand buildUserCommand(HashMap<String, String> params) {

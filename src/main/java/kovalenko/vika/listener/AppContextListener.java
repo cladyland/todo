@@ -21,10 +21,9 @@ import kovalenko.vika.service.TaskService;
 import kovalenko.vika.service.impl.TaskServiceImp;
 import kovalenko.vika.service.UserService;
 import kovalenko.vika.service.impl.UserServiceImp;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -35,13 +34,12 @@ import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
 
-
+@Slf4j
 @WebListener
 public class AppContextListener implements ServletContextListener {
-    private static final Logger LOG = LoggerFactory.getLogger(AppContextListener.class);
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        LOG.debug("'Servlet context' initialization begins...");
+        log.debug("'Servlet context' initialization begins...");
 
         SessionFactory sessionFactory = new Configuration()
                 .addAnnotatedClass(User.class)
@@ -67,6 +65,6 @@ public class AppContextListener implements ServletContextListener {
         servletContext.setAttribute(TAG_SERVICE, tagService);
         servletContext.setAttribute(COMMENT_SERVICE, commentService);
 
-        LOG.debug("'Servlet context' initialized successfully");
+        log.debug("'Servlet context' initialized successfully");
     }
 }

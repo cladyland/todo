@@ -2,32 +2,31 @@ package kovalenko.vika.dao.impl;
 
 import kovalenko.vika.dao.UserDAO;
 import kovalenko.vika.model.User;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+@Slf4j
 public class UserDAOImp implements UserDAO {
-    private static final Logger LOG = LoggerFactory.getLogger(UserDAOImp.class);
     private final SessionFactory sessionFactory;
 
     public UserDAOImp(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        LOG.debug("'UserDAOImp' initialized");
+        log.debug("'UserDAOImp' initialized");
     }
 
     @Override
     public User save(User entity) {
         getCurrentSession().persist(entity);
-        LOG.info("User '{}' added to DB", entity.getUsername());
+        log.info("User '{}' added to DB", entity.getUsername());
         return entity;
     }
 
     @Override
     public User update(final User entity) {
         getCurrentSession().merge(entity);
-        LOG.info("Data of user '{}' has been updated", entity.getUsername());
+        log.info("Data of user '{}' has been updated", entity.getUsername());
         return entity;
     }
 

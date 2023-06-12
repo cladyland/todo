@@ -1,7 +1,6 @@
 package kovalenko.vika.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -19,14 +18,14 @@ import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
 import static kovalenko.vika.utils.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
 
+@Slf4j
 @WebFilter(filterName = "LoginFilter", value = LOGIN_LINK)
 public class LoginFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(LoginFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
-        LOG.debug("'LoginFilter' initialized");
+        log.debug("'LoginFilter' initialized");
     }
 
     @Override
@@ -45,7 +44,7 @@ public class LoginFilter implements Filter {
 
         if (username.isBlank() || password.isBlank()) {
             httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            LOG.warn("Unable to authorize. Username or password is blank");
+            log.warn("Unable to authorize. Username or password is blank");
 
             httpRequest
                     .getServletContext()
@@ -60,7 +59,7 @@ public class LoginFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-        LOG.debug("'LoginFilter' is destroyed");
+        log.debug("'LoginFilter' is destroyed");
     }
 
     private boolean isGetRequest(HttpServletRequest request) {
