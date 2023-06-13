@@ -18,11 +18,11 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.utils.AttributeConstant.MORE_INFO;
-import static kovalenko.vika.utils.AttributeConstant.TASKS;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
-import static kovalenko.vika.utils.LinkConstant.SECURITY_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.MORE_INFO;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASKS;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.SECURITY_LINK;
 
 @Slf4j
 @WebFilter(filterName = "SecurityFilter", value = SECURITY_LINK)

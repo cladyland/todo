@@ -9,6 +9,7 @@ import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.service.TaskService;
+import kovalenko.vika.utils.AppUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
@@ -76,6 +77,8 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public TaskDTO createTask(TaskCommand taskCommand, Set<Long> tagIds) {
+        AppUtil.checkIfTitleIsBlank(taskCommand.getTitle());
+
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
@@ -90,6 +93,8 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public void updateTask(TaskDTO taskDTO, Set<Long> tagIds) {
+        AppUtil.checkIfTitleIsBlank(taskDTO.getTitle());
+
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
 

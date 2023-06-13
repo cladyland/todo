@@ -29,10 +29,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-import static kovalenko.vika.utils.AttributeConstant.COMMENT_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TAG_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_SERVICE;
 
 @Slf4j
 @WebListener

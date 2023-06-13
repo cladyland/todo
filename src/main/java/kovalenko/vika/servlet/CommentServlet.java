@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import static kovalenko.vika.utils.AttributeConstant.COMMENT;
-import static kovalenko.vika.utils.AttributeConstant.COMMENT_ADD_TO_TASK;
-import static kovalenko.vika.utils.AttributeConstant.COMMENT_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.LinkConstant.COMMENT_LINK;
-import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADD_TO_TASK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.LinkConstant.COMMENT_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.TASK_INFO_LINK;
 
 @Slf4j
 @WebServlet(name = "CommentServlet", value = COMMENT_LINK)

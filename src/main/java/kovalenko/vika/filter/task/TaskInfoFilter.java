@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.utils.AttributeConstant.COMMENT_ADD_TO_TASK;
-import static kovalenko.vika.utils.AttributeConstant.MORE_INFO;
-import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
-import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
-import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADD_TO_TASK;
+import static kovalenko.vika.utils.constants.AttributeConstant.MORE_INFO;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
+import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.TASK_INFO_LINK;
 
 @Slf4j
 @WebFilter(filterName = "TaskInfoFilter", value = TASK_INFO_LINK)

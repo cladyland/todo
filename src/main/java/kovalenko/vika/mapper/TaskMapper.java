@@ -4,11 +4,13 @@ import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.CommentDTO;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
+import kovalenko.vika.model.Tag;
 import kovalenko.vika.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -36,7 +38,9 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
     Task mapToEntity(TaskCommand taskCommand);
 
     private List<TagDTO> getTaskTagDTO(Task task) {
-        return task.getTags()
+        Set<Tag> tags = task.getTags();
+
+        return isNull(tags) ? null : tags
                 .stream()
                 .map(TagMapper.INSTANCE::mapToDTO)
                 .collect(Collectors.toList());

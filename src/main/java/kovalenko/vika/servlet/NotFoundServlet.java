@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.NOT_FOUND_JSP;
-import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
 
 @WebServlet(name = "NotFoundServlet", value = NOT_FOUND_LINK)
 public class NotFoundServlet extends HttpServlet {

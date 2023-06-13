@@ -1,4 +1,4 @@
-package kovalenko.vika.utils;
+package kovalenko.vika.utils.constants;
 
 public class LinkConstant {
     public final static String LOGIN_LINK = "/";

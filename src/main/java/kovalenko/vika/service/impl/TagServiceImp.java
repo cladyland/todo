@@ -6,6 +6,7 @@ import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.mapper.TagMapper;
 import kovalenko.vika.model.Tag;
 import kovalenko.vika.service.TagService;
+import kovalenko.vika.utils.AppUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
@@ -51,6 +52,8 @@ public class TagServiceImp implements TagService {
 
     @Override
     public TagDTO createTag(TagCommand tagCommand) {
+        AppUtil.checkIfTitleIsBlank(tagCommand.getTitle());
+
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
 

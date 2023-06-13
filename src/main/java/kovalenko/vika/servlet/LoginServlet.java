@@ -16,14 +16,14 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.INDEX_JSP;
-import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
-import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
-import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
-import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
-import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.PASSWORD;
+import static kovalenko.vika.utils.constants.AttributeConstant.TAG_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_ATTR;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_TAGS;
+import static kovalenko.vika.utils.constants.LinkConstant.LOGIN_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.TODO_LINK;
 
 @Slf4j
 @WebServlet(name = "LoginServlet", value = LOGIN_LINK)

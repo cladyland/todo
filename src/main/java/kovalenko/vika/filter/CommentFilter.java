@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static java.util.Objects.isNull;
-import static kovalenko.vika.utils.AttributeConstant.COMMENT;
-import static kovalenko.vika.utils.AttributeConstant.TASK_ID;
-import static kovalenko.vika.utils.LinkConstant.COMMENT_LINK;
-import static kovalenko.vika.utils.LinkConstant.NOT_FOUND_LINK;
-import static kovalenko.vika.utils.LinkConstant.TASK_INFO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
+import static kovalenko.vika.utils.constants.LinkConstant.COMMENT_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.TASK_INFO_LINK;
 
 @Slf4j
 @WebFilter(filterName = "CommentFilter", value = COMMENT_LINK)

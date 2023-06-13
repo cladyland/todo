@@ -1,4 +1,4 @@
-package kovalenko.vika.utils;
+package kovalenko.vika.utils.constants;
 
 public class AttributeConstant {
     public final static String USER_SERVICE = "userService";

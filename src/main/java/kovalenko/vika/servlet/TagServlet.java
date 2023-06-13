@@ -2,8 +2,10 @@ package kovalenko.vika.servlet;
 
 import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dto.TagDTO;
+import kovalenko.vika.exception.TaskException;
 import kovalenko.vika.service.TagService;
 import kovalenko.vika.service.UserService;
+import kovalenko.vika.utils.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
@@ -16,13 +18,13 @@ import java.io.IOException;
 import java.util.List;
 
 import static kovalenko.vika.enums.JSP.NEW_TAG;
-import static kovalenko.vika.utils.AttributeConstant.COLOR;
-import static kovalenko.vika.utils.AttributeConstant.TAG_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.USER_TAGS;
-import static kovalenko.vika.utils.LinkConstant.TAG_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COLOR;
+import static kovalenko.vika.utils.constants.AttributeConstant.TAG_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_TAGS;
+import static kovalenko.vika.utils.constants.LinkConstant.TAG_LINK;
 
 @Slf4j
 @WebServlet(name = "TagServlet", value = TAG_LINK)
@@ -53,7 +55,12 @@ public class TagServlet extends HttpServlet {
         var username = (String) req.getSession().getAttribute(USERNAME);
         Long id = userService.getUserId(username);
 
-        tagService.createTag(buildTagCommand(req, id));
+        try {
+            tagService.createTag(buildTagCommand(req, id));
+        } catch (TaskException ex) {
+            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TAG.getValue());
+            return;
+        }
 
         List<TagDTO> userTags = tagService.getUserTags(id);
         req.getSession().setAttribute(USER_TAGS, userTags);

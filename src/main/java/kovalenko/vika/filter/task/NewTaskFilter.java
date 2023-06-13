@@ -15,10 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.AttributeConstant.USER_ID;
-import static kovalenko.vika.utils.AttributeConstant.USER_SERVICE;
-import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_ID;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_SERVICE;
+import static kovalenko.vika.utils.constants.LinkConstant.NEW_TASK_LINK;
 
 @Slf4j
 @Order(2)

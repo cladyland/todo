@@ -14,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static kovalenko.vika.enums.JSP.INDEX_JSP;
-import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.LinkConstant.LOGIN_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.PASSWORD;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.LinkConstant.LOGIN_LINK;
 
 @Slf4j
 @WebFilter(filterName = "LoginFilter", value = LOGIN_LINK)

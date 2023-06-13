@@ -2,7 +2,9 @@ package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.dto.UserDTO;
+import kovalenko.vika.exception.TaskException;
 import kovalenko.vika.service.TaskService;
+import kovalenko.vika.utils.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
@@ -18,18 +20,19 @@ import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Objects.nonNull;
+import static kovalenko.vika.enums.JSP.TASK_UPDATE;
 import static kovalenko.vika.enums.JSP.TODO;
-import static kovalenko.vika.utils.AttributeConstant.DELETE;
-import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
-import static kovalenko.vika.utils.AttributeConstant.PRIORITY;
-import static kovalenko.vika.utils.AttributeConstant.SAVE_UPDATE;
-import static kovalenko.vika.utils.AttributeConstant.STATUS;
-import static kovalenko.vika.utils.AttributeConstant.TASKS;
-import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
-import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.USER_ATTR;
-import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.DELETE;
+import static kovalenko.vika.utils.constants.AttributeConstant.DESCRIPTION;
+import static kovalenko.vika.utils.constants.AttributeConstant.PRIORITY;
+import static kovalenko.vika.utils.constants.AttributeConstant.SAVE_UPDATE;
+import static kovalenko.vika.utils.constants.AttributeConstant.STATUS;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASKS;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_TAGS;
+import static kovalenko.vika.utils.constants.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_ATTR;
+import static kovalenko.vika.utils.constants.LinkConstant.TODO_LINK;
 
 @Slf4j
 @WebServlet(name = "TaskServlet", value = TODO_LINK)
@@ -55,7 +58,13 @@ public class TaskServlet extends HttpServlet {
         if (nonNull(req.getParameter(DELETE))) {
             deleteTask(req);
         } else if (nonNull(req.getParameter(SAVE_UPDATE))) {
-            updateTask(req);
+            try {
+                updateTask(req);
+            } catch (TaskException ex) {
+                ServletUtil.setRequestAttributesForUpdatingTask(req, taskService.getTaskById(Long.valueOf(req.getParameter(SAVE_UPDATE))));
+                ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), TASK_UPDATE.getValue());
+                return;
+            }
         }
 
         todoForward(req, resp);

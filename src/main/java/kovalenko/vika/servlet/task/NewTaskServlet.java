@@ -4,9 +4,10 @@ import kovalenko.vika.command.TaskCommand;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
+import kovalenko.vika.exception.TaskException;
 import kovalenko.vika.service.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import kovalenko.vika.utils.ServletUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -20,22 +21,22 @@ import java.util.List;
 import java.util.Set;
 
 import static kovalenko.vika.enums.JSP.NEW_TASK;
-import static kovalenko.vika.utils.AttributeConstant.DESCRIPTION;
-import static kovalenko.vika.utils.AttributeConstant.PRIORITIES;
-import static kovalenko.vika.utils.AttributeConstant.PRIORITY;
-import static kovalenko.vika.utils.AttributeConstant.STATUS;
-import static kovalenko.vika.utils.AttributeConstant.STATUSES;
-import static kovalenko.vika.utils.AttributeConstant.TASKS;
-import static kovalenko.vika.utils.AttributeConstant.TASK_SERVICE;
-import static kovalenko.vika.utils.AttributeConstant.TASK_TAGS;
-import static kovalenko.vika.utils.AttributeConstant.TITLE;
-import static kovalenko.vika.utils.AttributeConstant.USER_ID;
-import static kovalenko.vika.utils.LinkConstant.NEW_TASK_LINK;
-import static kovalenko.vika.utils.LinkConstant.TODO_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.DESCRIPTION;
+import static kovalenko.vika.utils.constants.AttributeConstant.PRIORITIES;
+import static kovalenko.vika.utils.constants.AttributeConstant.PRIORITY;
+import static kovalenko.vika.utils.constants.AttributeConstant.STATUS;
+import static kovalenko.vika.utils.constants.AttributeConstant.STATUSES;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASKS;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.TASK_TAGS;
+import static kovalenko.vika.utils.constants.AttributeConstant.TITLE;
+import static kovalenko.vika.utils.constants.AttributeConstant.USER_ID;
+import static kovalenko.vika.utils.constants.LinkConstant.NEW_TASK_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.TODO_LINK;
 
+@Slf4j
 @WebServlet(name = "NewTaskServlet", value = NEW_TASK_LINK)
 public class NewTaskServlet extends HttpServlet {
-    private static final Logger LOG = LoggerFactory.getLogger(NewTaskServlet.class);
     private TaskService taskService;
 
     @Override
@@ -44,13 +45,12 @@ public class NewTaskServlet extends HttpServlet {
         var context = config.getServletContext();
         taskService = (TaskService) context.getAttribute(TASK_SERVICE);
 
-        LOG.debug("'NewTaskServlet' initialized");
+        log.debug("'NewTaskServlet' initialized");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute(PRIORITIES, taskService.getPriorities());
-        req.setAttribute(STATUSES, taskService.getStatuses());
+        setPrioritiesAndStatuses(req);
 
         req
                 .getServletContext()
@@ -64,12 +64,24 @@ public class NewTaskServlet extends HttpServlet {
         var taskTagsIds = (Set<Long>) req.getAttribute(TASK_TAGS);
 
         TaskCommand command = buildTaskCommand(req);
-        TaskDTO addedTask = taskService.createTask(command, taskTagsIds);
+        TaskDTO addedTask;
+        try {
+            addedTask = taskService.createTask(command, taskTagsIds);
+        } catch (TaskException ex){
+            setPrioritiesAndStatuses(req);
+            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TASK.getValue());
+            return;
+        }
 
         List<TaskDTO> tasks = getUserTasks(session);
         tasks.add(addedTask);
         session.setAttribute(TASKS, tasks);
         resp.sendRedirect(TODO_LINK);
+    }
+
+    private void setPrioritiesAndStatuses(HttpServletRequest request){
+        request.setAttribute(PRIORITIES, taskService.getPriorities());
+        request.setAttribute(STATUSES, taskService.getStatuses());
     }
 
     private TaskCommand buildTaskCommand(HttpServletRequest req) {
