@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tag", schema = "todo")
+@Table(name = "tag")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
