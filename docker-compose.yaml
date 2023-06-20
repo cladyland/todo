@@ -1,0 +1,39 @@
+version: "3"
+services:
+  web:
+    container_name: todo_server
+    build: .
+    ports:
+      - "8888:8080"
+    environment:
+      sql_dialect: ${sql_dialect}
+      sql_driver: ${sql_driver}
+      db_url: ${db_url}
+      db_username: ${db_username}
+      db_password: ${db_password}
+      session_context: ${session_context}
+      show_sql: ${show_sql}
+      format_sql: ${format_sql}
+      hbm2ddl_auto: ${hbm2ddl_auto}
+    depends_on:
+      - db
+    networks:
+      - todo_network
+
+  db:
+    container_name: todo_db
+    image: postgres
+    expose:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+      POSTGRES_DB: ${db_name}
+    volumes:
+      - ${db_init}
+    networks:
+      - todo_network
+
+networks:
+  todo_network:
+    driver: bridge

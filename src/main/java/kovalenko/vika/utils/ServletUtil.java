@@ -40,7 +40,7 @@ public class ServletUtil {
 
     private static String getTaskTagIds(TaskDTO task) {
         List<TagDTO> taskTags = task.getTags();
-        if (isNull(taskTags) || taskTags.size() == 0){
+        if (isNull(taskTags) || taskTags.isEmpty()){
             return null;
         }
         StringBuilder taskTagIds = new StringBuilder();
