@@ -37,6 +37,8 @@ public interface TaskMapper extends BasicMapper<Task, TaskDTO> {
 
     Task mapToEntity(TaskCommand taskCommand);
 
+    List<TaskDTO> listToDTO(List<Task> tasks);
+
     private List<TagDTO> getTaskTagDTO(Task task) {
         Set<Tag> tags = task.getTags();
 

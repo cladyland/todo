@@ -4,7 +4,6 @@ import kovalenko.vika.command.CommentCommand;
 import kovalenko.vika.dao.CommentDAO;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dao.UserDAO;
-import kovalenko.vika.dto.CommentDTO;
 import kovalenko.vika.mapper.CommentMapper;
 import kovalenko.vika.model.Comment;
 import kovalenko.vika.model.Task;
@@ -30,7 +29,7 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public CommentDTO createComment(CommentCommand commentCommand) {
+    public void createComment(CommentCommand commentCommand) {
         Long taskId = commentCommand.getTaskId();
         String username = commentCommand.getUsername();
 
@@ -42,10 +41,10 @@ public class CommentServiceImp implements CommentService {
             Comment comment = commentMapper.mapToEntity(commentCommand);
             comment.setTask(task);
             comment.setUser(user);
-            Comment savedComment = commentDAO.save(comment);
+            commentDAO.save(comment);
 
             session.getTransaction().commit();
-            return commentMapper.mapToDTO(savedComment);
+            log.debug("Comment '{}' saved", comment.getId());
         }
     }
 }

@@ -1,6 +1,7 @@
 package kovalenko.vika.utils.constants;
 
 public class AttributeConstant {
+    public final static String REGISTER_SERVICE = "registerService";
     public final static String USER_SERVICE = "userService";
     public final static String TASK_SERVICE = "taskService";
     public final static String TAG_SERVICE = "tagService";
@@ -8,6 +9,7 @@ public class AttributeConstant {
 
     public final static String PARAMETERS = "parameters";
     public final static String ERROR_MESSAGE = "error";
+    public final static String ERRORS_MAP = "errors";
 
     public final static String USER_ATTR = "user";
     public final static String USER_ID = "userId";

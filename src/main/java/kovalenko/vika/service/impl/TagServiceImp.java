@@ -4,15 +4,12 @@ import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.mapper.TagMapper;
-import kovalenko.vika.model.Tag;
 import kovalenko.vika.service.TagService;
-import kovalenko.vika.utils.AppUtil;
+import kovalenko.vika.utils.AppMiddleware;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class TagServiceImp implements TagService {
@@ -21,7 +18,7 @@ public class TagServiceImp implements TagService {
 
     public TagServiceImp(TagDAO tagDAO) {
         this.tagDAO = tagDAO;
-        tagMapper = TagMapper.INSTANCE;
+        this.tagMapper = TagMapper.INSTANCE;
 
         log.debug("'TagServiceImp' initialized");
     }
@@ -51,28 +48,16 @@ public class TagServiceImp implements TagService {
     }
 
     @Override
-    public TagDTO createTag(TagCommand tagCommand) {
-        AppUtil.checkIfTitleIsBlank(tagCommand.getTitle());
+    public void createTag(TagCommand tagCommand) {
+        AppMiddleware.checkIfTitleIsBlank(tagCommand.getTitle());
 
         try (Session session = tagDAO.getCurrentSession()) {
             session.getTransaction().begin();
 
-            Tag tag = tagDAO.save(tagMapper.mapToEntity(tagCommand));
+            tagDAO.save(tagMapper.mapToEntity(tagCommand));
 
             session.getTransaction().commit();
-            return tagMapper.mapToDTO(tag);
-        }
-    }
-
-    @Override
-    public Set<TagDTO> getTagsByIds(Set<Long> ids) {
-        try (Session session = tagDAO.getCurrentSession()) {
-            session.getTransaction().begin();
-
-            Set<Tag> tags = tagDAO.getTagsByIds(ids);
-
-            session.getTransaction().commit();
-            return tags.stream().map(tagMapper::mapToDTO).collect(Collectors.toSet());
+            log.debug("Tag '{}' for user '{}' saved", tagCommand.getTitle(), tagCommand.getUserId());
         }
     }
 }

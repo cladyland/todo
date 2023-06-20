@@ -1,5 +1,8 @@
 package kovalenko.vika.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import kovalenko.vika.dto.TagDTO;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.enums.TaskPriority;
@@ -19,6 +22,11 @@ import static kovalenko.vika.utils.constants.AttributeConstant.TASK;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_TAGS;
 
 public class ServletUtil {
+
+    public static <T> String convertToJson(T object) throws JsonProcessingException {
+        ObjectWriter mapper = new ObjectMapper().writer();
+        return mapper.writeValueAsString(object);
+    }
 
     public static void forwardWithErrorMessage(HttpServletRequest request, HttpServletResponse response,
                                                String errorMessage, String requestDispatcher) throws ServletException, IOException {

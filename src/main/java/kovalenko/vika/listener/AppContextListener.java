@@ -5,6 +5,8 @@ import kovalenko.vika.dao.CommentDAO;
 import kovalenko.vika.dao.TagDAO;
 import kovalenko.vika.dao.TaskDAO;
 import kovalenko.vika.dao.UserDAO;
+import kovalenko.vika.service.RegisterService;
+import kovalenko.vika.service.impl.RegisterServiceImp;
 import kovalenko.vika.utils.Hashing;
 import kovalenko.vika.dao.impl.CommentDAOImp;
 import kovalenko.vika.dao.impl.TagDAOImp;
@@ -25,6 +27,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
 import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_SERVICE;
+import static kovalenko.vika.utils.constants.AttributeConstant.REGISTER_SERVICE;
 import static kovalenko.vika.utils.constants.AttributeConstant.TAG_SERVICE;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_SERVICE;
 import static kovalenko.vika.utils.constants.AttributeConstant.USER_SERVICE;
@@ -46,12 +49,14 @@ public class AppContextListener implements ServletContextListener {
         TagDAO tagDAO = new TagDAOImp(sessionFactory);
         CommentDAO commentDAO = new CommentDAOImp(sessionFactory);
 
+        RegisterService registerService = new RegisterServiceImp(userDAO, hashing);
         UserService userService = new UserServiceImp(userDAO, hashing);
         TaskService taskService = new TaskServiceImp(taskDAO, tagDAO);
         TagService tagService = new TagServiceImp(tagDAO);
         CommentService commentService = new CommentServiceImp(commentDAO, taskDAO, userDAO);
 
         var servletContext = sce.getServletContext();
+        servletContext.setAttribute(REGISTER_SERVICE, registerService);
         servletContext.setAttribute(USER_SERVICE, userService);
         servletContext.setAttribute(TASK_SERVICE, taskService);
         servletContext.setAttribute(TAG_SERVICE, tagService);

@@ -9,13 +9,12 @@ import kovalenko.vika.mapper.TaskMapper;
 import kovalenko.vika.dto.TaskDTO;
 import kovalenko.vika.model.Task;
 import kovalenko.vika.service.TaskService;
-import kovalenko.vika.utils.AppUtil;
+import kovalenko.vika.utils.AppMiddleware;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -39,7 +38,7 @@ public class TaskServiceImp implements TaskService {
             session.getTransaction().begin();
 
             Task task = taskDAO.getById(id, session);
-            if (isNull(task)){
+            if (isNull(task)) {
                 log.warn("Task with id '{}' is not found", id);
                 return null;
             }
@@ -55,13 +54,9 @@ public class TaskServiceImp implements TaskService {
             session.getTransaction().begin();
 
             List<Task> tasks = taskDAO.getAllUserTasks(username, session);
-            List<TaskDTO> result = tasks
-                    .stream()
-                    .map(taskMapper::mapToDTO)
-                    .collect(Collectors.toList());
 
             session.getTransaction().commit();
-            return result;
+            return taskMapper.listToDTO(tasks);
         }
     }
 
@@ -77,7 +72,7 @@ public class TaskServiceImp implements TaskService {
 
     @Override
     public TaskDTO createTask(TaskCommand taskCommand, Set<Long> tagIds) {
-        AppUtil.checkIfTitleIsBlank(taskCommand.getTitle());
+        AppMiddleware.checkIfTitleIsBlank(taskCommand.getTitle());
 
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
@@ -87,13 +82,15 @@ public class TaskServiceImp implements TaskService {
             taskDAO.save(task);
 
             session.getTransaction().commit();
+            log.debug("Task '{}' saved", task.getId());
+
             return taskMapper.mapToDTO(task);
         }
     }
 
     @Override
     public void updateTask(TaskDTO taskDTO, Set<Long> tagIds) {
-        AppUtil.checkIfTitleIsBlank(taskDTO.getTitle());
+        AppMiddleware.checkIfTitleIsBlank(taskDTO.getTitle());
 
         try (Session session = taskDAO.getCurrentSession()) {
             session.getTransaction().begin();
@@ -108,6 +105,7 @@ public class TaskServiceImp implements TaskService {
             taskDAO.update(task);
 
             session.getTransaction().commit();
+            log.debug("Task '{}' updated", task.getId());
         }
     }
 
@@ -119,6 +117,8 @@ public class TaskServiceImp implements TaskService {
             Task task = taskDAO.delete(id, session);
 
             session.getTransaction().commit();
+            log.debug("Task '{}' deleted", task.getId());
+
             return taskMapper.mapToDTO(task);
         }
     }
