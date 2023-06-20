@@ -21,6 +21,7 @@ public class TaskDAOImp implements TaskDAO {
 
     @Override
     public Task getById(Long id, Session session) {
+        log.debug("Getting task with id '{}'", id);
         return session.get(Task.class, id);
     }
 
@@ -51,6 +52,9 @@ public class TaskDAOImp implements TaskDAO {
         String queryStr = "select t from Task t where t.user.username = :user";
         Query<Task> query = session.createQuery(queryStr, Task.class);
         query.setParameter("user", username);
+
+        log.debug("Getting all user task for user '{}'", username);
+
         return query.getResultList();
     }
 

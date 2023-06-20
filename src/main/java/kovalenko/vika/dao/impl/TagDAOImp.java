@@ -24,7 +24,7 @@ public class TagDAOImp implements TagDAO {
     @Override
     public Tag save(Tag entity) {
         getCurrentSession().persist(entity);
-        log.debug("Tag '{}' saved", entity.getId());
+        log.debug("Tag '{}' from user '{}' saved", entity.getId(), entity.getUserId());
         return entity;
     }
 
@@ -37,18 +37,22 @@ public class TagDAOImp implements TagDAO {
 
     @Override
     public List<TagDTO> getDefaultTags(Session session) {
-        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) " +
-                "from Tag t where t.isDefault = true";
+        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) from Tag t where t.isDefault = true";
         Query<TagDTO> query = session.createQuery(queryStr, TagDTO.class);
+
+        log.debug("Getting default tags");
+
         return query.getResultList();
     }
 
     @Override
     public List<TagDTO> getUserTags(Long userId) {
-        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) " +
-                "from Tag t where t.userId = :user";
+        String queryStr = "select new kovalenko.vika.dto.TagDTO(t.id, t.title, t.color) from Tag t where t.userId = :user";
         Query<TagDTO> query = getCurrentSession().createQuery(queryStr, TagDTO.class);
         query.setParameter("user", userId);
+
+        log.debug("Getting user tags for user '{}'", userId);
+
         return query.getResultList();
     }
 
@@ -57,6 +61,9 @@ public class TagDAOImp implements TagDAO {
         String queryStr = "select t from Tag t where t.id in (:ids)";
         Query<Tag> query = getCurrentSession().createQuery(queryStr, Tag.class);
         query.setParameter("ids", ids);
+
+        log.debug("Getting tags with ids '{}'", ids);
+
         return new HashSet<>(query.getResultList());
     }
 

@@ -18,6 +18,7 @@ public class CommentDAOImp implements CommentDAO {
     @Override
     public Comment save(Comment entity) {
         getCurrentSession().persist(entity);
+        log.debug("Comment with id '{}' from user '{}' saved", entity.getId(), entity.getUser().getId());
         return entity;
     }
 
