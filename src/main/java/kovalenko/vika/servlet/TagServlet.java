@@ -29,6 +29,7 @@ import static kovalenko.vika.utils.constants.LinkConstant.TAG_LINK;
 @Slf4j
 @WebServlet(name = "TagServlet", value = TAG_LINK)
 public class TagServlet extends HttpServlet {
+    private static final String NEW_TAG_JSP = NEW_TAG.getValue();
     private TagService tagService;
     private UserService userService;
 
@@ -46,7 +47,7 @@ public class TagServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req
                 .getServletContext()
-                .getRequestDispatcher(NEW_TAG.getValue())
+                .getRequestDispatcher(NEW_TAG_JSP)
                 .forward(req, resp);
     }
 
@@ -58,7 +59,7 @@ public class TagServlet extends HttpServlet {
         try {
             tagService.createTag(buildTagCommand(req, id));
         } catch (TaskException ex) {
-            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TAG.getValue());
+            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TAG_JSP);
             return;
         }
 
@@ -66,7 +67,7 @@ public class TagServlet extends HttpServlet {
         req.getSession().setAttribute(USER_TAGS, userTags);
         req
                 .getServletContext()
-                .getRequestDispatcher(NEW_TAG.getValue())
+                .getRequestDispatcher(NEW_TAG_JSP)
                 .forward(req, resp);
     }
 

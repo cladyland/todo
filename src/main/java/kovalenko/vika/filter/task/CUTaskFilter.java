@@ -1,6 +1,5 @@
 package kovalenko.vika.filter.task;
 
-import kovalenko.vika.utils.AppUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.Order;
 
@@ -13,7 +12,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.utils.constants.AttributeConstant.SAVE_UPDATE;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_TAGS;
@@ -37,18 +40,13 @@ public class CUTaskFilter implements Filter {
 
         if (isCreateTaskRequest(httpRequest) || isUpdateTaskRequest(httpRequest)) {
             String[] taskTagsIds = httpRequest.getParameterValues(TASK_TAGS);
-            if(nonNull(taskTagsIds)) {
-                request.setAttribute(TASK_TAGS, AppUtil.convertIds(taskTagsIds));
+            if (nonNull(taskTagsIds)) {
+                request.setAttribute(TASK_TAGS, convertIds(taskTagsIds));
+                log.debug("Added tag ids {} to request for create or update task", Arrays.toString(taskTagsIds));
             }
         }
 
         chain.doFilter(request, response);
-    }
-
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-        log.debug("'CreateUpdateTaskFilter' is destroyed");
     }
 
     private boolean isCreateTaskRequest(HttpServletRequest request) {
@@ -57,5 +55,20 @@ public class CUTaskFilter implements Filter {
 
     private boolean isUpdateTaskRequest(HttpServletRequest request) {
         return nonNull(request.getParameter(SAVE_UPDATE));
+    }
+
+    private Set<Long> convertIds(String[] ids) {
+        if (isNull(ids)) {
+            return null;
+        }
+        return Arrays.stream(ids)
+                .map(Long::parseLong)
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+        log.debug("'CreateUpdateTaskFilter' is destroyed");
     }
 }

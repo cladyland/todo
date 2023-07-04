@@ -67,9 +67,12 @@ public class NewTaskServlet extends HttpServlet {
         TaskDTO addedTask;
         try {
             addedTask = taskService.createTask(command, taskTagsIds);
-        } catch (TaskException ex){
+            log.debug("Added new task with id '{}'", addedTask.getId());
+        } catch (TaskException ex) {
             setPrioritiesAndStatuses(req);
             ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TASK.getValue());
+
+            log.warn("Failed to add a new task: {}", ex.getMessage());
             return;
         }
 
@@ -79,7 +82,7 @@ public class NewTaskServlet extends HttpServlet {
         resp.sendRedirect(TODO_LINK);
     }
 
-    private void setPrioritiesAndStatuses(HttpServletRequest request){
+    private void setPrioritiesAndStatuses(HttpServletRequest request) {
         request.setAttribute(PRIORITIES, taskService.getPriorities());
         request.setAttribute(STATUSES, taskService.getStatuses());
     }

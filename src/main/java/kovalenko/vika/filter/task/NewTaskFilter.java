@@ -1,6 +1,7 @@
 package kovalenko.vika.filter.task;
 
 import kovalenko.vika.service.UserService;
+import kovalenko.vika.utils.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.Order;
 
@@ -39,16 +40,15 @@ public class NewTaskFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (isGetRequest(httpRequest)) {
-            chain.doFilter(request, response);
-            return;
+        if (!ServletUtil.isGetRequest(httpRequest)) {
+            HttpSession session = httpRequest.getSession();
+            var username = (String) session.getAttribute(USERNAME);
+            Long userId = userService.getUserId(username);
+
+            request.setAttribute(USER_ID, userId);
+            log.debug("Added userId '{}' to request", userId);
         }
 
-        HttpSession session = httpRequest.getSession();
-        var username = (String) session.getAttribute(USERNAME);
-        Long userId = userService.getUserId(username);
-
-        request.setAttribute(USER_ID, userId);
         chain.doFilter(request, response);
     }
 
@@ -56,9 +56,5 @@ public class NewTaskFilter implements Filter {
     public void destroy() {
         Filter.super.destroy();
         log.debug("'NewTaskFilter' is destroyed");
-    }
-
-    private boolean isGetRequest(HttpServletRequest request) {
-        return request.getMethod().equalsIgnoreCase("GET");
     }
 }

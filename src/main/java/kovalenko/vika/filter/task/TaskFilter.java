@@ -52,11 +52,8 @@ public class TaskFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
 
-        if (isGetRequest(httpRequest)) {
-            HttpSession session = httpRequest.getSession();
-            checkPresenceOfTasksInSession(session);
-            checkPresenceOfDefaultTagsInSession(session);
-
+        if (ServletUtil.isGetRequest(httpRequest)) {
+            checkSessionAttributes(httpRequest.getSession());
             chain.doFilter(request, response);
             return;
         }
@@ -65,7 +62,10 @@ public class TaskFilter implements Filter {
         String taskId = httpRequest.getParameter(UPDATE);
 
         if (nonNull(taskId)) {
-            ServletUtil.setRequestAttributesForUpdatingTask(httpRequest, taskService.getTaskById(Long.valueOf(taskId)));
+            TaskDTO task = taskService.getTaskById(Long.valueOf(taskId));
+
+            ServletUtil.setRequestAttributesForUpdatingTask(httpRequest, task);
+            log.debug("Attributes for updating task were set");
 
             httpRequest
                     .getServletContext()
@@ -77,14 +77,9 @@ public class TaskFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-        log.debug("'TaskFilter' is destroyed");
-    }
-
-    private boolean isGetRequest(HttpServletRequest request) {
-        return request.getMethod().equalsIgnoreCase("GET");
+    private void checkSessionAttributes(HttpSession session) {
+        checkPresenceOfTasksInSession(session);
+        checkPresenceOfDefaultTagsInSession(session);
     }
 
     private void checkPresenceOfTasksInSession(HttpSession session) {
@@ -95,9 +90,15 @@ public class TaskFilter implements Filter {
         }
     }
 
-    private void checkPresenceOfDefaultTagsInSession(HttpSession session){
-        if (isNull(session.getAttribute(DEFAULT_TAGS))){
+    private void checkPresenceOfDefaultTagsInSession(HttpSession session) {
+        if (isNull(session.getAttribute(DEFAULT_TAGS))) {
             session.setAttribute(DEFAULT_TAGS, tagService.getDefaultTags());
         }
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+        log.debug("'TaskFilter' is destroyed");
     }
 }

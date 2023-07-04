@@ -11,11 +11,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADD_TO_TASK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADDED_TO_TASK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_NOT_ADDED_TO_TASK;
 import static kovalenko.vika.utils.constants.AttributeConstant.MORE_INFO;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
 import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
@@ -35,23 +38,10 @@ public class TaskInfoFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
-        var currentSession = httpRequest.getSession();
 
-        Long commentAdd = (Long) currentSession.getAttribute(COMMENT_ADD_TO_TASK);
-        Long commentNotAdded = (Long) currentSession.getAttribute(TASK_ID);
-        String moreInfoId = request.getParameter(MORE_INFO);
-        Long taskId;
+        Long taskId = determineTaskId(httpRequest, httpResponse);
 
-        if (nonNull(commentAdd)) {
-            taskId = commentAdd;
-            currentSession.removeAttribute(COMMENT_ADD_TO_TASK);
-        } else if (nonNull(moreInfoId)) {
-            taskId = Long.parseLong(moreInfoId);
-        } else if (nonNull(commentNotAdded)) {
-            taskId = commentNotAdded;
-            currentSession.removeAttribute(TASK_ID);
-            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-        } else {
+        if (isNull(taskId)) {
             log.warn("The request cannot be fulfilled: taskId is null");
             httpResponse.sendRedirect(NOT_FOUND_LINK);
             return;
@@ -59,6 +49,33 @@ public class TaskInfoFilter implements Filter {
 
         request.setAttribute(TASK_ID, taskId);
         chain.doFilter(request, response);
+    }
+
+    private Long determineTaskId(HttpServletRequest request, HttpServletResponse response) {
+        var currentSession = request.getSession();
+
+        String moreInfoId = request.getParameter(MORE_INFO);
+        Long commentAdded = (Long) currentSession.getAttribute(COMMENT_ADDED_TO_TASK);
+        Long commentNotAdded = (Long) currentSession.getAttribute(COMMENT_NOT_ADDED_TO_TASK);
+
+        Long taskId = null;
+
+        if (nonNull(moreInfoId)) {
+            taskId = Long.parseLong(moreInfoId);
+        } else if (nonNull(commentAdded)) {
+            taskId = commentAdded;
+            removeSessionAttribute(currentSession, COMMENT_ADDED_TO_TASK);
+        } else if (nonNull(commentNotAdded)) {
+            taskId = commentNotAdded;
+            removeSessionAttribute(currentSession, COMMENT_NOT_ADDED_TO_TASK);
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        return taskId;
+    }
+
+    private void removeSessionAttribute(HttpSession session, String attribute) {
+        session.removeAttribute(attribute);
     }
 
     @Override

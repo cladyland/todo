@@ -55,14 +55,21 @@ public class TaskServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (nonNull(req.getParameter(DELETE))) {
-            deleteTask(req);
-        } else if (nonNull(req.getParameter(SAVE_UPDATE))) {
+        String deleteId = req.getParameter(DELETE);
+        String saveUpdateId = req.getParameter(SAVE_UPDATE);
+
+        if (nonNull(deleteId)) {
+            deleteTask(req, Long.valueOf(deleteId));
+        } else if (nonNull(saveUpdateId)) {
+            Long taskId = Long.valueOf(saveUpdateId);
+
             try {
-                updateTask(req);
+                updateTask(req, taskId);
             } catch (TaskException ex) {
-                ServletUtil.setRequestAttributesForUpdatingTask(req, taskService.getTaskById(Long.valueOf(req.getParameter(SAVE_UPDATE))));
+                ServletUtil.setRequestAttributesForUpdatingTask(req, taskService.getTaskById(taskId));
                 ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), TASK_UPDATE.getValue());
+
+                log.warn("Failed to update task '{}': {}", taskId, ex.getMessage());
                 return;
             }
         }
@@ -70,8 +77,20 @@ public class TaskServlet extends HttpServlet {
         todoForward(req, resp);
     }
 
-    private void updateTask(HttpServletRequest req) {
-        var taskDTO = buildTaskDTO(req);
+    private void deleteTask(HttpServletRequest req, Long taskId) {
+        taskService.deleteTask(taskId);
+
+        HttpSession session = req.getSession();
+        var tasks = (List<TaskDTO>) session.getAttribute(TASKS);
+
+        tasks
+                .removeIf(task -> Objects.equals(task.getId(), taskId));
+
+        session.setAttribute(TASKS, tasks);
+    }
+
+    private void updateTask(HttpServletRequest req, Long taskId) {
+        var taskDTO = buildTaskDTO(req, taskId);
         var taskTagsIds = (Set<Long>) req.getAttribute(TASK_TAGS);
 
         taskService.updateTask(taskDTO, taskTagsIds);
@@ -82,23 +101,7 @@ public class TaskServlet extends HttpServlet {
         req.getSession().setAttribute(TASKS, tasks);
     }
 
-    private void deleteTask(HttpServletRequest req) {
-        Long taskId = Long.valueOf(req.getParameter(DELETE));
-        TaskDTO removedTask = taskService.deleteTask(taskId);
-        HttpSession session = req.getSession();
-
-        List<TaskDTO> tasks = getUserTasks(session);
-        Long removedTaskId = removedTask.getId();
-
-        tasks
-                .removeIf(task -> Objects.equals(task.getId(), removedTaskId));
-
-        session.setAttribute(TASKS, tasks);
-    }
-
-    private TaskDTO buildTaskDTO(HttpServletRequest req) {
-        var taskId = Long.valueOf(req.getParameter(SAVE_UPDATE));
-
+    private TaskDTO buildTaskDTO(HttpServletRequest req, Long taskId) {
         return TaskDTO.builder()
                 .id(taskId)
                 .title(req.getParameter(TITLE))
@@ -106,10 +109,6 @@ public class TaskServlet extends HttpServlet {
                 .priority(req.getParameter(PRIORITY))
                 .status(req.getParameter(STATUS))
                 .build();
-    }
-
-    private List<TaskDTO> getUserTasks(HttpSession session) {
-        return (List<TaskDTO>) session.getAttribute(TASKS);
     }
 
     private void todoForward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

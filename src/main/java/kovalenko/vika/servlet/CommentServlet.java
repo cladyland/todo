@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT;
-import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADD_TO_TASK;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_ADDED_TO_TASK;
 import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_SERVICE;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
 import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
@@ -42,7 +42,7 @@ public class CommentServlet extends HttpServlet {
         CommentCommand command = buildCommentCommand(req, taskId);
         commentService.createComment(command);
 
-        req.getSession().setAttribute(COMMENT_ADD_TO_TASK, taskId);
+        req.getSession().setAttribute(COMMENT_ADDED_TO_TASK, taskId);
         resp.sendRedirect(TASK_INFO_LINK);
     }
 

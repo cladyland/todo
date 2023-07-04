@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import static java.util.Objects.isNull;
 import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT;
+import static kovalenko.vika.utils.constants.AttributeConstant.COMMENT_NOT_ADDED_TO_TASK;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_ID;
 import static kovalenko.vika.utils.constants.LinkConstant.COMMENT_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
@@ -23,7 +24,6 @@ import static kovalenko.vika.utils.constants.LinkConstant.TASK_INFO_LINK;
 @Slf4j
 @WebFilter(filterName = "CommentFilter", value = COMMENT_LINK)
 public class CommentFilter implements Filter {
-    private static final String PARAMETER_CANNOT_BE_NULL = "Parameter '{}' cannot be null";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -36,21 +36,21 @@ public class CommentFilter implements Filter {
         var httpResponse = (HttpServletResponse) response;
         String taskId = request.getParameter(TASK_ID);
 
-        if (isNull(taskId)) {
-            notFoundRedirect(httpResponse, TASK_ID);
+        if (isNullAndRedirected(taskId, TASK_ID, httpResponse)) {
             return;
         }
 
         String commentContest = request.getParameter(COMMENT);
 
-        if (isNull(commentContest)) {
-            notFoundRedirect(httpResponse, COMMENT);
+        if (isNullAndRedirected(commentContest, COMMENT, httpResponse)) {
             return;
-        } else if (commentContest.isBlank()) {
+        }
+
+        if (commentContest.isBlank()) {
             Long id = Long.parseLong(taskId);
             var currentSession = ((HttpServletRequest) request).getSession();
 
-            currentSession.setAttribute(TASK_ID, id);
+            currentSession.setAttribute(COMMENT_NOT_ADDED_TO_TASK, id);
             httpResponse.sendRedirect(TASK_INFO_LINK);
 
             log.warn("Failed to add comment to task '{}'. Comment contest cannot be blank", id);
@@ -60,14 +60,18 @@ public class CommentFilter implements Filter {
         chain.doFilter(request, response);
     }
 
+    private boolean isNullAndRedirected(Object target, String parameterName, HttpServletResponse response) throws IOException {
+        if (isNull(target)) {
+            log.warn("Parameter '{}' cannot be null", parameterName);
+            response.sendRedirect(NOT_FOUND_LINK);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void destroy() {
         Filter.super.destroy();
         log.debug("'CommentFilter' is destroyed");
-    }
-
-    private void notFoundRedirect(HttpServletResponse response, String parameterName) throws IOException {
-        log.warn(PARAMETER_CANNOT_BE_NULL, parameterName);
-        response.sendRedirect(NOT_FOUND_LINK);
     }
 }

@@ -28,6 +28,10 @@ public class ServletUtil {
         return mapper.writeValueAsString(object);
     }
 
+    public static boolean isGetRequest(HttpServletRequest request) {
+        return request.getMethod().equalsIgnoreCase("GET");
+    }
+
     public static void forwardWithErrorMessage(HttpServletRequest request, HttpServletResponse response,
                                                String errorMessage, String requestDispatcher) throws ServletException, IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -39,7 +43,7 @@ public class ServletUtil {
                 .forward(request, response);
     }
 
-    public static void setRequestAttributesForUpdatingTask(HttpServletRequest request, TaskDTO task){
+    public static void setRequestAttributesForUpdatingTask(HttpServletRequest request, TaskDTO task) {
         request.setAttribute(TASK, task);
         request.setAttribute(PRIORITIES, TaskPriority.getAllPriorities());
         request.setAttribute(STATUSES, TaskStatus.getAllStatuses());
@@ -48,7 +52,7 @@ public class ServletUtil {
 
     private static String getTaskTagIds(TaskDTO task) {
         List<TagDTO> taskTags = task.getTags();
-        if (isNull(taskTags) || taskTags.isEmpty()){
+        if (isNull(taskTags) || taskTags.isEmpty()) {
             return null;
         }
         StringBuilder taskTagIds = new StringBuilder();
