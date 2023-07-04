@@ -1,6 +1,7 @@
 package kovalenko.vika.filter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -20,6 +21,7 @@ import static kovalenko.vika.utils.constants.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.TODO_LINK;
 
 @Slf4j
+@Order(1)
 @WebFilter(filterName = "AuthorizationFilter", urlPatterns = {LOGIN_LINK, REGISTER_LINK})
 public class AuthFilter implements Filter {
 

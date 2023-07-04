@@ -1,6 +1,9 @@
 package kovalenko.vika.filter;
 
+import kovalenko.vika.utils.AppMiddleware;
+import kovalenko.vika.utils.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.core.config.Order;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -9,21 +12,23 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static kovalenko.vika.enums.JSP.REGISTER;
-import static kovalenko.vika.utils.AttributeConstant.FIRST_NAME;
-import static kovalenko.vika.utils.AttributeConstant.LAST_NAME;
-import static kovalenko.vika.utils.AttributeConstant.PARAMETERS;
-import static kovalenko.vika.utils.AttributeConstant.PASSWORD;
-import static kovalenko.vika.utils.AttributeConstant.USERNAME;
-import static kovalenko.vika.utils.LinkConstant.REGISTER_LINK;
+import static kovalenko.vika.utils.constants.AttributeConstant.ERRORS_MAP;
+import static kovalenko.vika.utils.constants.AttributeConstant.FIRST_NAME;
+import static kovalenko.vika.utils.constants.AttributeConstant.LAST_NAME;
+import static kovalenko.vika.utils.constants.AttributeConstant.PARAMETERS;
+import static kovalenko.vika.utils.constants.AttributeConstant.PASSWORD;
+import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.LinkConstant.REGISTER_LINK;
 
 @Slf4j
+@Order(3)
 @WebFilter(filterName = "RegisterFilter", value = REGISTER_LINK)
 public class RegisterFilter implements Filter {
     private static final String PRE_CHECK = "Pre-check of parameters for registration new user: status {}";
@@ -36,82 +41,79 @@ public class RegisterFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        var httpRequest = (HttpServletRequest) request;
-
-        if (isGetRequest(httpRequest)) {
+        if (ServletUtil.isGetRequest(request)) {
             chain.doFilter(request, response);
             return;
         }
 
-        var httpResponse = (HttpServletResponse) response;
+        var errors = new HashMap<String, String>();
+        Map<String, String> parameters = createParametersMap(request);
+        nullChecking(parameters, errors);
 
-        HashMap<String, String> parameters = createParametersMap(httpRequest);
-        nullChecking(parameters);
-
-        if (paramsAreNotBlank(parameters)) {
-            httpRequest.setAttribute(PARAMETERS, parameters);
+        if (paramsAreNotBlank(parameters, errors)) {
+            request.setAttribute(PARAMETERS, parameters);
             log.info(PRE_CHECK, "OK (all necessary params for registration are not blank)");
             chain.doFilter(request, response);
         } else {
-            setParamsToRequest(parameters, httpRequest);
-            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            setParamsToRequest(parameters, request);
+            ((HttpServletResponse) response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            request.setAttribute(ERRORS_MAP, ServletUtil.convertToJson(errors));
 
             log.info(PRE_CHECK, "BAD (one or more parameters are blank)");
 
-            httpRequest
+            request
                     .getServletContext()
                     .getRequestDispatcher(REGISTER.getValue())
-                    .forward(httpRequest, httpResponse);
+                    .forward(request, response);
         }
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-        log.debug("'RegisterFilter' is destroyed");
+    private Map<String, String> createParametersMap(ServletRequest request) {
+        var parameters = new HashMap<String, String>();
+        parameters.put(FIRST_NAME, request.getParameter(FIRST_NAME));
+        parameters.put(LAST_NAME, request.getParameter(LAST_NAME));
+        parameters.put(USERNAME, request.getParameter(USERNAME));
+        parameters.put(PASSWORD, request.getParameter(PASSWORD));
+        return parameters;
     }
 
-    private boolean isGetRequest(HttpServletRequest request) {
-        return request.getMethod().equalsIgnoreCase("GET");
-    }
-
-    private void setParamsToRequest(HashMap<String, String> parameters, HttpServletRequest request) {
-        request.setAttribute(FIRST_NAME, parameters.get(FIRST_NAME));
-        request.setAttribute(LAST_NAME, parameters.get(LAST_NAME));
-        request.setAttribute(USERNAME, parameters.get(USERNAME));
-    }
-
-    private void nullChecking(HashMap<String, String> parameters) {
+    private void nullChecking(Map<String, String> parameters, Map<String, String> errors) {
         int countOfNullParams = 0;
         for (var parameter : parameters.entrySet()) {
             if (isNull(parameter.getValue())) {
                 countOfNullParams++;
                 log.warn("Parameter '{}' cannot be null", parameter.getKey());
+                errors.put(parameter.getKey(), " cannot be null");
             }
         }
-        if (countOfNullParams > 0) {
+        if (!AppMiddleware.numberEqualsZero(countOfNullParams)) {
             throw new NullPointerException();
         }
     }
 
-    private boolean paramsAreNotBlank(HashMap<String, String> parameters) {
+    private boolean paramsAreNotBlank(Map<String, String> parameters, Map<String, String> errors) {
         int countOfBlankParams = 0;
         for (var parameter : parameters.entrySet()) {
             if (parameter.getValue().isBlank()) {
                 countOfBlankParams++;
                 parameters.replace(parameter.getKey(), "");
                 log.warn("Parameter '{}' cannot be blank", parameter.getKey());
+                errors.put(parameter.getKey(), " cannot be blank");
             }
         }
-        return countOfBlankParams == 0;
+
+        return AppMiddleware.numberEqualsZero(countOfBlankParams);
     }
 
-    private HashMap<String, String> createParametersMap(HttpServletRequest request) {
-        HashMap<String, String> parameters = new HashMap<>();
-        parameters.put(FIRST_NAME, request.getParameter(FIRST_NAME));
-        parameters.put(LAST_NAME, request.getParameter(LAST_NAME));
-        parameters.put(USERNAME, request.getParameter(USERNAME));
-        parameters.put(PASSWORD, request.getParameter(PASSWORD));
-        return parameters;
+    private void setParamsToRequest(Map<String, String> parameters, ServletRequest request) {
+        request.setAttribute(FIRST_NAME, parameters.get(FIRST_NAME));
+        request.setAttribute(LAST_NAME, parameters.get(LAST_NAME));
+        request.setAttribute(USERNAME, parameters.get(USERNAME));
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+        log.debug("'RegisterFilter' is destroyed");
     }
 }

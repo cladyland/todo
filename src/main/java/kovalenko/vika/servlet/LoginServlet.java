@@ -43,10 +43,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req
-                .getServletContext()
-                .getRequestDispatcher(INDEX_JSP.getValue())
-                .forward(req, resp);
+        forwardToIndex(req, resp);
     }
 
     @Override
@@ -61,10 +58,7 @@ public class LoginServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             log.warn("The user has not been validated. Reason: {}", ex.getMessage());
 
-            req
-                    .getServletContext()
-                    .getRequestDispatcher(INDEX_JSP.getValue())
-                    .forward(req, resp);
+            forwardToIndex(req, resp);
             return;
         }
 
@@ -76,5 +70,12 @@ public class LoginServlet extends HttpServlet {
         resp.sendRedirect(TODO_LINK);
 
         log.info("User '{}' is authorized", username);
+    }
+
+    private void forwardToIndex(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req
+                .getServletContext()
+                .getRequestDispatcher(INDEX_JSP.getValue())
+                .forward(req, resp);
     }
 }

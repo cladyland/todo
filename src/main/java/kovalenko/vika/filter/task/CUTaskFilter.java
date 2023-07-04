@@ -36,10 +36,8 @@ public class CUTaskFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        var httpRequest = (HttpServletRequest) request;
-
-        if (isCreateTaskRequest(httpRequest) || isUpdateTaskRequest(httpRequest)) {
-            String[] taskTagsIds = httpRequest.getParameterValues(TASK_TAGS);
+        if (isCreateTaskRequest(request) || isUpdateTaskRequest(request)) {
+            String[] taskTagsIds = request.getParameterValues(TASK_TAGS);
             if (nonNull(taskTagsIds)) {
                 request.setAttribute(TASK_TAGS, convertIds(taskTagsIds));
                 log.debug("Added tag ids {} to request for create or update task", Arrays.toString(taskTagsIds));
@@ -49,11 +47,11 @@ public class CUTaskFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    private boolean isCreateTaskRequest(HttpServletRequest request) {
-        return request.getRequestURI().equals(NEW_TASK_LINK);
+    private boolean isCreateTaskRequest(ServletRequest request) {
+        return ((HttpServletRequest) request).getRequestURI().equals(NEW_TASK_LINK);
     }
 
-    private boolean isUpdateTaskRequest(HttpServletRequest request) {
+    private boolean isUpdateTaskRequest(ServletRequest request) {
         return nonNull(request.getParameter(SAVE_UPDATE));
     }
 

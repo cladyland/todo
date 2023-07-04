@@ -15,7 +15,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -50,27 +49,24 @@ public class TaskFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        var httpRequest = (HttpServletRequest) request;
-
-        if (ServletUtil.isGetRequest(httpRequest)) {
-            checkSessionAttributes(httpRequest.getSession());
+        if (ServletUtil.isGetRequest(request)) {
+            checkSessionAttributes(((HttpServletRequest) request).getSession());
             chain.doFilter(request, response);
             return;
         }
 
-        var httpResponse = (HttpServletResponse) response;
-        String taskId = httpRequest.getParameter(UPDATE);
+        String taskId = request.getParameter(UPDATE);
 
         if (nonNull(taskId)) {
             TaskDTO task = taskService.getTaskById(Long.valueOf(taskId));
 
-            ServletUtil.setRequestAttributesForUpdatingTask(httpRequest, task);
+            ServletUtil.setRequestAttributesForUpdatingTask(request, task);
             log.debug("Attributes for updating task were set");
 
-            httpRequest
+            request
                     .getServletContext()
                     .getRequestDispatcher(TASK_UPDATE.getValue())
-                    .forward(httpRequest, httpResponse);
+                    .forward(request, response);
             return;
         }
 

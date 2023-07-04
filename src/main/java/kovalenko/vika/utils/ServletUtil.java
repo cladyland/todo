@@ -9,6 +9,7 @@ import kovalenko.vika.enums.TaskPriority;
 import kovalenko.vika.enums.TaskStatus;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,8 +29,10 @@ public class ServletUtil {
         return mapper.writeValueAsString(object);
     }
 
-    public static boolean isGetRequest(HttpServletRequest request) {
-        return request.getMethod().equalsIgnoreCase("GET");
+    public static boolean isGetRequest(ServletRequest request) {
+        return ((HttpServletRequest) request)
+                .getMethod()
+                .equalsIgnoreCase("GET");
     }
 
     public static void forwardWithErrorMessage(HttpServletRequest request, HttpServletResponse response,
@@ -43,7 +46,7 @@ public class ServletUtil {
                 .forward(request, response);
     }
 
-    public static void setRequestAttributesForUpdatingTask(HttpServletRequest request, TaskDTO task) {
+    public static void setRequestAttributesForUpdatingTask(ServletRequest request, TaskDTO task) {
         request.setAttribute(TASK, task);
         request.setAttribute(PRIORITIES, TaskPriority.getAllPriorities());
         request.setAttribute(STATUSES, TaskStatus.getAllStatuses());

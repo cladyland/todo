@@ -38,10 +38,8 @@ public class NewTaskFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-
-        if (!ServletUtil.isGetRequest(httpRequest)) {
-            HttpSession session = httpRequest.getSession();
+        if (!ServletUtil.isGetRequest(request)) {
+            HttpSession session = ((HttpServletRequest) request).getSession();
             var username = (String) session.getAttribute(USERNAME);
             Long userId = userService.getUserId(username);
 

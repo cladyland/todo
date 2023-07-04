@@ -21,6 +21,7 @@ import static java.util.Objects.nonNull;
 import static kovalenko.vika.utils.constants.AttributeConstant.MORE_INFO;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASKS;
 import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
+import static kovalenko.vika.utils.constants.LinkConstant.LOGIN_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.NOT_FOUND_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.SECURITY_LINK;
 
@@ -42,9 +43,8 @@ public class SecurityFilter implements Filter {
         var username = (String) currentSession.getAttribute(USERNAME);
 
         if (isNull(username)) {
-            String uri = httpRequest.getRequestURI();
-            log.warn("Access to '{}' is denied: authorization is required", uri);
-            httpResponse.sendRedirect("/");
+            log.warn("Access to '{}' is denied: authorization is required", httpRequest.getRequestURI());
+            httpResponse.sendRedirect(LOGIN_LINK);
         } else {
             String moreInfoId = request.getParameter(MORE_INFO);
             if (nonNull(moreInfoId)) {
@@ -60,12 +60,6 @@ public class SecurityFilter implements Filter {
         }
     }
 
-    @Override
-    public void destroy() {
-        Filter.super.destroy();
-        log.debug("'SecurityFilter' is destroyed");
-    }
-
     private boolean checkAccessRights(HttpSession session, Long taskId) {
         var userTasks = (List<TaskDTO>) session.getAttribute(TASKS);
         TaskDTO userTask = null;
@@ -79,5 +73,11 @@ public class SecurityFilter implements Filter {
         }
 
         return nonNull(userTask);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+        log.debug("'SecurityFilter' is destroyed");
     }
 }
