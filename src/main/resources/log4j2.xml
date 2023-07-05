@@ -1,26 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="ERROR">
+<Configuration status="info">
+
     <Properties>
-        <Property name="basePath">logs</Property>
+        <Property name="basePath">todo-logs</Property>
+        <Property name="filePatternEnd">%d{yyyy-MM-dd}.log</Property>
+        <Property name="logsLayout">%d %-5p %c: %m%n</Property>
     </Properties>
+
     <Appenders>
-        <RollingFile name="rollingFile"
-                     fileName="\Users\User\IdeaProjects\todo\logs\todo.log"
-                     filePattern="\Users\User\IdeaProjects\todo\logs\todo.%d{yyyy-MM-dd}.log"
+        <RollingFile name="debugFile"
+                     fileName="${basePath}/debug/todo-debug.log"
+                     filePattern="${basePath}/debug/todo-debug.${filePatternEnd}"
                      ignoreExceptions="false">
-            <PatternLayout pattern="%d %-5p %c: %m%n"/>
+            <PatternLayout pattern="${logsLayout}"/>
             <TimeBasedTriggeringPolicy/>
-            <DefaultRolloverStrategy>
-                <Delete basePath="logs" maxDepth="2">
-                    <IfFileName glob="todo.*.log"/>
-                    <IfLastModified age="7d"/>
-                </Delete>
-            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="infoFile"
+                     fileName="${basePath}/info/todo-info.log"
+                     filePattern="${basePath}/info/todo-info.${filePatternEnd}"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${logsLayout}"/>
+            <TimeBasedTriggeringPolicy/>
+        </RollingFile>
+
+        <RollingFile name="errorFile"
+                     fileName="${basePath}/errors.log"
+                     filePattern="${basePath}/errors.${filePatternEnd}"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${logsLayout}"/>
+            <TimeBasedTriggeringPolicy/>
         </RollingFile>
     </Appenders>
+
     <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="rollingFile"/>
+        <Logger name="kovalenko.vika">
+            <AppenderRef ref="debugFile" level="debug"/>
+            <AppenderRef ref="infoFile" level="info"/>
+            <AppenderRef ref="errorFile" level="error"/>
+        </Logger>
+
+        <Root level="error">
+            <AppenderRef ref="errorFile"/>
         </Root>
     </Loggers>
 </Configuration>

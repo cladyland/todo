@@ -35,8 +35,8 @@ public class ServletUtil {
                 .equalsIgnoreCase("GET");
     }
 
-    public static void forwardWithErrorMessage(HttpServletRequest request, HttpServletResponse response,
-                                               String errorMessage, String requestDispatcher) throws ServletException, IOException {
+    public static void forwardWithErrorMessageAndStatus400(HttpServletRequest request, HttpServletResponse response,
+                                                           String errorMessage, String requestDispatcher) throws ServletException, IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         request.setAttribute(ERROR_MESSAGE, errorMessage);
 

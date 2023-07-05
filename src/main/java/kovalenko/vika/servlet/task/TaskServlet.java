@@ -67,7 +67,7 @@ public class TaskServlet extends HttpServlet {
                 updateTask(req, taskId);
             } catch (TaskException ex) {
                 ServletUtil.setRequestAttributesForUpdatingTask(req, taskService.getTaskById(taskId));
-                ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), TASK_UPDATE.getValue());
+                ServletUtil.forwardWithErrorMessageAndStatus400(req, resp, ex.getMessage(), TASK_UPDATE.getValue());
 
                 log.warn("Failed to update task '{}': {}", taskId, ex.getMessage());
                 return;

@@ -70,7 +70,7 @@ public class NewTaskServlet extends HttpServlet {
             log.debug("Added new task with id '{}'", addedTask.getId());
         } catch (TaskException ex) {
             setPrioritiesAndStatuses(req);
-            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TASK.getValue());
+            ServletUtil.forwardWithErrorMessageAndStatus400(req, resp, ex.getMessage(), NEW_TASK.getValue());
 
             log.warn("Failed to add a new task: {}", ex.getMessage());
             return;

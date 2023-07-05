@@ -59,7 +59,7 @@ public class TagServlet extends HttpServlet {
         try {
             tagService.createTag(buildTagCommand(req, id));
         } catch (TaskException ex) {
-            ServletUtil.forwardWithErrorMessage(req, resp, ex.getMessage(), NEW_TAG_JSP);
+            ServletUtil.forwardWithErrorMessageAndStatus400(req, resp, ex.getMessage(), NEW_TAG_JSP);
             return;
         }
 
