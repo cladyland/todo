@@ -28,14 +28,18 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+
+    @Column(nullable = false, length = 300)
     private String contents;
+
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;

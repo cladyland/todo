@@ -39,31 +39,41 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
-    @Column(nullable = false)
+
+    @Column(nullable = false, length = 50)
     private String title;
-    @Column(columnDefinition = "text")
+
+    @Column(length = 500)
     private String description;
-    @Column(nullable = false)
+
+    @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
-    @Column(nullable = false)
+
+    @Column(length = 15, nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "task_tag",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"))
     private Set<Tag> tags;
+
     @OneToMany(mappedBy = "task", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comment> comments;
+
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;
+
     @UpdateTimestamp
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;

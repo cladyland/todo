@@ -13,12 +13,12 @@ create table if not exists users
 
 create table if not exists tasks
 (
-    id          bigserial    not null,
-    title       varchar(255) not null,
-    description text,
-    priority    varchar(255) not null,
-    status      varchar(255) not null,
-    user_id     bigint       not null,
+    id          bigserial   not null,
+    title       varchar(50) not null,
+    description varchar(500),
+    priority    varchar(10) not null,
+    status      varchar(15) not null,
+    user_id     bigint      not null,
     create_date timestamp(6),
     last_update timestamp(6),
     primary key (id),
@@ -27,9 +27,9 @@ create table if not exists tasks
 
 create table if not exists tag
 (
-    id         bigserial    not null,
-    title      varchar(20)  not null,
-    color      varchar(255) not null,
+    id         bigserial   not null,
+    title      varchar(15) not null,
+    color      varchar(20) not null,
     is_default boolean,
     user_id    bigint,
     primary key (id),
@@ -48,7 +48,7 @@ create table if not exists task_tag
 create table if not exists tasks_comments
 (
     id          bigserial    not null,
-    contents    varchar(255) not null,
+    contents    varchar(300) not null,
     task_id     bigint       not null,
     user_id     bigint       not null,
     create_date timestamp(6),
@@ -58,7 +58,7 @@ create table if not exists tasks_comments
 );
 
 insert into tag (title, color, is_default)
-values ('Work', '#00b3ff', true),
+values ('Work', '#04ebfb', true),
        ('JavaRush', '#ffa200', true),
        ('Study', '#00ff1e', true),
        ('Sport', '#fffb7a', true),

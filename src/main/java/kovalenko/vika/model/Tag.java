@@ -23,14 +23,19 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(length = 20, nullable = false)
+
+    @Column(length = 15, nullable = false)
     private String title;
-    @Column(nullable = false)
+
+    @Column(length = 20, nullable = false)
     private String color;
+
     @Column(name = "is_default")
     private boolean isDefault;
+
     @Column(name = "user_id")
     private Long userId;
+
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
