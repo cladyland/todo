@@ -17,12 +17,13 @@ import java.io.IOException;
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.utils.constants.AttributeConstant.USERNAME;
 import static kovalenko.vika.utils.constants.LinkConstant.LOGIN_LINK;
+import static kovalenko.vika.utils.constants.LinkConstant.LOGOUT_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.REGISTER_LINK;
 import static kovalenko.vika.utils.constants.LinkConstant.TODO_LINK;
 
 @Slf4j
 @Order(1)
-@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {LOGIN_LINK, REGISTER_LINK})
+@WebFilter(filterName = "AuthorizationFilter", urlPatterns = {LOGIN_LINK, REGISTER_LINK, LOGOUT_LINK})
 public class AuthFilter implements Filter {
 
     @Override
@@ -35,6 +36,12 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         var httpRequest = (HttpServletRequest) request;
         var httpResponse = (HttpServletResponse) response;
+
+        if (httpRequest.getRequestURI().equals(LOGOUT_LINK)) {
+            httpRequest.getSession().invalidate();
+            httpResponse.sendRedirect(LOGIN_LINK);
+            return;
+        }
 
         if (nonNull(httpRequest.getSession().getAttribute(USERNAME))) {
             httpResponse.sendRedirect(TODO_LINK);

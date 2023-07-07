@@ -3,46 +3,30 @@
 <html>
 <head>
     <jsp:include page="../basis/head.jsp"/>
-    <style>
-        form {
-            display: inline-block;
-            width: auto;
-        }
-
-        div {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            min-height: 100vh;
-            width: 90%;
-            margin: 0 auto;
-        }
-    </style>
+    <jsp:include page="../basis/logout.jsp"/>
 </head>
 <body>
-<center>
-    <br><br>
-    <h3>Hello, ${sessionScope.get("username")}!</h3>
-    <br><br>
-    <form action="${pageContext.request.contextPath}/todo/new-task" method="get">
+<div class="text-center">
+    <p class="hello-title">Hello, ${sessionScope.get("username")}!</p>
+    <form class="main-button-form" action="${pageContext.request.contextPath}/todo/new-task" method="get">
         <button type="submit" class="btn btn-success">Add task</button>
     </form>
-    <form action="${pageContext.request.contextPath}/todo/tags" method="get">
+    <form class="main-button-form" action="${pageContext.request.contextPath}/todo/tags" method="get">
         <button type="submit" class="btn btn-light">Add tag</button>
     </form>
-</center>
-<div>
+</div>
+<div class="task-table">
     <table class="table table-success table-striped">
-        <tr style="text-align: center; font-family: fantasy">
-            <td>Title</td>
-            <td>Description</td>
-            <td>Priority</td>
-            <td>Status</td>
-            <td>Tags</td>
-            <td>Actions</td>
+        <tr class="task-table-top">
+            <td style="width: 10%">Title</td>
+            <td style="width: 40%">Description</td>
+            <td style="width: 5%">Priority</td>
+            <td style="width: 5%">Status</td>
+            <td style="width: 10%">Tags</td>
+            <td style="width: 15%">Actions</td>
         </tr>
         <c:forEach items="${sessionScope.tasks}" var="task">
-            <tr style="text-align: center; font-family: Georgia, serif">
+            <tr class="task-table-cell">
                 <td><i> ${task.getTitle()} </i></td>
                 <td> ${task.getDescription()} </td>
                 <td> ${task.getPriority()} </td>
@@ -53,17 +37,16 @@
                     </c:forEach>
                 </td>
                 <td>
-                    <form action="${pageContext.request.contextPath}/todo/info" method="get">
+                    <form class="main-button-form" action="${pageContext.request.contextPath}/todo/info" method="get">
                         <button type="submit" class="btn btn-info" name="moreInfo" value="${task.getId()}">More</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/todo" method="post">
-                        <button type="submit" class="btn btn-warning" name="update" value="${task.getId()}">Edit
-                        </button>
+                    <form class="main-button-form" action="${pageContext.request.contextPath}/todo" method="post">
+                        <button type="submit" class="btn btn-warning" name="update"
+                                value="${task.getId()}">Edit</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/todo" method="post">
+                    <form class="main-button-form" action="${pageContext.request.contextPath}/todo" method="post">
                         <button type="submit" class="btn btn-dark" name="delete" value="${task.getId()}"
-                                onclick="return confirm('Delete task ${task.getTitle()}?')">Delete
-                        </button>
+                                onclick="return confirm('Delete task ${task.getTitle()}?')">Delete</button>
                     </form>
                 </td>
             </tr>
