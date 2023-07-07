@@ -4,6 +4,45 @@ body {
     opacity: 0.75;
     font-family: "Times New Roman", cursive;
     font-size: larger;
+    align-self: center;
+}
+
+.grid-top {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 100px;
+}
+
+.grid-bottom {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.welcome-title {
+    color: #663399;
+    font-family: 'Rouge Script', cursive;
+    font-weight: normal;
+    line-height: 48px;
+    text-shadow: 1px 1px 2px #4682B4;
+}
+
+.welcome-more {
+    color: #191970;
+    font-family: 'Trocchi', serif;
+    font-weight: normal;
+    line-height: 48px;
+}
+
+.register-title {
+    color: #d54d7b;
+    font-family: 'Great Vibes', cursive;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: 0 1px 1px #fff;
 }
 
 .main-button-form {
