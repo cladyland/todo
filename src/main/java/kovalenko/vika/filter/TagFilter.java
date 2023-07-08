@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 
@@ -30,13 +31,14 @@ public class TagFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (ServletUtil.isGetRequest(request)) {
+            var session = ((HttpServletRequest) request).getSession();
             boolean isTodoRequest = nonNull(request.getParameter("fromTodo"));
 
             String link = isTodoRequest ? TODO_LINK : NEW_TASK_LINK;
             String title = isTodoRequest ? "return to tasks list" : "return to creating a new task";
 
-            request.setAttribute("returnLink", link);
-            request.setAttribute("returnTitle", title);
+            session.setAttribute("returnLinkFromTag", link);
+            session.setAttribute("returnTitleFromTag", title);
         }
 
         chain.doFilter(request, response);

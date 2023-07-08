@@ -1,38 +1,49 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
-    <jsp:include page="../basis/head.jsp"/>
-</head>
+<jsp:include page="../basis/head.jsp"/>
+<jsp:include page="../basis/logout.jsp"/>
 <body>
-<center>
-    <br><br>
-    <h3>Here your tags:</h3>
+<h3 class="text-shadow">Here your tags:</h3>
+<div class="tag-table">
     <c:forEach items="${sessionScope.tags}" var="tag">
-    <span style="background-color: ${tag.getColor()}">
-            ${tag.getTitle()}
-    </span>&nbsp;
+        <span style="background-color: ${tag.getColor()}"><i class="invisible">_</i>${tag.getTitle()}<i
+                class="invisible">_</i></span>&nbsp;
     </c:forEach>
     <c:forEach items="${sessionScope.userTags}" var="tag">
-    <span style="background-color: ${tag.getColor()}">
-            ${tag.getTitle()}
-    </span>&nbsp;
+        <span style="background-color: ${tag.getColor()}"><i class="invisible">_</i>${tag.getTitle()}<i
+                class="invisible">_</i></span>&nbsp;
     </c:forEach>
-</center>
-<div class="position-absolute top-50 start-50 translate-middle">
-    <h4>To create a new tag fill the form below:</h4>
-    <form action="${pageContext.request.contextPath}/todo/tags" method="post">
-        <p><label for="title">Tag name: </label>
-            <input id="title" name="title">
-        </p>
-        <p><label for="color">Tag color: </label>
-            <input id="color" type="color" name="color" value="#00ffe1">
-        </p>
-        <button type="submit" class="btn btn-outline-success">add tag</button>
-    </form>
-    <form action="${pageContext.request.contextPath}/todo" method="get">
-        <button type="submit" class="btn btn-outline-info" title="return to tasks list">back</button>
-    </form>
+</div>
+<div class="grid-bottom">
+    <div class="text-center">
+        <h5 class="text-shadow"><b>To create a new tag fill the form below:</b></h5>
+        <div class="card border-success mb-3" style="max-width: 30rem;">
+            <form action="${pageContext.request.contextPath}/todo/tags" method="post">
+                <div class="card-body text-success">
+                    <div class="card-text">
+                        <p>
+                            <label for="title">Tag name:</label>
+                            <input id="title" name="title" maxlength="15">
+                        </p>
+                        <p><span style="color: red">${pageContext.request.getAttribute("error")}</span></p>
+                        <p>
+                            <label for="color">Tag color:</label>
+                            <input id="color" type="color" name="color" value="#00ffe1">
+                        </p>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-success">
+                    <button type="submit" class="btn btn-outline-success">add tag</button>
+                    <a href="${pageContext.request.contextPath}${sessionScope.get("returnLinkFromTag")}">
+                        <button type="button" class="btn btn-outline-info"
+                                title="${sessionScope.get("returnTitleFromTag")}">back
+                        </button>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -1,9 +1,7 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
-    <jsp:include page="../basis/head.jsp"/>
-</head>
+<jsp:include page="../basis/head.jsp"/>
 <body onload="checkRegisterRespStatus(${pageContext.response.status})">
 <div class="grid-top">
     <h3 class="register-title">Hello, guest! To register, fill out the form below.</h3>

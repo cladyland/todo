@@ -67,6 +67,22 @@ body {
     padding-bottom: 10px;
 }
 
+.tag-table {
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 50px;
+}
+
+.text-shadow {
+    color: #2c2c2c;
+    text-align: center;
+    text-shadow: 3px 2px 0 #d5d5d5;
+}
+
 .task-table {
     justify-content: center;
     align-items: center;
@@ -101,4 +117,8 @@ body {
 
 .task-info-td {
     width: 20%
+}
+
+.invisible {
+    opacity: 0;
 }
