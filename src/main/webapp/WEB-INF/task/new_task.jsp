@@ -3,41 +3,65 @@
 <html>
 <head>
     <jsp:include page="../basis/head.jsp"/>
+    <jsp:include page="../basis/logout.jsp"/>
 </head>
-<body>
-<div class="position-absolute top-50 start-50 translate-middle">
+<body onload="saveTaskData()">
+<div class="grid-bottom" style="padding-top: 10px">
     <form action="${pageContext.request.contextPath}/todo/new-task" method="post">
-        <p><label for="title">Title:</label><br>
-            <input id="title" name="title">
+        <p>
+            <label for="title">Title:</label><br>
+            <input id="title" name="title" maxlength="50">
         </p>
-        <p><label for="description">Description:</label><br>
-            <textarea id="description" name="description" placeholder="write more information"
-                      style="width: 500px"></textarea>
+        <p>
+            <span class="badge text-bg-warning">${pageContext.request.getAttribute("error")}</span>
         </p>
-        <p><label for="task_tags">Tags:</label><br>
+        <p>
+            <label for="description">Description:</label><br>
+            <textarea class="task-desc-area" id="description" name="description" placeholder="write more information"
+                      maxlength="500" onkeyup="countCharacters(500, this.value)"></textarea>
+            <br>
+            <i id="count"></i>
+        </p>
+        <p>
+            <label for="task_tags">
+                <b title="To select several options, hold down Ctrl (Windows) or Command (Mac)">&#x1F6C8</b>Tags:</label>
+            <br>
             <select id="task_tags" multiple name="taskTags" size="4">
                 <c:forEach items="${sessionScope.tags}" var="tag">
-                    <option value="${tag.getId()}"
+                    <option id="${tag.getId()}" value="${tag.getId()}"
                             style="background-color: ${tag.getColor()}">${tag.getTitle()}</option>
                 </c:forEach>
                 <c:forEach items="${sessionScope.userTags}" var="tag">
-                    <option value="${tag.getId()}"
+                    <option id="${tag.getId()}" value="${tag.getId()}"
                             style="background-color: ${tag.getColor()}">${tag.getTitle()}</option>
                 </c:forEach>
-            </select></p>
-        <p><label for="priority">Priority:</label>
+            </select>
+        </p>
+        <p>
+            <a href="${pageContext.request.contextPath}/todo/tags">
+                <button type="button" class="btn btn-success">Add new tag</button>
+            </a>
+        </p>
+        <p>
+            <label for="priority">Priority:</label>
             <select id="priority" name="priority">
                 <c:forEach items="${priorities}" var="priority">
-                    <option value="${priority.getValue()}">${priority.getValue()}</option>
+                    <option id="${priority.getValue()}" value="${priority.getValue()}">${priority.getValue()}</option>
                 </c:forEach>
-            </select></p>
-        <p><label for="status">Status:</label>
+            </select>
+        </p>
+        <p>
+            <label for="status">Status:</label>
             <select id="status" name="status">
                 <c:forEach items="${statuses}" var="status">
-                    <option value="${status.getValue()}">${status.getValue()}</option>
+                    <option id="${status.getValue()}" value="${status.getValue()}">${status.getValue()}</option>
                 </c:forEach>
-            </select></p>
-        <button type="submit" class="btn btn-primary">Add new task</button>
+            </select>
+        </p>
+        <button type="submit" class="btn btn-primary" onclick="cleanTaskStorage()">Add new task</button>
+        <a href="${pageContext.request.contextPath}/todo">
+            <button type="button" class="btn btn-outline-info" title="return to tasks list">back</button>
+        </a>
     </form>
 </div>
 </body>

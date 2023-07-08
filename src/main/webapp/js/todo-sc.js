@@ -7,7 +7,7 @@ function checkLoginRespStatus(status) {
 }
 
 function setErrorMessageParam(content) {
-    let error_message = document.getElementById("error")
+    let error_message = getById("error")
     error_message.textContent = content
 }
 
@@ -15,7 +15,7 @@ function checkRegisterRespStatus(status) {
     const username_message_id = "wrong_username"
 
     if (status === 400) {
-        const errors_json = document.getElementById("errors").value
+        const errors_json = getById("errors").value
         const errors_map = new Map(Object.entries(JSON.parse(errors_json)))
         const username_error = errors_map.get("username")
         const first_name_error = errors_map.get("firstName")
@@ -40,7 +40,7 @@ function checkRegisterRespStatus(status) {
             setMessageParamToWrongField(message_id, "Password " + password_error)
         }
     } else if (status === 409) {
-        let error_message = document.getElementById("error").value
+        let error_message = getById("error").value
         setMessageParamToWrongField(username_message_id, error_message)
     }
 }
@@ -50,50 +50,85 @@ function isDefined(param) {
 }
 
 function setMessageParamToWrongField(message_id, error_message) {
-    let wrong = document.getElementById(message_id)
+    let wrong = getById(message_id)
     wrong.textContent = error_message
 }
 
 function saveTaskData() {
     let title = document.querySelector("#title")
     let description = document.querySelector("#description")
+    let priority = getById("priority")
+    let status = getById("status")
+    let tags = getById("task_tags")
+
+    setStorageItem(title, "keyup", "title_note")
+    setStorageItem(description, "keyup", "description_note")
+    setStorageItem(priority, "change", "priority_selected")
+    setStorageItem(status, "change", "status_selected")
+
+    tags.onchange = function () {
+        let selectedIds = new Array(tags.options.length)
+        for (let i = 0; i < selectedIds.length; i++) {
+            let option = tags.options[i]
+            let selected = option.selected
+            selectedIds[i] = selected ? option.value : ""
+        }
+        localStorage.tags_selected = JSON.stringify(selectedIds)
+    }
+
+    let priority_selected = localStorage.priority_selected
+    let status_selected = localStorage.status_selected
+    let tags_selected = localStorage.tags_selected
 
     title.value = localStorage.getItem("title_note")
     description.value = localStorage.getItem("description_note")
 
-    title.addEventListener("keyup", evt => {
-        localStorage.setItem("title_note", evt.target.value)
-    })
+    if (priority_selected) setSelectedOption(priority_selected)
+    if (status_selected) setSelectedOption(status_selected)
+    if (tags_selected) {
+        JSON.parse(tags_selected).forEach(element => {
+            if (element !== "") setSelectedOption(element)
+        })
+    }
+}
 
-    description.addEventListener("keyup", evt => {
-        localStorage.setItem("description_note", evt.target.value)
+function setStorageItem(element, type, key) {
+    element.addEventListener(type, evt => {
+        localStorage.setItem(key, evt.target.value)
     })
+}
+
+function setSelectedOption(element_id) {
+    document.getElementById(element_id).selected = true
 }
 
 function cleanTaskStorage() {
-    localStorage.removeItem("title_note")
-    localStorage.removeItem("description_note")
+    localStorage.clear();
 }
 
 function setSelectedTaskAttributes(priority, status, tagsIds) {
-    document.getElementById(priority).selected = true
-    document.getElementById(status).selected = true
+    setSelectedOption(priority)
+    setSelectedOption(status)
 
     let tags = tagsIds.split(' ')
-    tags.forEach(tag => document.getElementById(tag).selected = true)
+    tags.forEach(tag => setSelectedOption(tag))
 }
 
 function countCharacters(max_size, element) {
-    let count = document.getElementById('count')
+    let count = getById('count')
     let diff = max_size - element.length
-    count.style.color = (diff < 0) ? 'red' : 'black'
+    count.style.color = (diff < 30) ? 'red' : 'black'
     count.innerHTML = "characters left: " + diff;
 }
 
 function checkCommentRespStatus(status) {
     if (status === 400) {
-        let wrong_comment = document.getElementById("wrong_comment")
+        let wrong_comment = getById("wrong_comment")
         wrong_comment.textContent = "Please, write something"
         wrong_comment.style.color = "red"
     }
+}
+
+function getById(id) {
+    return document.getElementById(id)
 }

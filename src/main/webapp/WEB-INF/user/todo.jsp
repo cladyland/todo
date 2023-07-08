@@ -12,7 +12,7 @@
         <button type="submit" class="btn btn-success">Add task</button>
     </form>
     <form class="main-button-form" action="${pageContext.request.contextPath}/todo/tags" method="get">
-        <button type="submit" class="btn btn-light">Add tag</button>
+        <button type="submit" class="btn btn-light" name="fromTodo">Add tag</button>
     </form>
 </div>
 <div class="task-table">

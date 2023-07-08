@@ -45,10 +45,7 @@ public class TagServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req
-                .getServletContext()
-                .getRequestDispatcher(NEW_TAG_JSP)
-                .forward(req, resp);
+        forwardToNewTag(req, resp);
     }
 
     @Override
@@ -65,10 +62,8 @@ public class TagServlet extends HttpServlet {
 
         List<TagDTO> userTags = tagService.getUserTags(id);
         req.getSession().setAttribute(USER_TAGS, userTags);
-        req
-                .getServletContext()
-                .getRequestDispatcher(NEW_TAG_JSP)
-                .forward(req, resp);
+
+        forwardToNewTag(req, resp);
     }
 
     private TagCommand buildTagCommand(HttpServletRequest req, Long userId) {
@@ -77,5 +72,12 @@ public class TagServlet extends HttpServlet {
                 .title(req.getParameter(TITLE))
                 .color(req.getParameter(COLOR))
                 .build();
+    }
+
+    private void forwardToNewTag(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request
+                .getServletContext()
+                .getRequestDispatcher(NEW_TAG_JSP)
+                .forward(request, response);
     }
 }
