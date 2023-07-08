@@ -13,6 +13,7 @@ import kovalenko.vika.utils.AppMiddleware;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ public class TaskServiceImp implements TaskService {
             session.getTransaction().begin();
 
             List<Task> tasks = taskDAO.getAllUserTasks(username, session);
+            tasks.sort(Comparator.comparing(Task::getId));
 
             session.getTransaction().commit();
             return taskMapper.listToDTO(tasks);

@@ -1,8 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-<head>
-    <jsp:include page="basis/head.jsp"/>
-</head>
+<jsp:include page="basis/head.jsp"/>
 <body onload="checkLoginRespStatus(${pageContext.response.status})">
 <div class="grid-top">
     <h2 class="welcome-title">Welcome to the web application TODO</h2>

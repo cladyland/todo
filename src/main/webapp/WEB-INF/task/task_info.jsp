@@ -1,62 +1,55 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <jsp:include page="../basis/head.jsp"/>
-    <style>
-        div {
-            position: relative;
-            margin: 0 auto;
-            clear: left;
-            height: auto;
-            z-index: 0;
-            text-align: center;
-        }
-    </style>
-</head>
-<body onload="checkRespStatus(${pageContext.response.status})">
-<br>
-<div>
-    <table class="table table-success table-striped" style="width: 40%">
+<jsp:include page="../basis/head.jsp"/>
+<jsp:include page="../basis/logout.jsp"/>
+<body onload="checkCommentRespStatus(${pageContext.response.status})">
+<div class="task-info">
+    <table class="table table-success table-striped" style="width: 40%;font-size: large;">
         <tr>
-            <td style="width: 20%">Title:</td>
-            <td>${task.getTitle()}</td>
+            <td class="task-info-td"><b>Title:</b></td>
+            <td><i>${task.getTitle()}</i></td>
         </tr>
         <tr>
-            <td style="width: 20%">Description:</td>
+            <td class="task-info-td"><b>Description:</b></td>
             <td>${task.getDescription()}</td>
         </tr>
         <tr>
-            <td style="width: 20%">Priority:</td>
-            <td>${task.getPriority()}</td>
+            <td class="task-info-td"><b>Priority:</b></td>
+            <td><i>${task.getPriority()}</i></td>
         </tr>
         <tr>
-            <td style="width: 20%">Status:</td>
-            <td>${task.getStatus()}</td>
+            <td class="task-info-td"><b>Status:</b></td>
+            <td><i>${task.getStatus()}</i></td>
         </tr>
         <tr>
-            <td style="width: 20%">Tags:</td>
-            <td><c:forEach items="${task.getTags()}" var="tag">
-                <span style="background-color: ${tag.getColor()}">${tag.getTitle()}</span>
-            </c:forEach></td>
+            <td class="task-info-td"><b>Tags:</b></td>
+            <td>
+                <c:forEach items="${task.getTags()}" var="tag">
+                    <span style="background-color: ${tag.getColor()}">${tag.getTitle()}</span>
+                </c:forEach>
+            </td>
         </tr>
     </table>
     <br><br>
     <form action="${pageContext.request.contextPath}/todo/comment" method="post">
-        <label for="comment">Left comment:</label><br>
-        <textarea id="comment" name="comment" style="width: 400px" placeholder="write your comment here"></textarea><br>
-        <span id="wrong_comment"></span><br>
-        <button type="submit" name="taskId" value="${task.getId()}" class="btn btn-light">add comment</button>
+        <textarea name="comment" style="width: 500px; height: 100px" maxlength="300"
+                  placeholder="write your comment here" onkeyup="countCharacters(300, this.value)"></textarea>
+        <p>
+            <i id="count"></i>
+            <span id="wrong_comment"></span>
+        </p>
+        <button type="submit" name="taskId" value="${task.getId()}" class="btn btn-outline-success">add comment</button>
+        <a href="${pageContext.request.contextPath}/todo">
+            <button type="button" class="btn btn-outline-info" title="return to tasks list">back</button>
+        </a>
     </form>
-    <br>
-    <b>COMMENTS:</b>
-    <br>
+    <p class="text-shadow"><b>COMMENTS:</b></p>
+</div>
+<div class="comment">
     <c:forEach items="${task.getComments()}" var="comment">
-        <div class="card" style="width: 30%;">
-            <div class="card-header">
-                    ${comment.getUsername()}
-            </div>
+        <div class="card" style="max-width: 40rem;">
+            <div class="card-header">${comment.getUsername()}</div>
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
                     <p>${comment.getContents()}</p>
@@ -68,13 +61,4 @@
     </c:forEach>
 </div>
 </body>
-<script>
-    function checkRespStatus(status) {
-        if (status === 400) {
-            let wrong_comment = document.getElementById("wrong_comment")
-            wrong_comment.textContent = "Please, write something"
-            wrong_comment.style.color = "red"
-        }
-    }
-</script>
 </html>

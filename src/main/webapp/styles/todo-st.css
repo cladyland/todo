@@ -119,6 +119,14 @@ body {
     width: 20%
 }
 
+.comment {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 10px;
+}
+
 .invisible {
     opacity: 0;
 }
