@@ -130,3 +130,32 @@ body {
 .invisible {
     opacity: 0;
 }
+
+.error {
+    font-family: titillium web, sans-serif;
+}
+
+.error h1 {
+    font-size: 180px;
+    font-weight: 800;
+    color: #191970;
+    height: 150px;
+    line-height: 100px;
+    text-shadow: 10px 10px 15px #7B68EE;
+}
+
+.error h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    opacity: 0.9;
+    text-shadow: 5px 5px 5px #4682B4;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.error h3 {
+    font-size: 18px;
+    font-family: 'Times New Roman', cursive;
+    padding-bottom: 30px
+}
