@@ -62,9 +62,9 @@ public class RegisterServlet extends HttpServlet {
         try {
             userDTO = registerService.register(command);
         } catch (RegisterException ex) {
-            req.setAttribute(USERNAME, command.getUsername());
-            req.setAttribute(FIRST_NAME, command.getFirstName());
-            req.setAttribute(LAST_NAME, command.getLastName());
+            req.setAttribute(USERNAME, ServletUtil.checkIfParameterContentChanged(req, USERNAME));
+            req.setAttribute(FIRST_NAME, ServletUtil.checkIfParameterContentChanged(req, FIRST_NAME));
+            req.setAttribute(LAST_NAME, ServletUtil.checkIfParameterContentChanged(req, LAST_NAME));
 
             setRegisterFailAttribute(ex, req, resp);
 

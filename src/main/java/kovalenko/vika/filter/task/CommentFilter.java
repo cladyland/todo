@@ -1,4 +1,4 @@
-package kovalenko.vika.filter;
+package kovalenko.vika.filter.task;
 
 import lombok.extern.slf4j.Slf4j;
 

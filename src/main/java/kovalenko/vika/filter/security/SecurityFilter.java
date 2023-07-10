@@ -1,4 +1,4 @@
-package kovalenko.vika.filter;
+package kovalenko.vika.filter.security;
 
 import kovalenko.vika.dto.TaskDTO;
 import lombok.extern.slf4j.Slf4j;

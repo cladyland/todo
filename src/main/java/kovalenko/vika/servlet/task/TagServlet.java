@@ -1,4 +1,4 @@
-package kovalenko.vika.servlet;
+package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.command.TagCommand;
 import kovalenko.vika.dto.TagDTO;
@@ -69,7 +69,7 @@ public class TagServlet extends HttpServlet {
     private TagCommand buildTagCommand(HttpServletRequest req, Long userId) {
         return TagCommand.builder()
                 .userId(userId)
-                .title(req.getParameter(TITLE))
+                .title(ServletUtil.checkIfParameterContentChanged(req, TITLE))
                 .color(req.getParameter(COLOR))
                 .build();
     }

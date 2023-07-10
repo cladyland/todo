@@ -1,7 +1,8 @@
-package kovalenko.vika.servlet;
+package kovalenko.vika.servlet.task;
 
 import kovalenko.vika.command.CommentCommand;
 import kovalenko.vika.service.CommentService;
+import kovalenko.vika.utils.ServletUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.ServletConfig;
@@ -52,7 +53,7 @@ public class CommentServlet extends HttpServlet {
         return CommentCommand.builder()
                 .username(username)
                 .taskId(taskId)
-                .contents(req.getParameter(COMMENT))
+                .contents(ServletUtil.checkIfParameterContentChanged(req, COMMENT))
                 .build();
     }
 }

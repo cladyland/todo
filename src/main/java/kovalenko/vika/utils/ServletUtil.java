@@ -35,6 +35,17 @@ public class ServletUtil {
                 .equalsIgnoreCase("GET");
     }
 
+    public static boolean isPostRequest(ServletRequest request) {
+        return ((HttpServletRequest) request)
+                .getMethod()
+                .equalsIgnoreCase("POST");
+    }
+
+    public static String checkIfParameterContentChanged(ServletRequest request, String paramName) {
+        Object paramAttribute = request.getAttribute(paramName);
+        return isNull(paramAttribute) ? request.getParameter(paramName) : paramAttribute.toString();
+    }
+
     public static void forwardWithErrorMessageAndStatus400(HttpServletRequest request, HttpServletResponse response,
                                                            String errorMessage, String requestDispatcher) throws ServletException, IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

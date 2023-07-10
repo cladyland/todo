@@ -94,8 +94,8 @@ public class NewTaskServlet extends HttpServlet {
 
         return TaskCommand.builder()
                 .userId(id)
-                .title(req.getParameter(TITLE))
-                .description(req.getParameter(DESCRIPTION))
+                .title(ServletUtil.checkIfParameterContentChanged(req, TITLE))
+                .description(ServletUtil.checkIfParameterContentChanged(req, DESCRIPTION))
                 .priority(taskPriority)
                 .status(taskStatus)
                 .build();

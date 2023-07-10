@@ -1,4 +1,4 @@
-package kovalenko.vika.filter;
+package kovalenko.vika.filter.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.core.config.Order;

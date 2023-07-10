@@ -104,8 +104,8 @@ public class TaskServlet extends HttpServlet {
     private TaskDTO buildTaskDTO(HttpServletRequest req, Long taskId) {
         return TaskDTO.builder()
                 .id(taskId)
-                .title(req.getParameter(TITLE))
-                .description(req.getParameter(DESCRIPTION))
+                .title(ServletUtil.checkIfParameterContentChanged(req, TITLE))
+                .description(ServletUtil.checkIfParameterContentChanged(req, DESCRIPTION))
                 .priority(req.getParameter(PRIORITY))
                 .status(req.getParameter(STATUS))
                 .build();
