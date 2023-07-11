@@ -27,7 +27,7 @@ class HashingTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"abcdefjh", "ABCD", "123456", "     ", "_________"})
+    @ValueSource(strings = {"abcdefjh", "ABCD", "123456", "     ", "_________", "c12*AN="})
     void when_password_is_weak_return_false(String password) {
         assertFalse(hashing.isPasswordStrong(password));
     }
