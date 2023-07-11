@@ -9,7 +9,7 @@ public class Hashing {
     private static final String ALGORITHM = "MD5";
     private static final String SALT = "0-*_*-0";
     private static final String PASSWORD_REGEX =
-            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–%{}:;',?/*~$^+=<>]).{8,32}$";
+            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–%{}:;',?/*~$^+=<>_]).{8,32}$";
     private static final Pattern PATTERN = Pattern.compile(PASSWORD_REGEX);
 
     public boolean isPasswordStrong(String password) {
