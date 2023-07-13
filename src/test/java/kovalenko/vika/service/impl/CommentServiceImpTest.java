@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImpTest {
-    CommentServiceImp service;
     @Mock
     CommentDAO commentDAO;
     @Mock
@@ -33,6 +32,7 @@ class CommentServiceImpTest {
     UserDAO userDAO;
     @Mock
     Session session;
+    CommentServiceImp service;
 
     @BeforeEach
     void init() {

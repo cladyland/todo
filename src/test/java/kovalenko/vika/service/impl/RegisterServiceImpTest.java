@@ -29,13 +29,13 @@ class RegisterServiceImpTest {
     final String TEST = "test";
     final String PASSWORD = "12_ABck*";
     final UserCommand VALID_USER = createUserData(TEST, TEST, TEST, PASSWORD);
-    RegisterServiceImp service;
     @Mock
     UserDAO userDAO;
     @Mock
     Hashing hashing;
     @Mock
     Session session;
+    RegisterServiceImp service;
 
     @BeforeEach
     void init() {
