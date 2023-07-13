@@ -26,8 +26,9 @@ class TaskInfoServletTest extends AbstractServletTest {
     TaskService taskService;
     TaskInfoServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
+    protected void init() throws ServletException {
         when(context.getAttribute(TASK_SERVICE)).thenReturn(taskService);
         servlet = new TaskInfoServlet();
         super.init(servlet);

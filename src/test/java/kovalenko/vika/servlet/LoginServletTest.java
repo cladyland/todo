@@ -37,8 +37,9 @@ class LoginServletTest extends AbstractServletTest {
     TagService tagService;
     LoginServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
+    protected void init() throws ServletException {
         when(context.getAttribute(USER_SERVICE)).thenReturn(userService);
         when(context.getAttribute(TAG_SERVICE)).thenReturn(tagService);
 

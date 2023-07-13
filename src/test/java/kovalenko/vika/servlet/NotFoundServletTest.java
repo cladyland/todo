@@ -14,8 +14,9 @@ import static org.mockito.Mockito.verify;
 class NotFoundServletTest extends AbstractServletTest {
     NotFoundServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() {
+    protected void init() {
         servlet = new NotFoundServlet();
     }
 

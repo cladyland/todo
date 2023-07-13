@@ -39,8 +39,9 @@ class NewTaskServletTest extends AbstractServletTest {
     TaskService taskService;
     NewTaskServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
+    protected void init() throws ServletException {
         when(context.getAttribute(TASK_SERVICE)).thenReturn(taskService);
         servlet = new NewTaskServlet();
         super.init(servlet);

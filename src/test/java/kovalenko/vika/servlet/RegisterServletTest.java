@@ -34,8 +34,9 @@ class RegisterServletTest extends AbstractServletTest {
     RegisterService registerService;
     RegisterServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
+    protected void init() throws ServletException {
         when(context.getAttribute(REGISTER_SERVICE)).thenReturn(registerService);
         servlet = new RegisterServlet();
         super.init(servlet);

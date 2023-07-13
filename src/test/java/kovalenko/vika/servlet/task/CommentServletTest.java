@@ -26,8 +26,9 @@ class CommentServletTest extends AbstractServletTest {
     CommentService service;
     CommentServlet servlet;
 
+    @Override
     @BeforeEach
-    void init() throws ServletException {
+    protected void init() throws ServletException {
         when(context.getAttribute(COMMENT_SERVICE)).thenReturn(service);
         servlet = new CommentServlet();
         super.init(servlet);
