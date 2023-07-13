@@ -40,6 +40,12 @@ public class AttributeConstant {
     public final static String COMMENT_ADDED_TO_TASK = "commentAddedToTask";
     public final static String COMMENT_NOT_ADDED_TO_TASK = "commentNotAddedToTask";
 
+    public final static String FROM_TODO = "fromTodo";
+    public final static String TO_TASKS_LIST = "return to tasks list";
+    public final static String TO_CREATE_TASK = "return to creating a new task";
+    public final static String BACK_BUTTON_LINK = "returnLinkFromTag";
+    public final static String BACK_BUTTON_TITLE = "returnTitleFromTag";
+
     private AttributeConstant() {
     }
 }

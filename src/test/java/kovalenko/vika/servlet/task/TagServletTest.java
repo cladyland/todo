@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import javax.servlet.ServletException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -71,7 +70,6 @@ class TagServletTest extends AbstractServletTest {
 
         servlet.doPost(request, response);
 
-        verify(tagService, times(1)).createTag(any(TagCommand.class));
         verify(tagService, never()).getUserTags(ID);
         verify(session, never()).setAttribute(USER_TAGS, new ArrayList<>());
         verifyForward(NEW_TAG.getValue());

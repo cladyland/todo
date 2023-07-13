@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static kovalenko.vika.utils.constants.AttributeConstant.SAVE_UPDATE;
 import static kovalenko.vika.utils.constants.AttributeConstant.TASK_TAGS;
@@ -56,9 +55,6 @@ public class CUTaskFilter implements Filter {
     }
 
     private Set<Long> convertIds(String[] ids) {
-        if (isNull(ids)) {
-            return null;
-        }
         return Arrays.stream(ids)
                 .map(Long::parseLong)
                 .collect(Collectors.toSet());

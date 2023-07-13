@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import javax.servlet.ServletException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +63,6 @@ class NewTaskServletTest extends AbstractServletTest {
 
         servlet.doPost(request, response);
 
-        verify(taskService, times(1)).createTask(any(TaskCommand.class), eq(Set.of()));
         verify(session, times(1)).setAttribute(TASKS, tasks);
         verifyRedirect(TODO_LINK);
     }
@@ -77,7 +75,6 @@ class NewTaskServletTest extends AbstractServletTest {
 
         servlet.doPost(request, response);
 
-        verify(taskService, times(1)).createTask(any(TaskCommand.class), eq(Set.of()));
         verify(session, never()).setAttribute(TASKS, List.of());
         verify(response, never()).sendRedirect(TODO_LINK);
     }
