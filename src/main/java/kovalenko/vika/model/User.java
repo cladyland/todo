@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +36,7 @@ public class User {
     @Column(length = 20, unique = true, nullable = false)
     private String username;
 
+    @Setter
     @Column(name = "password", length = 32, nullable = false)
     private String passwordHash;
 

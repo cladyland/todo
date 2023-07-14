@@ -12,6 +12,8 @@ import org.hibernate.cfg.Environment;
 
 import java.util.Properties;
 
+import static kovalenko.vika.utils.constants.DbEnvConstant.*;
+
 @Slf4j
 @Getter
 public class DBConfig {
@@ -34,16 +36,17 @@ public class DBConfig {
     }
 
     private Properties setProperties() {
-        var properties = new Properties();
-        properties.setProperty(Environment.DIALECT, System.getenv("sql_dialect"));
-        properties.setProperty(Environment.DRIVER, System.getenv("sql_driver"));
-        properties.setProperty(Environment.URL, System.getenv("db_url"));
-        properties.setProperty(Environment.USER, System.getenv("db_username"));
-        properties.setProperty(Environment.PASS, System.getenv("db_password"));
-        properties.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, System.getenv("session_context"));
-        properties.setProperty(Environment.SHOW_SQL, System.getenv("show_sql"));
-        properties.setProperty(Environment.FORMAT_SQL, System.getenv("format_sql"));
-        properties.setProperty(Environment.HBM2DDL_AUTO, System.getenv("hbm2ddl_auto"));
+        var properties = new Properties() {{
+            setProperty(Environment.DIALECT, System.getenv(SQL_DIALECT));
+            setProperty(Environment.DRIVER, System.getenv(SQL_DRIVER));
+            setProperty(Environment.URL, System.getenv(DB_URL));
+            setProperty(Environment.USER, System.getenv(DB_USERNAME));
+            setProperty(Environment.PASS, System.getenv(DB_PASSWORD));
+            setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, System.getenv(SESSION_CONTEXT));
+            setProperty(Environment.SHOW_SQL, System.getenv(SHOW_SQL));
+            setProperty(Environment.FORMAT_SQL, System.getenv(FORMAT_SQL));
+            setProperty(Environment.HBM2DDL_AUTO, System.getenv(HBM2DDL_AUTO));
+        }};
 
         log.debug("DB properties are set: {}", properties);
 

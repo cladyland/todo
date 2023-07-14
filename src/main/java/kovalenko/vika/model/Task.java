@@ -34,7 +34,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,20 +46,25 @@ public class Task {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
+    @Setter
     @Column(nullable = false, length = 50)
     private String title;
 
+    @Setter
     @Column(length = 500)
     private String description;
 
+    @Setter
     @Column(length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskPriority priority;
 
+    @Setter
     @Column(length = 15, nullable = false)
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
 
+    @Setter
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "task_tag",
             joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"),

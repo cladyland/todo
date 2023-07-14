@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +31,12 @@ public class Comment {
     @Column(nullable = false, length = 300)
     private String contents;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     private Task task;
 
+    @Setter
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
