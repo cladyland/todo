@@ -1,0 +1,161 @@
+body {
+    background-size: 20%;
+    background-color: #FFFAF0;
+    opacity: 0.75;
+    font-family: "Times New Roman", cursive;
+    font-size: larger;
+    align-self: center;
+}
+
+.grid-top {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 100px;
+}
+
+.grid-bottom {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+.welcome-title {
+    color: #663399;
+    font-family: 'Rouge Script', cursive;
+    font-weight: normal;
+    line-height: 48px;
+    text-shadow: 1px 1px 2px #4682B4;
+}
+
+.welcome-more {
+    color: #191970;
+    font-family: 'Trocchi', serif;
+    font-weight: normal;
+    line-height: 48px;
+}
+
+.register-title {
+    color: #d54d7b;
+    font-family: 'Great Vibes', cursive;
+    font-weight: normal;
+    text-align: center;
+    text-shadow: 0 1px 1px #fff;
+}
+
+.logout-form {
+    background-color: #F5DEB3;
+    display: grid;
+    justify-content: end;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+}
+
+.main-button-form {
+    display: inline-block;
+    width: auto;
+}
+
+.hello-title {
+    font-size: 40px;
+    font-weight: 600;
+    color: #4682B4;
+    text-shadow: 3px 3px 5px #20B2AA;
+    padding-bottom: 10px;
+}
+
+.tag-table {
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+    padding-top: 10px;
+    padding-bottom: 50px;
+}
+
+.text-shadow {
+    color: #2c2c2c;
+    text-align: center;
+    text-shadow: 3px 2px 0 #d5d5d5;
+}
+
+.task-table {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.task-table-top {
+    text-align: center;
+    font-family: fantasy
+}
+
+.task-table-cell {
+    text-align: center;
+    font-family: Georgia, serif
+}
+
+.task-desc-area {
+    width: 500px;
+    height: 150px
+}
+
+.task-info {
+    position: relative;
+    margin: 0 auto;
+    clear: left;
+    height: auto;
+    z-index: 0;
+    text-align: center;
+}
+
+.task-info-td {
+    width: 20%
+}
+
+.comment {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 10px;
+}
+
+.invisible {
+    opacity: 0;
+}
+
+.error {
+    font-family: titillium web, sans-serif;
+}
+
+.error h1 {
+    font-size: 180px;
+    font-weight: 800;
+    color: #191970;
+    height: 150px;
+    line-height: 100px;
+    text-shadow: 10px 10px 15px #7B68EE;
+}
+
+.error h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    opacity: 0.9;
+    text-shadow: 5px 5px 5px #4682B4;
+    padding-top: 40px;
+    padding-bottom: 60px;
+}
+
+.error h3 {
+    font-size: 18px;
+    font-family: 'Times New Roman', cursive;
+    padding-bottom: 30px
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info">
+
+    <Properties>
+        <Property name="basePath">todo-logs</Property>
+        <Property name="pathDelimiter">/</Property>
+        <Property name="filePatternEnd">%d{yyyy-MM-dd}.log</Property>
+        <Property name="logsLayout">%d %-5p %c: %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="debugFile"
+                     fileName="${basePath}debug${pathDelimiter}todo-debug.log"
+                     filePattern="${basePath}debug${pathDelimiter}todo-debug.${filePatternEnd}"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${logsLayout}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="infoFile"
+                     fileName="${basePath}info${pathDelimiter}todo-info.log"
+                     filePattern="${basePath}info${pathDelimiter}todo-info.${filePatternEnd}"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${logsLayout}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+
+        <RollingFile name="errorFile"
+                     fileName="${basePath}errors${pathDelimiter}todo-errors.log"
+                     filePattern="${basePath}errors${pathDelimiter}todo-errors.${filePatternEnd}"
+                     ignoreExceptions="false">
+            <PatternLayout pattern="${logsLayout}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="kovalenko.vika" level="all">
+            <AppenderRef ref="debugFile" level="debug"/>
+            <AppenderRef ref="infoFile" level="info"/>
+            <AppenderRef ref="errorFile" level="error"/>
+        </Logger>
+
+        <Root level="error">
+            <AppenderRef ref="errorFile" level="error"/>
+        </Root>
+    </Loggers>
+</Configuration>
