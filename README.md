@@ -30,7 +30,7 @@ ToDo is a web application where a registered user has access to his personal tod
 * **resources** - log4j configuration   
 * **webapp** - jsp, css and javascript files
 ## Launch
-1. download and extract "clady_todo.zip" archive that contains all the necessary files to launch
+1. download and extract **build/clady_todo.zip** archive that contains all the necessary files to launch
 2. run Docker
 3. open the command line and go to the "clady_todo" folder
 4. enter the command: **docker-compose up --build -d**
