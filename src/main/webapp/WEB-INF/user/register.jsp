@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <jsp:include page="../basis/head.jsp"/>
-<body onload="checkRegisterRespStatus(${pageContext.response.status})">
+<script src="${pageContext.request.contextPath}/js/register.js" type="module"></script>
+<body>
 <div class="grid-top">
     <h3 class="register-title">Hello, guest! To register, fill out the form below.</h3>
 </div>
@@ -42,5 +43,6 @@
 </div>
 <input hidden="hidden" id="errors" value='${pageContext.request.getAttribute("errors")}'>
 <input hidden="hidden" id="error" value='${pageContext.request.getAttribute("error")}'>
+<input hidden="hidden" id="status" value='${pageContext.response.status}'>
 </body>
 </html>

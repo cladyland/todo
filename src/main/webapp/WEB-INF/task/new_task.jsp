@@ -3,7 +3,8 @@
 <html>
 <jsp:include page="../basis/head.jsp"/>
 <jsp:include page="../basis/logout.jsp"/>
-<body onload="saveTaskData()">
+<script src="${pageContext.request.contextPath}/js/new_task.js" type="module"></script>
+<body>
 <div class="grid-bottom" style="padding-top: 10px">
     <form action="${pageContext.request.contextPath}/todo/new-task" method="post">
         <p>

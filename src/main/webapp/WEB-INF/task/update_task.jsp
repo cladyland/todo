@@ -3,7 +3,8 @@
 <html>
 <jsp:include page="../basis/head.jsp"/>
 <jsp:include page="../basis/logout.jsp"/>
-<body onload="setSelectedTaskAttributes('${task.getPriority()}', '${task.getStatus()}', '${taskTags}')">
+<script src="${pageContext.request.contextPath}/js/task.js" type="module"></script>
+<body>
 <div class="grid-bottom" style="padding-top: 10px">
     <form action="${pageContext.request.contextPath}/todo" method="post">
         <p>
@@ -53,5 +54,8 @@
         </a>
     </form>
 </div>
+<input hidden="hidden" id="priority_" value='${task.getPriority()}'>
+<input hidden="hidden" id="status_" value='${task.getStatus()}'>
+<input hidden="hidden" id="tags_" value='${taskTags}'>
 </body>
 </html>
