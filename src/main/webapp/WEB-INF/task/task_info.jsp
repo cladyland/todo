@@ -3,7 +3,7 @@
 <html>
 <jsp:include page="../basis/head.jsp"/>
 <jsp:include page="../basis/logout.jsp"/>
-<body onload="checkCommentRespStatus(${pageContext.response.status})">
+<body>
 <div class="task-info">
     <table class="table table-success table-striped" style="width: 40%;font-size: large;">
         <tr>
@@ -37,6 +37,7 @@
                   placeholder="write your comment here" onkeyup="countCharacters(300, this.value)"></textarea>
         <p>
             <i id="count"></i>
+            <br>
             <span id="wrong_comment"></span>
         </p>
         <button type="submit" name="taskId" value="${task.getId()}" class="btn btn-outline-success">add comment</button>
@@ -60,5 +61,17 @@
         <br>
     </c:forEach>
 </div>
+<input hidden="hidden" id="status" value='${pageContext.response.status}'>
+<script>
+    window.onload = function () {
+        let status = document.getElementById('status').value
+
+        if (status === '400') {
+            let wrong_comment = document.getElementById('wrong_comment')
+            wrong_comment.textContent = 'Please, write something'
+            wrong_comment.style.color = 'red'
+        }
+    }
+</script>
 </body>
 </html>

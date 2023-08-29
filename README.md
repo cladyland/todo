@@ -32,9 +32,8 @@ ToDo is a web application where a registered user has access to his personal tod
 ## Launch
 1. download and extract **build/clady_todo.zip** archive that contains all the necessary files to launch
 2. run Docker
-3. open the command line and go to the "clady_todo" folder
-4. enter the command: **docker-compose up --build -d**
-5. after launch open the browser and go to the link: **localhost:8888**
+3. open the command line and enter the command: ```$ docker-compose up --build -d```
+4. after launch open the browser and go to the link: ```localhost:8888```
 ## Technologies
 * Java 16, Maven, Docker
 * Hibernate, PostgreSQL, H2 in-memory DB
